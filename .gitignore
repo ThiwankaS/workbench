@@ -1,0 +1,17 @@
+# Neovim runtime artifacts
+plugin/
+pack/
+spell/
+spellfile.vim
+session/
+
+# Persistent local state
+undodir/
+.luarc.json
+
+# OS/editor noise
+.DS_Store
+*.swp
+*.swo
+*.tmp
+*~
