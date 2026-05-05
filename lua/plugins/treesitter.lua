@@ -7,9 +7,12 @@ return {
     opts = {
       -- Parsers to ensure are available.
       ensure_installed = {
+        "asm",
         "bash",
         "c",
+        "cmake",
         "cpp",
+        "make",
         "lua",
         "markdown",
         "markdown_inline",

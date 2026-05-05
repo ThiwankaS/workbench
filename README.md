@@ -209,6 +209,13 @@ This section groups bindings by plugin/module so you can practice one area per d
 - No direct custom keybindings configured in this setup.
 - Provides dashboard, notifier, smooth scroll, picker helpers, and big-file support.
 
+### Assembly / Disassembly Navigation (`lua/config/autocmds.lua`)
+
+- Active for `asm` buffers (including large objdump-style files).
+- `]m` jump to next label/function
+- `[m` jump to previous label/function
+- `<leader>al` open quickfix list of all labels/functions in current asm file
+
 ## First-time Setup
 
 1. Open Neovim: `nvim`
