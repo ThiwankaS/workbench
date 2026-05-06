@@ -1,35 +1,107 @@
---- Single place for syntax highlight tweaks used by NvChad `chadrc.lua` (`base46.hl_override`).
---- Use base46 palette **names** for the active Catppuccin preset (examples: lavender, teal, peach),
---- or a hex string `#RRGGBB` when NvChad supports it for overrides.
+--- Palette + highlight overrides for Treesitter + LSP semantic tokens (base46 `hl_override`).
+--- Tune colors via `vim.theme.syntax` (base46 / Catppuccin palette names).
 vim.theme = vim.theme or {}
 
 vim.theme.syntax = vim.tbl_deep_extend("force", {
   keyword_type = "mauve",
   type = "yellow",
+  type_builtin = "yellow",
   preproc_arg = "peach",
+
+  func = "blue",
+  func_call = "blue",
+  constructor = "blue",
+  method = "teal",
+  method_call = "teal",
+
+  namespace = "yellow",
+  variable = "lavender",
+  parameter = "peach",
+  field = "lavender",
+  variable_builtin = "red",
+  property = "teal",
+
+  operator = "cyan",
+  keyword_operator = "pink",
+  punctuation = "grey_fg",
 }, vim.theme.syntax or {})
 
-local role_alias = {
-  keyword = "keyword_type",
-  type = "type",
-  preproc = "preproc_arg",
-}
-setmetatable(vim.theme, {
-  __index = function(_, k)
-    local r = role_alias[k]
-    if r then
-      return vim.theme.syntax[r]
-    end
-    return nil
-  end,
-  __newindex = function(_, k, v)
-    local r = role_alias[k]
-    if r then
-      vim.theme.syntax[r] = v
-      return
-    end
-    rawset(vim.theme, k, v)
-  end,
-})
+local M = {}
 
-return {}
+local function fgp(role, fallback)
+  local v = vim.theme.syntax[role]
+  if type(v) == "string" then
+    return v
+  end
+  return fallback
+end
+
+local function pair_rows(rows)
+  local out = {}
+  for _, row in ipairs(rows) do
+    local hl_name, role_key, fb = row[1], row[2], row[3]
+    out[hl_name] = { fg = fgp(role_key, fb) }
+  end
+  return out
+end
+
+local function treesitter_caps()
+  local r = {
+    { "@function.call", "func_call", "blue" },
+    { "@function", "func", "blue" },
+    { "@function.method.call", "method_call", "teal" },
+    { "@function.method", "method", "teal" },
+    { "@constructor", "constructor", "blue" },
+    { "@type.builtin", "type_builtin", "yellow" },
+    { "@namespace", "namespace", "yellow" },
+    { "@variable", "variable", "lavender" },
+    { "@variable.parameter", "parameter", "peach" },
+    { "@variable.member", "field", "lavender" },
+    { "@variable.builtin", "variable_builtin", "red" },
+    { "@operator", "operator", "cyan" },
+    { "@punctuation.delimiter", "punctuation", "grey_fg" },
+    { "@punctuation.bracket", "punctuation", "grey_fg" },
+    { "@keyword.operator", "keyword_operator", "pink" },
+    { "@property", "property", "teal" },
+  }
+
+  local out = {}
+  for _, row in ipairs(r) do
+    local base, role_key, fb = row[1], row[2], row[3]
+    local spec = { fg = fgp(role_key, fb) }
+    out[base] = spec
+    out[base .. ".c"] = spec
+    out[base .. ".cpp"] = spec
+  end
+
+  out["@keyword.type.c"] = { fg = fgp("keyword_type", "lavender") }
+  out["@keyword.type.cpp"] = { fg = fgp("keyword_type", "lavender") }
+  out["@type.c"] = { fg = fgp("type", "yellow") }
+  out["@type.cpp"] = { fg = fgp("type", "yellow") }
+  out["@preproc.arg"] = { fg = fgp("preproc_arg", "peach") }
+
+  return out
+end
+
+local function lsp_semantic_caps()
+  return pair_rows({
+    { "@lsp.type.function", "func_call", "blue" },
+    { "@lsp.type.method", "method_call", "teal" },
+    { "@lsp.type.namespace", "namespace", "yellow" },
+    { "@lsp.type.parameter", "parameter", "peach" },
+    { "@lsp.type.variable", "variable", "lavender" },
+    { "@lsp.type.property", "field", "lavender" },
+    { "@lsp.type.class", "type", "yellow" },
+    { "@lsp.type.enum", "type", "yellow" },
+    { "@lsp.type.typeParameter", "type", "yellow" },
+    { "@lsp.type.decorator", "namespace", "yellow" },
+    { "@lsp.mod.readonly", "variable_builtin", "red" },
+  })
+end
+
+--- Used by `chadrc.lua` as `base46.hl_override`.
+function M.hl_override()
+  return vim.tbl_deep_extend("force", treesitter_caps(), lsp_semantic_caps())
+end
+
+return M

@@ -19,6 +19,21 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
+  pattern = { "c", "cpp" },
+  callback = function(args)
+    local buf = args.buf
+    local lang = vim.bo[buf].filetype == "c" and "c" or "cpp"
+    vim.schedule(function()
+      if pcall(vim.treesitter.start, buf, lang) then
+        -- Regex syntax stacks with TS; turning it off makes :Inspect show @ captures.
+        vim.bo[buf].syntax = ""
+      end
+    end)
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup,
   pattern = { "asm", "nasm", "gas" },
   callback = function(args)
     local bufnr = args.buf
