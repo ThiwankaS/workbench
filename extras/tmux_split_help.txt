@@ -1,0 +1,10 @@
+Tmux split panes (default prefix Ctrl+b):
+  Ctrl+b  then  "   — split horizontally (new pane below)
+  Ctrl+b  then  %   — split vertically (new pane to the right)
+
+Neovim built-in terminal (this config):
+  <Space> t -   — split below, start :terminal
+  <Space> t \   — split right, start :terminal
+  (In terminal mode, <Esc><Esc> returns to Normal mode.)
+
+vim-tmux-navigator keeps <C-hjkl> for moving between Neovim windows and tmux panes when inside tmux.

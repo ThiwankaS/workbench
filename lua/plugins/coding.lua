@@ -1,17 +1,11 @@
 return {
   {
-    -- Fast comment toggling (gcc / gc in visual mode).
     "numToStr/Comment.nvim",
     opts = {},
   },
+
+  -- Line moves (Alt+j / Alt+k): nvim-autopairs is bundled by NvChad.
   {
-    -- Auto-close brackets, quotes, and pairs.
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
-    opts = {},
-  },
-  {
-    -- Move lines/selections with Alt+j / Alt+k.
     "echasnovski/mini.move",
     version = false,
     opts = {},

@@ -31,26 +31,26 @@ return {
         desc = "Command history",
       },
       {
-        "<leader>cd",
+        "<leader>cW",
         function()
           local file = vim.fn.expand("%:p:h")
           if file ~= "" then
             vim.cmd("cd " .. file)
-            vim.notify("Root set to " .. file)
+            vim.notify("Global cwd → " .. file)
           end
         end,
-        desc = "Sync root to current file",
+        desc = "cd (global) to current file dir",
       },
     },
     -- Telescope UI and picker defaults.
     config = function()
-      -- Compatibility shim:
-      -- New nvim-treesitter versions removed parsers.ft_to_lang, but Telescope previewer
-      -- still calls it in some releases. Re-create it safely to avoid runtime errors.
+      -- Compatibility shims for nvim-treesitter + Telescope 0.1.x previewers.
       local ok_parsers, parsers = pcall(require, "nvim-treesitter.parsers")
-      if ok_parsers and type(parsers.ft_to_lang) ~= "function" then
-        parsers.ft_to_lang = function(ft)
-          return vim.treesitter.language.get_lang(ft) or ft
+      if ok_parsers then
+        if type(parsers.ft_to_lang) ~= "function" then
+          parsers.ft_to_lang = function(ft)
+            return vim.treesitter.language.get_lang(ft) or ft
+          end
         end
       end
 
@@ -73,6 +73,24 @@ return {
           commands = { theme = "dropdown" },
         },
       })
+
+      -- Telescope still uses removed `nvim-treesitter.configs` / `parsers.get_parser`.
+      -- `config/ts_compat.lua` fixes configs; replace the preview highlighter with core APIs.
+      local preview_utils = require("telescope.previewers.utils")
+      preview_utils.ts_highlighter = function(bufnr, ft)
+        if not ft or ft == "" then
+          return false
+        end
+        local lang = vim.treesitter.language.get_lang(ft) or ft
+        local ok, parser = pcall(vim.treesitter.get_parser, bufnr, lang, { error = false })
+        if not ok or parser == nil then
+          return false
+        end
+        ok = pcall(function()
+          vim.treesitter.highlighter.new(parser)
+        end)
+        return ok
+      end
     end,
   },
 }

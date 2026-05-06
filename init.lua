@@ -1,15 +1,48 @@
--- Enable Lua module bytecode cache for faster startup.
 vim.loader.enable()
 
--- Disable language providers you do not use (faster startup, fewer warnings).
+-- Legacy Treesitter compat (Telescope preview, etc.).
+require("config.ts_compat")
+
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
--- Include user site runtime path (required by some parser/runtime resources).
-vim.opt.rtp:append(vim.fn.stdpath("data") .. "/site")
+vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46/"
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
--- Load core config modules in deterministic order.
-require("config.options")
-require("config.keymaps")
-require("config.autocmds")
-require("config.lazy")
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.uv.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+local lazy_cfg = require("configs.lazy")
+
+require("lazy").setup({
+  {
+    "NvChad/NvChad",
+    lazy = false,
+    branch = "v2.5",
+    import = "nvchad.plugins",
+  },
+
+  { import = "plugins" },
+}, lazy_cfg)
+
+dofile(vim.g.base46_cache .. "defaults")
+dofile(vim.g.base46_cache .. "statusline")
+
+require("options")
+require("autocmds")
+
+vim.schedule(function()
+  require("mappings")
+end)

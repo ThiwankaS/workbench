@@ -1,44 +1,29 @@
+local extra = {
+  "asm",
+  "bash",
+  "c",
+  "cmake",
+  "cpp",
+  "make",
+  "markdown",
+  "markdown_inline",
+  "javascript",
+  "typescript",
+  "python",
+  "json",
+  "yaml",
+}
+
 return {
   {
-    -- Treesitter provides accurate syntax tree parsing.
     "nvim-treesitter/nvim-treesitter",
-    -- Keep parsers updated when plugin updates.
-    build = ":TSUpdate",
-    opts = {
-      -- Parsers to ensure are available.
-      ensure_installed = {
-        "asm",
-        "bash",
-        "c",
-        "cmake",
-        "cpp",
-        "make",
-        "lua",
-        "markdown",
-        "markdown_inline",
-        "vim",
-        "vimdoc",
-        "javascript",
-        "typescript",
-        "python",
-        "json",
-        "yaml",
-      },
-      -- Install missing parsers automatically.
-      auto_install = true,
-      -- Enable Treesitter-based syntax highlighting.
-      highlight = { enable = true },
-      -- Enable Treesitter indentation where supported.
-      indent = { enable = true },
-    },
-    config = function(_, opts)
-      -- Guard against load errors and fail gracefully.
-      local ok, treesitter = pcall(require, "nvim-treesitter")
-      if not ok then
-        vim.notify("nvim-treesitter failed to load", vim.log.levels.ERROR)
-        return
-      end
-      treesitter.setup(opts)
+    opts = function(_, opts)
+      opts = opts or {}
+      opts.ensure_installed = opts.ensure_installed or {}
+      vim.list_extend(opts.ensure_installed, extra)
+      table.sort(opts.ensure_installed)
+      opts.ensure_installed = vim.fn.uniq(opts.ensure_installed)
+      return opts
     end,
   },
 }
