@@ -60,6 +60,89 @@ Install or verify these Mason tools:
 - **Lazygit:** `<leader>gg`
 - **Theme switcher:** `<leader>th`
 
+## Keybinding help (important)
+
+You can always discover bindings live with **Which Key**:
+
+- press `<leader>` and pause
+
+Detailed bindings in this config:
+
+### Navigation / files
+
+- `<leader>ff` → find files
+- `<leader>fw` → live grep
+- `<leader>fb` → buffers
+- `<leader>fo` → old files
+- `<leader>e` → focus tree
+- `<C-n>` → toggle tree window
+
+### Editing
+
+- `<leader>fm` → format current buffer
+- `<leader>/` (normal/visual) → toggle comment
+- `<Esc>` → clear search highlight
+- `<C-s>` → save file
+
+### Buffers / windows / terminal
+
+- `<tab>` / `<S-tab>` → next / previous buffer
+- `<leader>x` → close buffer
+- `<C-h> <C-j> <C-k> <C-l>` → move across windows
+- `<leader>h` → horizontal terminal
+- `<leader>v` → vertical terminal
+
+### Git / tools
+
+- `<leader>gg` → lazygit
+- `<leader>gf` → lazygit current file
+- `<leader>gl` → lazygit log
+- `<leader>go` → open repo URL
+
+### LSP / diagnostics
+
+- `gd` / `gD` → definition / declaration
+- `<leader>D` → type definition
+- `<leader>ra` → rename
+- `<leader>ds` → diagnostics list
+
+### UI / themes
+
+- `<leader>th` → theme switcher
+- `<leader>ch` → NvChad cheatsheet
+
+## DAP debugging (C/C++/Rust)
+
+This config uses:
+
+- `mfussenegger/nvim-dap`
+- `jay-babu/mason-nvim-dap.nvim`
+- `rcarriga/nvim-dap-ui`
+- adapter: `codelldb` (auto-installed through Mason DAP integration)
+
+Debug keybindings:
+
+- `<leader>db` → toggle breakpoint
+- `<leader>dB` → conditional breakpoint
+- `<leader>dc` → continue / start
+- `<leader>dC` → terminate
+- `<leader>do` → step over
+- `<leader>di` → step into
+- `<leader>dO` → step out
+- `<leader>dl` → run last config
+- `<leader>du` → toggle DAP UI
+
+Launch configs included in `lua/plugins/dap.lua`:
+
+- **Launch file (prompt for binary)**: asks for executable path and optional args
+- **Attach to PID**: asks for process id and attaches debugger
+
+Filetypes wired to these configs:
+
+- `cpp`
+- `c`
+- `rust`
+
 ## Theme / syntax customization
 
 Color roles are centralized in:
