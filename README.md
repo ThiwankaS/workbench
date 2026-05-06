@@ -173,6 +173,23 @@ If parser install still fails, ensure these are on `PATH`:
 
 Open a normal file buffer first so `nvim-lspconfig` loads, then retry.
 
+### C++ member completion not showing (class methods from `.hpp`)
+
+`clangd` needs project compile flags to index headers reliably.
+
+For CMake projects, generate a compile database:
+
+```bash
+cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+ln -sf build/compile_commands.json ./compile_commands.json
+```
+
+Then restart Neovim and reopen the C++ file.
+
+Manual trigger for completion popup:
+
+- `<C-Space>`
+
 ### Reset plugin state
 
 ```vim

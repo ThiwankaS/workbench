@@ -19,6 +19,31 @@ vim.lsp.config("*", {
   end,
 })
 
+vim.lsp.config("clangd", {
+  cmd = {
+    "clangd",
+    "--background-index",
+    "--clang-tidy",
+    "--completion-style=detailed",
+    "--header-insertion=iwyu",
+    "--function-arg-placeholders",
+    "--pch-storage=memory",
+  },
+  init_options = {
+    clangdFileStatus = true,
+    usePlaceholders = true,
+    completeUnimported = true,
+  },
+  -- Prefer compile database roots; falls back to git/CMake roots.
+  root_markers = {
+    "compile_commands.json",
+    "compile_flags.txt",
+    ".clangd",
+    "CMakeLists.txt",
+    ".git",
+  },
+})
+
 vim.api.nvim_create_autocmd("VimEnter", {
   once = true,
   callback = function()
