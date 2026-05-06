@@ -4,7 +4,7 @@ local M = {}
 
 M.base46 = {
   transparency = true,
-  theme = "catppuccin",
+  theme = "gruvbox",
   hl_override = theme.hl_override(),
 }
 
