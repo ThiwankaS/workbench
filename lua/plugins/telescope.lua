@@ -4,8 +4,13 @@ return {
     "nvim-telescope/telescope.nvim",
     -- Stable release branch for Telescope 0.1 API.
     branch = "0.1.x",
-    -- Lua utility library required by Telescope.
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+      },
+    },
     -- Lazy key bindings that load Telescope on first use.
     keys = {
       { "<leader>ff", "<cmd>Telescope find_files<CR>", desc = "Find files" },
@@ -72,7 +77,17 @@ return {
           -- Use compact dropdown style for command list.
           commands = { theme = "dropdown" },
         },
+        extensions = {
+          fzf = {
+            fuzzy = true,
+            override_generic_sorter = true,
+            override_file_sorter = true,
+            case_mode = "smart_case",
+          },
+        },
       })
+
+      pcall(telescope.load_extension, "fzf")
 
       -- Telescope still uses removed `nvim-treesitter.configs` / `parsers.get_parser`.
       -- `config/ts_compat.lua` fixes configs; replace the preview highlighter with core APIs.

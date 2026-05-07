@@ -51,10 +51,21 @@ Install or verify these Mason tools:
 - `stylua`
 - `codelldb`
 
+## Completion & snippets
+
+- **Completion:** [blink.cmp](https://github.com/Saghen/blink.cmp) (NvChad’s **nvim-cmp is disabled** in `lua/plugins/init.lua`).
+- **Snippets:** LuaSnip + friendly-snippets, same NvChad snippet loader (`lua/plugins/blink.lua`).
+- **Accept / menu:** default blink preset — `<C-y>` to accept, `<C-Space>` to open, see `:h blink-cmp-config-keymap`.
+- **LSP:** `configs/lspconfig.lua` merges `blink.cmp` capabilities with NvChad’s.
+
+## Fuzzy finding (Telescope)
+
+Telescope uses **fzf-native** for faster fuzzy sorting (`lua/plugins/telescope.lua`). First run may compile the native extension (`make`).
+
 ## Daily usage
 
 - **Find files:** `<leader>ff`
-- **Live grep:** `<leader>fw`
+- **Live grep:** `<leader>fg`
 - **Toggle tree:** `<leader>e`
 - **Format:** `<leader>fm`
 - **Lazygit:** `<leader>gg`
@@ -110,7 +121,7 @@ Note: in this config, **`<C-l>` in Insert mode** is mapped to **lowercase word**
 ### Navigation / files
 
 - `<leader>ff` → find files
-- `<leader>fw` → live grep
+- `<leader>fg` → live grep
 - `<leader>fb` → buffers
 - `<leader>fo` → old files
 - `<leader>e` → focus tree

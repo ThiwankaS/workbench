@@ -2,6 +2,14 @@ require("nvchad.autocmds")
 
 local augroup = vim.api.nvim_create_augroup("user_config", { clear = true })
 
+-- Refresh statusline clock (`chadrc.lua` `ui.statusline.modules.clock`) every minute.
+local clock_timer = vim.uv.new_timer()
+clock_timer:start(60000, 60000, function()
+  vim.schedule(function()
+    pcall(vim.cmd.redrawstatus, { bang = true })
+  end)
+end)
+
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = augroup,
   callback = function()

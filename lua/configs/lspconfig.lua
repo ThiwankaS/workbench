@@ -1,3 +1,14 @@
+-- Blink.cmp extends LSP capabilities (completion kinds, etc.). Merge with NvChad defaults.
+do
+  local ok, blink = pcall(require, "blink.cmp")
+  if ok then
+    local nvchad = require("nvchad.configs.lspconfig")
+    vim.lsp.config("*", {
+      capabilities = blink.get_lsp_capabilities(nvchad.capabilities),
+    })
+  end
+end
+
 -- NvChad disables semantic tokens for every client for compatibility. Clangd uses them heavily for
 -- readable highlighting (@lsp.type.* → hl groups). This handler duplicates NvChad's strip logic but
 -- skips clangd. Loaded after NvChad's nvim-lspconfig config (lower Lazy priority) so it merges
