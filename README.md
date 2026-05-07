@@ -68,6 +68,45 @@ You can always discover bindings live with **Which Key**:
 
 Detailed bindings in this config:
 
+### Motion & cursor (line, word, file)
+
+These are standard **Vim/Neovim** motions; this config does not override them in Normal mode.
+
+**Character / line**
+
+| Action | Keys |
+|--------|------|
+| Left / down / up / right | `h` `j` `k` `l` |
+| Half-page up / down | `<C-u>` / `<C-d>` |
+| Previous / next paragraph | `{` / `}` |
+
+**Start / end of line**
+
+| Action | Keys |
+|--------|------|
+| Column 0 | `0` |
+| First non-blank on line | `^` |
+| End of line | `$` |
+
+**Insert mode** (NvChad extras): `<C-b>` beginning of line, `<C-e>` end of line, `<C-h>` left.  
+Note: in this config, **`<C-l>` in Insert mode** is mapped to **lowercase word** (`lua/mappings.lua`), not “cursor right”—use **arrow keys** or exit Insert and use `l`.
+
+**Word by word**
+
+| Action | Keys |
+|--------|------|
+| Next word / WORD | `w` / `W` |
+| End of word / WORD | `e` / `E` |
+| Back word / WORD | `b` / `B` |
+
+**File**
+
+| Action | Keys |
+|--------|------|
+| First line | `gg` |
+| Last line | `G` |
+| Go to line N | `NG` or `:N` then Enter |
+
 ### Navigation / files
 
 - `<leader>ff` → find files
