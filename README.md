@@ -3,9 +3,18 @@
 Custom Neovim setup based on **NvChad v2.5** with Lazy.nvim, LSP, Treesitter, formatting, DAP, and C/C++ friendly defaults.
 
 - **Leader key:** `Space`
-- **Default theme:** `catppuccin`
-- **Theme picker:** `<leader>th`
+- **Theme:** set in `lua/chadrc.lua` (`base46.theme`) — `<leader>th` opens the theme picker
+- **Status line:** clock on the right (`lua/chadrc.lua` → `ui.statusline.modules.clock`)
 - **Main config root:** `~/.config/nvim`
+
+### Two installers (do not confuse them)
+
+| What | Command | Installs |
+|------|---------|----------|
+| **Neovim plugins** (blink.cmp, Telescope, NvChad, …) | `:Lazy` / `:Lazy sync` | Lua plugins under `stdpath('data')/lazy/` |
+| **CLI tools** (clangd, stylua, pyright, …) | `:Mason` → move to a package, press **`i`** | Language servers & formatters on your system |
+
+Mason’s “Installed (0)” only means **no Mason packages yet** — it does **not** mean Lazy plugins are missing.
 
 ## One-command install
 
@@ -51,16 +60,29 @@ Install or verify these Mason tools:
 - `stylua`
 - `codelldb`
 
-## Completion & snippets
+## Completion & snippets (blink.cmp + LuaSnip)
 
-- **Completion:** [blink.cmp](https://github.com/Saghen/blink.cmp) (NvChad’s **nvim-cmp is disabled** in `lua/plugins/init.lua`).
-- **Snippets:** LuaSnip + friendly-snippets, same NvChad snippet loader (`lua/plugins/blink.lua`).
-- **Accept / menu:** default blink preset — `<C-y>` to accept, `<C-Space>` to open, see `:h blink-cmp-config-keymap`.
-- **LSP:** `configs/lspconfig.lua` merges `blink.cmp` capabilities with NvChad’s.
+- **Engine:** [blink.cmp](https://github.com/Saghen/blink.cmp) — NvChad’s **nvim-cmp is disabled** (`lua/plugins/init.lua`).
+- **Snippets:** LuaSnip + friendly-snippets (`lua/plugins/blink.lua`, loads `nvchad.configs.luasnip`).
+- **LSP capabilities:** `lua/configs/lspconfig.lua` merges `blink.cmp` with NvChad’s client capabilities.
 
-## Fuzzy finding (Telescope)
+**Insert mode — completion menu**
 
-Telescope uses **fzf-native** for faster fuzzy sorting (`lua/plugins/telescope.lua`). First run may compile the native extension (`make`).
+| Key | Action |
+|-----|--------|
+| **Enter** | Accept (**select_and_accept**: picks highlighted item or first item) |
+| **Tab** | Next item in menu; otherwise LuaSnip snippet jump forward |
+| **Shift+Tab** | Previous item; otherwise LuaSnip jump backward |
+| **Ctrl+Space** | Open menu / docs (blink default “enter” preset extras) |
+| **Ctrl+E** | Close menu |
+
+First completion row is **preselected** so Enter works immediately. More detail: `:h blink-cmp-config-keymap`.
+
+**Brackets / quotes while typing** — [nvim-autopairs](https://github.com/windwp/nvim-autopairs) in `lua/plugins/autopairs.lua` (required after switching off NvChad’s `nvim-cmp`, which used to load autopairs). Typing `[`, `(`, `"`, etc. closes the pair automatically. Blink’s **auto_brackets** only adds parens when **accepting** some LSP completions, not for raw typing.
+
+## Fuzzy finding (Telescope + fzf-native)
+
+`lua/plugins/telescope.lua` loads **telescope-fzf-native** for faster fuzzy sorting. First install may run **`make`** (needs `make` + a C compiler).
 
 ## Daily usage
 
@@ -268,6 +290,8 @@ Manual trigger for completion popup:
 │   │   └── lspconfig.lua
 │   └── plugins/
 │       ├── init.lua
+│       ├── blink.lua
+│       ├── autopairs.lua
 │       ├── treesitter.lua
 │       ├── telescope.lua
 │       └── ...

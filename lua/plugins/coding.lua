@@ -4,7 +4,7 @@ return {
     opts = {},
   },
 
-  -- Line moves (Alt+j / Alt+k): nvim-autopairs is bundled by NvChad.
+  -- Line moves (Alt+j / Alt+k). Pair insertion: `lua/plugins/autopairs.lua`.
   {
     "echasnovski/mini.move",
     version = false,
