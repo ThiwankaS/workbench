@@ -177,6 +177,8 @@ Note: in this config, **`<C-l>` in Insert mode** is mapped to **lowercase word**
 - `<leader>D` → type definition
 - `<leader>ra` → rename
 - `<leader>ds` → diagnostics list
+- `<leader>df` → diagnostic messages at cursor (floating)
+- `[d` / `]d` → jump to previous / next diagnostic
 
 ### UI / themes
 
@@ -257,6 +259,51 @@ ln -sf build/compile_commands.json ./compile_commands.json
 ```
 
 Then restart Neovim and reopen the C++ file.
+
+### ESP-IDF / FreeRTOS (clangd)
+
+clangd uses your **host** compiler by default. ESP-IDF uses a **cross** `gcc`/`g++` with flags like `-mlongcalls`, so without the right setup you see “Unknown argument”, missing `machine/endian.h`, and bogus types (`std::string` as `int`).
+
+Do this **in each IDF project** (or once via `direnv`):
+
+1. **Load the IDF environment** (so `idf.py` and the toolchain exist):
+
+   ```bash
+   . $IDF_PATH/export.sh   # or your install’s export script
+   ```
+
+2. **Configure and build** (generates `build/compile_commands.json`):
+
+   ```bash
+   cd /path/to/your_project   # e.g. telemetry_node
+   idf.py set-target esp32s3   # or esp32, esp32c3, …
+   idf.py build
+   ```
+
+3. **Point clangd at the compile database** from the project root (same directory as top-level `CMakeLists.txt`):
+
+   ```bash
+   ln -sf build/compile_commands.json ./compile_commands.json
+   ```
+
+   If you prefer not to symlink, add a **`.clangd`** file in the project root:
+
+   ```yaml
+   CompileFlags:
+     CompilationDatabase: build
+   ```
+
+4. **Allow clangd to query the Xtensa/RISC-V toolchain** (fixes “Unknown argument …” for IDF flags). Set a **comma-separated** glob list (no spaces after commas). Example for a typical Espressif tool install under `$HOME/.espressif`:
+
+   ```bash
+   export CLANGD_QUERY_DRIVER="$HOME/.espressif/tools/**/bin/*-gcc,$HOME/.espressif/tools/**/bin/*-g++"
+   ```
+
+   Put that in `~/.bashrc`, a project `.envrc` (direnv), or run it in the same terminal before `nvim`. This Neovim config reads **`CLANGD_QUERY_DRIVER`** and passes it to clangd as `--query-driver=…`.
+
+5. **Restart clangd** after changes: `:LspRestart` or restart Neovim.
+
+6. **Optional:** If `compile_commands.json` is missing entries for a component, run a full build again; IDF’s CMake should regenerate it.
 
 Manual trigger for completion popup:
 

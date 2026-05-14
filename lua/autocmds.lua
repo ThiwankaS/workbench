@@ -2,6 +2,37 @@ require("nvchad.autocmds")
 
 local augroup = vim.api.nvim_create_augroup("user_config", { clear = true })
 
+-- blink.cmp: floating completion/docs can rarely stay on screen after leaving Insert or switching
+-- windows (terminal redraw / ModeChanged ordering). Force-hide when that happens.
+local function blink_cmp_hide_if_open()
+  pcall(function()
+    local blink = require("blink.cmp")
+    if blink.is_visible and blink.is_visible() then
+      blink.hide()
+    end
+  end)
+end
+
+vim.api.nvim_create_autocmd("ModeChanged", {
+  group = augroup,
+  pattern = "i:*",
+  callback = function()
+    vim.schedule(blink_cmp_hide_if_open)
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave" }, {
+  group = augroup,
+  callback = function()
+    vim.schedule(blink_cmp_hide_if_open)
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimResized", {
+  group = augroup,
+  callback = blink_cmp_hide_if_open,
+})
+
 -- Refresh statusline clock (`chadrc.lua` `ui.statusline.modules.clock`) every minute.
 local clock_timer = vim.uv.new_timer()
 clock_timer:start(60000, 60000, function()

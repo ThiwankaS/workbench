@@ -43,8 +43,8 @@ local function clangd_executable()
   return "clangd"
 end
 
-vim.lsp.config("clangd", {
-  cmd = {
+vim.lsp.config("clangd", (function()
+  local cmd = {
     clangd_executable(),
     "--background-index",
     "--clang-tidy",
@@ -52,8 +52,17 @@ vim.lsp.config("clangd", {
     "--header-insertion=iwyu",
     "--function-arg-placeholders",
     "--pch-storage=memory",
-  },
-  capabilities = {
+  }
+  -- Cross-compilers (ESP-IDF, ARM GCC, etc.): clangd must be allowed to query the real driver for
+  -- target-specific flags. Set once in shell or direnv, e.g.:
+  --   export CLANGD_QUERY_DRIVER="$HOME/.espressif/tools/**/bin/*-gcc,$HOME/.espressif/tools/**/bin/*-g++"
+  local qd = vim.env.CLANGD_QUERY_DRIVER
+  if qd and qd ~= "" then
+    table.insert(cmd, "--query-driver=" .. qd)
+  end
+  return {
+    cmd = cmd,
+    capabilities = {
     textDocument = {
       completion = {
         editsNearCursor = true,
@@ -73,7 +82,8 @@ vim.lsp.config("clangd", {
     "CMakeLists.txt",
     ".git",
   },
-})
+  }
+end)())
 
 -- NvChad lazy-loads nvim-lspconfig on `User FilePost` (after UIEnter + real file). That can run
 -- *after* VimEnter, so a VimEnter-only `vim.lsp.enable` never fired and clangd never started — only
