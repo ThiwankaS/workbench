@@ -34,13 +34,13 @@ run_sudo() {
 install_packages_linux() {
   if have apt-get; then
     run_sudo apt-get update
-    run_sudo apt-get install -y neovim git curl unzip xz-utils tar gcc ripgrep fd-find tree-sitter
+    run_sudo apt-get install -y neovim git curl unzip xz-utils tar gcc make ripgrep fd-find tree-sitter
   elif have dnf; then
-    run_sudo dnf install -y neovim git curl unzip xz tar gcc ripgrep fd-find tree-sitter
+    run_sudo dnf install -y neovim git curl unzip xz tar gcc make ripgrep fd-find tree-sitter
   elif have pacman; then
-    run_sudo pacman -Sy --noconfirm neovim git curl unzip xz tar gcc ripgrep fd tree-sitter
+    run_sudo pacman -Sy --noconfirm neovim git curl unzip xz tar gcc make ripgrep fd tree-sitter
   elif have zypper; then
-    run_sudo zypper --non-interactive install neovim git curl unzip xz tar gcc ripgrep fd tree-sitter
+    run_sudo zypper --non-interactive install neovim git curl unzip xz tar gcc make ripgrep fd tree-sitter
   else
     warn "Unsupported Linux package manager. Install manually: neovim git curl unzip tar gcc ripgrep fd tree-sitter"
   fi
@@ -99,6 +99,11 @@ prime_neovim() {
 
   info "Installing Treesitter parsers (c/cpp)"
   nvim --headless "+TSInstall c cpp" +qa || warn "TSInstall failed; run :TSInstall c cpp manually."
+
+  if [[ -x "$TARGET_DIR/scripts/install_snap_backend.sh" ]]; then
+    info "Installing snap.nvim backend (optional, ~127 MB)"
+    "$TARGET_DIR/scripts/install_snap_backend.sh" || warn "snap backend install failed; run scripts/install_snap_backend.sh later"
+  fi
 }
 
 main() {
@@ -115,6 +120,7 @@ Next steps:
   1) Open Neovim: nvim
   2) If needed: :Mason (install LSP tools), :checkhealth
   3) Theme switcher: <leader>th
+  4) Code snapshots: <leader>ss (needs snap backend; see scripts/install_snap_backend.sh)
 
 EOF
 }

@@ -89,7 +89,8 @@ First completion row is **preselected** so Enter works immediately. More detail:
 - **Find files:** `<leader>ff`
 - **Live grep:** `<leader>fg`
 - **Toggle tree:** `<leader>e`
-- **Format:** `<leader>fm`
+- **Format:** `<leader>cf` (Conform; LSP fallback)
+- **Code snapshot:** `<leader>ss` (snap.nvim)
 - **Lazygit:** `<leader>gg`
 - **Theme switcher:** `<leader>th`
 
@@ -145,13 +146,15 @@ Note: in this config, **`<C-l>` in Insert mode** is mapped to **lowercase word**
 - `<leader>ff` → find files
 - `<leader>fg` → live grep
 - `<leader>fb` → buffers
-- `<leader>fo` → old files
-- `<leader>e` → focus tree
-- `<C-n>` → toggle tree window
+- `<leader>fo` / `<leader>fr` → old / recent files
+- `<leader>e` → toggle file tree
+- `<leader>ef` → reveal file in tree
 
 ### Editing
 
-- `<leader>fm` → format current buffer
+- `<leader>cf` → format buffer (Conform + LSP fallback)
+- `<leader>gq` → format via LSP only
+- `<leader>ss` / `<leader>sS` → code snapshot (image / HTML)
 - `<leader>/` (normal/visual) → toggle comment
 - `<Esc>` → clear search highlight
 - `<C-s>` → save file
@@ -243,9 +246,21 @@ If parser install still fails, ensure these are on `PATH`:
 - `tar`
 - C compiler (`gcc` or `clang`)
 
-### LSP command missing (like `:LspRestart`)
+### LSP restart
 
-Open a normal file buffer first so `nvim-lspconfig` loads, then retry.
+Neovim 0.11+:
+
+```vim
+:lsp restart
+```
+
+Restart only clangd:
+
+```vim
+:lsp restart clangd
+```
+
+If `:lsp restart` is not available, quit and reopen Neovim. Open a real file buffer first so LSP has started.
 
 ### C++ member completion not showing (class methods from `.hpp`)
 
@@ -301,13 +316,37 @@ Do this **in each IDF project** (or once via `direnv`):
 
    Put that in `~/.bashrc`, a project `.envrc` (direnv), or run it in the same terminal before `nvim`. This Neovim config reads **`CLANGD_QUERY_DRIVER`** and passes it to clangd as `--query-driver=…`.
 
-5. **Restart clangd** after changes: `:LspRestart` or restart Neovim.
+5. **Restart clangd** after changes: `:lsp restart clangd` or restart Neovim.
 
 6. **Optional:** If `compile_commands.json` is missing entries for a component, run a full build again; IDF’s CMake should regenerate it.
 
 Manual trigger for completion popup:
 
 - `<C-Space>`
+
+### Code snapshots (snap.nvim)
+
+Snapshots use the **active colorscheme** (Gruvbox + Treesitter/LSP) and **JetBrainsMono Nerd Font**.
+
+| Key | Action |
+|-----|--------|
+| `<leader>ss` | Snapshot selection or full buffer → clipboard + `~/Pictures/Screenshots` |
+| `<leader>sS` | Snapshot as HTML |
+
+**First-time setup** (backend ~127 MB, includes Chromium + `playwright-core`):
+
+```bash
+~/.config/nvim/scripts/install_snap_backend.sh
+```
+
+Or in Neovim: `:SnapInstall`. If export fails with `playwright-core` errors, re-run the script (install must include `bin/node_modules/`, not only `snap-nvim` + `playwright/`).
+
+Optional font tuning in `init.lua`:
+
+```lua
+vim.g.snap_font_size = 14
+vim.g.snap_font_line_height = 1.0
+```
 
 ### Reset plugin state
 
@@ -330,6 +369,7 @@ Manual trigger for completion popup:
 │   ├── config/
 │   │   ├── theme.lua
 │   │   ├── format.lua
+│   │   ├── snap.lua
 │   │   └── ts_compat.lua
 │   ├── configs/
 │   │   ├── lazy.lua
@@ -341,10 +381,12 @@ Manual trigger for completion popup:
 │       ├── autopairs.lua
 │       ├── treesitter.lua
 │       ├── telescope.lua
+│       ├── snap.lua
 │       └── ...
 ├── scripts/
 │   ├── bootstrap.sh
-│   └── install_jetbrains_mono_nerd.sh
+│   ├── install_jetbrains_mono_nerd.sh
+│   └── install_snap_backend.sh
 └── queries/
     └── c/highlights.scm
 ```

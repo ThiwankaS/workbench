@@ -24,18 +24,18 @@ return {
       { "<leader>dl", function() require("dap").run_last() end, desc = "DAP run last" },
     },
     config = function()
-      vim.fn.sign_define(
-        "DapBreakpoint",
-        { text = "●", texthl = "DiagnosticSignError", linehl = "", numhl = "" }
-      )
-      vim.fn.sign_define(
-        "DapBreakpointRejected",
-        { text = "◌", texthl = "DiagnosticSignWarn", linehl = "", numhl = "" }
-      )
-      vim.fn.sign_define(
-        "DapStopped",
-        { text = "→", texthl = "DiagnosticSignInfo", linehl = "Visual", numhl = "" }
-      )
+      local signs = {
+        DapBreakpoint = { text = "●", texthl = "DiagnosticSignError", linehl = "", numhl = "" },
+        DapBreakpointRejected = { text = "◌", texthl = "DiagnosticSignWarn", linehl = "", numhl = "" },
+        DapStopped = { text = "→", texthl = "DiagnosticSignInfo", linehl = "Visual", numhl = "" },
+      }
+      for name, opts in pairs(signs) do
+        if vim.sign and vim.sign.define then
+          vim.sign.define(name, opts)
+        else
+          vim.fn.sign_define(name, opts)
+        end
+      end
     end,
   },
 

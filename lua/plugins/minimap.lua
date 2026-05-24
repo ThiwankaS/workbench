@@ -1,13 +1,25 @@
 return {
   {
-    -- Minimap for quick visual navigation in long files.
     "echasnovski/mini.map",
     version = false,
+    keys = {
+      {
+        "<leader>mo",
+        function()
+          require("mini.map").open()
+        end,
+        desc = "Open minimap",
+      },
+      {
+        "<leader>mc",
+        function()
+          require("mini.map").close()
+        end,
+        desc = "Close minimap",
+      },
+    },
     config = function()
-      local map = require("mini.map")
-      map.setup()
-      vim.keymap.set("n", "<leader>mo", map.open, { desc = "Open minimap" })
-      vim.keymap.set("n", "<leader>mc", map.close, { desc = "Close minimap" })
+      require("mini.map").setup()
     end,
   },
 }

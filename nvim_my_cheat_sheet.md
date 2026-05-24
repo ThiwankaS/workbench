@@ -1,7 +1,7 @@
 # Neovim Cheat Sheet
 
 Leader key: `Space`
-Theme: `Catppuccin (mocha)`
+Theme: `Gruvbox` (`lua/chadrc.lua`; switch with `<leader>th`)
 
 ## Navigation
 
@@ -31,6 +31,12 @@ Theme: `Catppuccin (mocha)`
 - `Ctrl+w,v` Split vertical
 - `Ctrl+h/j/k/l` Move between splits/tmux panes
 
+## Code snapshots
+
+- `<leader>ss` Snapshot (image → clipboard + `~/Pictures/Screenshots`)
+- `<leader>sS` Snapshot as HTML
+- `:SnapInstall` or `scripts/install_snap_backend.sh` — first-time backend (~127 MB)
+
 ## Coding
 
 - `gcc` Toggle line comment
@@ -57,6 +63,11 @@ Theme: `Catppuccin (mocha)`
 - `<leader>gl` Project log
 - `<leader>go` Open repo URL in browser
 - `<leader>mp` Toggle markdown preview (`mark.nvim`)
+
+## Minimap / outline
+
+- `<leader>mo` / `<leader>mc` Open / close minimap
+- `<leader>a` Toggle aerial symbol tree
 
 ## Maintenance
 
