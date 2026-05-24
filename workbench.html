@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Thiwanka's personal Neovim workbench — NvChad, keybindings, LSP, ESP-IDF, and tooling reference." />
+  <meta name="author" content="ThiwankaS" />
+  <title>Thiwanka's Workbench · Personal Neovim</title>
+  <link rel="stylesheet" href="assets/workbench/css/workbench.css" />
+  <script src="assets/workbench/js/workbench.js" defer></script>
+</head>
+<body>
+  <div class="wrap">
+      <!-- Site header — branding, badges, personal footprint -->
+      <header>
+        <div class="monogram" aria-hidden="true">T</div>
+        <div class="logo">ThiwankaS · Personal Workbench</div>
+        <h1>CoreForge <span>Workbench</span></h1>
+        <p class="subtitle"> Hand-tuned Neo Vim setup for everyday forging and the keys I actually use.</p>
+        <div class="badges">
+          <span class="badge">Author <strong>ThiwankaS</strong></span>
+          <span class="badge">Leader <strong>Space</strong></span>
+          <span class="badge">Theme <strong>Gruvbox</strong></span>
+          <span class="badge">Focus <strong>C/C++ · ESP-IDF</strong></span>
+          <span class="badge">Config <strong>~/.config/nvim</strong></span>
+          <span class="badge">Font <strong>JetBrainsMono Nerd</strong></span>
+        </div>
+        <div class="footprint">
+          <span class="sig">⌁ Thiwanka's footprint</span>
+          <span class="dot">·</span>
+          <a href="https://github.com/ThiwankaS/workbench" target="_blank" rel="noopener">github.com/ThiwankaS/workbench</a>
+          <span class="dot">·</span>
+          <span>Linux · Neovim 0.12 · NvChad · Lazy.nvim</span>
+          <span class="dot">·</span>
+          <span>Since 2026</span>
+        </div>
+      </header>
+  
+      <!-- Sticky section nav (active link via workbench.js) -->
+      <nav aria-label="Sections">
+        <ul>
+          <li><a href="#install">Install</a></li>
+          <li><a href="#nav">Search</a></li>
+          <li><a href="#motion">Motion</a></li>
+          <li><a href="#tree">Tree</a></li>
+          <li><a href="#buffers">Buffers</a></li>
+          <li><a href="#edit">Edit</a></li>
+          <li><a href="#completion">Completion</a></li>
+          <li><a href="#lsp">LSP</a></li>
+          <li><a href="#snap">Snapshots</a></li>
+          <li><a href="#git">Git</a></li>
+          <li><a href="#dap">Debug</a></li>
+          <li><a href="#cpp">C/C++</a></li>
+          <li><a href="#tools">Tools</a></li>
+          <li><a href="#help">Help</a></li>
+          <li><a href="#repo">Repo</a></li>
+        </ul>
+      </nav>
+  
+      <!-- Main content: one card per topic; section id = nav hash -->
+      <main class="grid">
+  
+        <!-- --- Install & first-run setup --- -->
+  
+        <section class="card acc-install wide" id="install">
+          <div class="card-head"><div class="card-icon">⬇</div><h2>Install &amp; Setup</h2></div>
+          <div class="card-body prose">
+            <p>One-command bootstrap from the repo root:</p>
+            <pre>bash ./scripts/bootstrap.sh</pre>
+            <p>Installs Neovim deps, copies config, runs <code>:Lazy sync</code>, Treesitter <code>c</code>/<code>cpp</code>, font, and optionally the snap backend.</p>
+            <h3>Two installers — do not confuse them</h3>
+            <table>
+              <tr><th>What</th><th>Command</th><th>Installs</th></tr>
+              <tr><td>Neovim plugins</td><td><code>:Lazy</code> / <code>:Lazy sync</code></td><td>Lua plugins under <code>stdpath('data')/lazy/</code></td></tr>
+              <tr><td>CLI tools</td><td><code>:Mason</code> → <kbd>i</kbd> on a package</td><td>clangd, stylua, pyright, … on your system</td></tr>
+            </table>
+            <p>Mason “Installed (0)” means no Mason packages yet — not missing Lazy plugins.</p>
+            <h3>After first launch</h3>
+            <pre>:Mason
+  :checkhealth</pre>
+            <p>Install or verify Mason tools:</p>
+            <div class="pill-list">
+              <span class="pill">clangd</span><span class="pill">clang-format</span><span class="pill">lua-language-server</span>
+              <span class="pill">typescript-language-server</span><span class="pill">pyright</span><span class="pill">bash-language-server</span>
+              <span class="pill">marksman</span><span class="pill">stylua</span><span class="pill">codelldb</span>
+            </div>
+          </div>
+        </section>
+  
+        <!-- --- Search & navigation --- -->
+  
+        <section class="card acc-nav" id="nav">
+          <div class="card-head"><div class="card-icon">⌕</div><h2>Search &amp; Navigation</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ff</kbd></div><div class="desc">Find files (Telescope)</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>fg</kbd></div><div class="desc">Live grep</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>fr</kbd></div><div class="desc">Recent files</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>fo</kbd></div><div class="desc">Old files (NvChad)</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>fb</kbd></div><div class="desc">Buffers list</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>fc</kbd></div><div class="desc">Command palette</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>cd</kbd></div><div class="desc">cd to file directory</div></div>
+            <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></div><div class="desc">Tmux / window nav</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>Space</kbd></div><div class="desc">Command line</div></div>
+          </div>
+        </section>
+  
+        <!-- --- Vim motions --- -->
+  
+        <section class="card acc-motion" id="motion">
+          <div class="card-head"><div class="card-icon">↕</div><h2>Vim Motions</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd>h j k l</kbd></div><div class="desc">Left / down / up / right</div></div>
+            <div class="row"><div class="keys"><kbd>w W e b</kbd></div><div class="desc">Word motion</div></div>
+            <div class="row"><div class="keys"><kbd>gg G</kbd></div><div class="desc">File start / end</div></div>
+            <div class="row"><div class="keys"><kbd>0 ^ $</kbd></div><div class="desc">Line start / first non-blank / end</div></div>
+            <div class="row"><div class="keys"><kbd>Ctrl+u Ctrl+d</kbd></div><div class="desc">Half-page up / down</div></div>
+            <p class="note">Insert: <kbd>Ctrl+l</kbd> = lowercase word (custom). Use arrows for cursor right in Insert.</p>
+          </div>
+        </section>
+  
+        <!-- --- File tree --- -->
+  
+        <section class="card acc-tree" id="tree">
+          <div class="card-head"><div class="card-icon">▤</div><h2>File Tree</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>e</kbd></div><div class="desc">Toggle NvimTree</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ef</kbd></div><div class="desc">Reveal file in tree</div></div>
+            <div class="row"><div class="keys"><kbd>l</kbd> <kbd>Enter</kbd></div><div class="desc">Open node</div></div>
+            <div class="row"><div class="keys"><kbd>h H a d r v</kbd></div><div class="desc">Nav · collapse · add · delete · rename · vsplit</div></div>
+          </div>
+        </section>
+  
+        <!-- --- Buffers & windows --- -->
+  
+        <section class="card acc-buf" id="buffers">
+          <div class="card-head"><div class="card-icon">⎘</div><h2>Buffers &amp; Windows</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd>L</kbd> <kbd>H</kbd></div><div class="desc">Next / prev buffer</div></div>
+            <div class="row"><div class="keys"><kbd>Tab</kbd> <kbd>Shift+Tab</kbd></div><div class="desc">Tabufline buffers</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>x</kbd></div><div class="desc">Close buffer</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>t-</kbd></div><div class="desc">Terminal horizontal</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>t\</kbd></div><div class="desc">Terminal vertical</div></div>
+            <div class="row"><div class="keys"><kbd>Esc Esc</kbd></div><div class="desc">Exit terminal insert</div></div>
+            <p class="note">NvChad also: <kbd class="leader">Space</kbd><kbd>h</kbd>/<kbd>v</kbd> terminals, <kbd>Ctrl+s</kbd> save.</p>
+          </div>
+        </section>
+  
+        <!-- --- Editing & format --- -->
+  
+        <section class="card acc-edit" id="edit">
+          <div class="card-head"><div class="card-icon">✎</div><h2>Editing &amp; Format</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>/</kbd></div><div class="desc">Toggle comment (NvChad)</div></div>
+            <div class="row"><div class="keys"><kbd>gcc gc</kbd></div><div class="desc">Comment line / selection</div></div>
+            <div class="row"><div class="keys"><kbd>Alt+j Alt+k</kbd></div><div class="desc">Move line or selection</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>cf</kbd></div><div class="desc">Format (Conform + LSP fallback)</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>gq</kbd></div><div class="desc">Format via LSP only</div></div>
+            <div class="row"><div class="keys"><kbd>u U</kbd></div><div class="desc">Undo / Redo</div></div>
+            <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>a</kbd></div><div class="desc">Select all</div></div>
+            <div class="row"><div class="keys"><kbd>Esc</kbd></div><div class="desc">Clear search highlight</div></div>
+            <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>d</kbd></div><div class="desc">Multi-cursor find under</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>va</kbd></div><div class="desc">Multi-cursor select all</div></div>
+          </div>
+        </section>
+  
+        <!-- --- blink.cmp completion --- -->
+  
+        <section class="card acc-cmp" id="completion">
+          <div class="card-head"><div class="card-icon">▤</div><h2>Completion (blink.cmp)</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd>Enter</kbd></div><div class="desc">Accept (first item preselected)</div></div>
+            <div class="row"><div class="keys"><kbd>Tab</kbd></div><div class="desc">Next item / snippet forward</div></div>
+            <div class="row"><div class="keys"><kbd>Shift+Tab</kbd></div><div class="desc">Prev item / snippet back</div></div>
+            <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>Space</kbd></div><div class="desc">Open menu / docs</div></div>
+            <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>e</kbd></div><div class="desc">Close menu</div></div>
+            <p class="note">nvim-cmp disabled. Autopairs closes brackets/quotes while typing.</p>
+          </div>
+        </section>
+  
+        <!-- --- LSP & diagnostics --- -->
+  
+        <section class="card acc-lsp" id="lsp">
+          <div class="card-head"><div class="card-icon">◈</div><h2>LSP &amp; Diagnostics</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd>gd gD</kbd></div><div class="desc">Definition / declaration</div></div>
+            <div class="row"><div class="keys"><kbd>K</kbd></div><div class="desc">Hover</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ra</kbd></div><div class="desc">Rename</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>df</kbd></div><div class="desc">Diagnostic float</div></div>
+            <div class="row"><div class="keys"><kbd>[</kbd><kbd>d</kbd> <kbd>]</kbd><kbd>d</kbd></div><div class="desc">Prev / next diagnostic</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ds</kbd></div><div class="desc">Diagnostics list (loclist)</div></div>
+            <p class="note"><code>:lsp restart</code> · <code>:lsp restart clangd</code></p>
+            <p class="note">clangd · pyright · ts_ls · bashls · marksman</p>
+          </div>
+        </section>
+  
+        <!-- --- Code snapshots (snap.nvim) --- -->
+  
+        <section class="card acc-snap" id="snap">
+          <div class="card-head"><div class="card-icon">📸</div><h2>Code Snapshots</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ss</kbd></div><div class="desc">Image → clipboard + ~/Pictures/Screenshots</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>sS</kbd></div><div class="desc">Snapshot as HTML</div></div>
+            <div class="row"><div class="keys"><kbd>:SnapInstall</kbd></div><div class="desc">Download backend (~127 MB)</div></div>
+            <pre>scripts/install_snap_backend.sh</pre>
+            <p class="note">Uses active Gruvbox highlights + JetBrainsMono. Full buffer when nothing selected.</p>
+          </div>
+        </section>
+  
+        <!-- --- Git (lazygit) --- -->
+  
+        <section class="card acc-git" id="git">
+          <div class="card-head"><div class="card-icon">⎇</div><h2>Git</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>gg</kbd></div><div class="desc">Lazygit</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>gf</kbd></div><div class="desc">Lazygit current file</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>gl</kbd></div><div class="desc">Lazygit log</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>go</kbd></div><div class="desc">Open repo in browser</div></div>
+          </div>
+        </section>
+  
+        <!-- --- Debug (DAP) --- -->
+  
+        <section class="card acc-dap" id="dap">
+          <div class="card-head"><div class="card-icon">⬡</div><h2>Debug (DAP · codelldb)</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>db</kbd> <kbd>dB</kbd></div><div class="desc">Breakpoint / conditional</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dc</kbd> <kbd>dC</kbd></div><div class="desc">Continue / terminate</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>do di dO</kbd></div><div class="desc">Step over · into · out</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>du</kbd> <kbd>dl</kbd></div><div class="desc">DAP UI / run last</div></div>
+            <p class="note">Launch or attach configs for c · cpp · rust</p>
+          </div>
+        </section>
+  
+        <!-- --- C/C++ & ESP-IDF --- -->
+  
+        <section class="card acc-cpp" id="cpp">
+          <div class="card-head"><div class="card-icon">{ }</div><h2>C / C++ &amp; Embedded</h2></div>
+          <div class="card-body prose">
+            <div class="row"><div class="keys"><kbd>:Godbolt</kbd></div><div class="desc">Compiler Explorer</div></div>
+            <div class="row"><div class="keys"><kbd>:GodboltRun</kbd></div><div class="desc">Run on selection</div></div>
+            <h3>CMake compile database</h3>
+            <pre>cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  ln -sf build/compile_commands.json ./compile_commands.json</pre>
+            <h3>ESP-IDF / FreeRTOS</h3>
+            <ol>
+              <li><code>. $IDF_PATH/export.sh</code></li>
+              <li><code>idf.py set-target esp32s3 &amp;&amp; idf.py build</code></li>
+              <li>Symlink <code>compile_commands.json</code> to project root</li>
+              <li>Add project <code>.clangd</code> with flag <code>Remove:</code> list</li>
+              <li>In <code>~/.bashrc</code>:<br><code>export CLANGD_QUERY_DRIVER="$HOME/.espressif/tools/**/bin/*-gcc,$HOME/.espressif/tools/**/bin/*-g++"</code></li>
+              <li><code>:lsp restart clangd</code></li>
+            </ol>
+          </div>
+        </section>
+  
+        <!-- --- Tools & UI --- -->
+  
+        <section class="card acc-tools" id="tools">
+          <div class="card-head"><div class="card-icon">⚙</div><h2>Tools &amp; UI</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>a</kbd></div><div class="desc">Aerial symbol outline</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>mo mc</kbd></div><div class="desc">Minimap open / close</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>mp</kbd></div><div class="desc">Markdown preview</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>th</kbd></div><div class="desc">Theme picker</div></div>
+            <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ch</kbd></div><div class="desc">NvChad cheatsheet</div></div>
+          </div>
+        </section>
+  
+        <!-- --- Ex commands --- -->
+  
+        <section class="card acc-cmd" id="cmds">
+          <div class="card-head"><div class="card-icon">:</div><h2>Commands</h2></div>
+          <div class="card-body">
+            <div class="row"><div class="keys"><kbd>:Lazy</kbd></div><div class="desc">Plugin manager</div></div>
+            <div class="row"><div class="keys"><kbd>:Mason</kbd></div><div class="desc">LSP / CLI tools</div></div>
+            <div class="row"><div class="keys"><kbd>:checkhealth</kbd></div><div class="desc">Health check</div></div>
+            <div class="row"><div class="keys"><kbd>:lsp restart</kbd></div><div class="desc">Restart LSP</div></div>
+            <div class="row"><div class="keys"><kbd>:TSInstall c cpp</kbd></div><div class="desc">Treesitter parsers</div></div>
+            <div class="row"><div class="keys"><kbd>:Lazy sync</kbd></div><div class="desc">Reset / sync plugins</div></div>
+          </div>
+        </section>
+  
+        <!-- --- Troubleshooting --- -->
+  
+        <section class="card acc-help wide" id="help">
+          <div class="card-head"><div class="card-icon">?</div><h2>Troubleshooting</h2></div>
+          <div class="card-body prose">
+            <h3>Treesitter parser missing</h3>
+            <pre>:TSInstall c cpp
+  :TSUpdate</pre>
+            <p>Needs on PATH: <code>tree-sitter</code>, <code>curl</code>, <code>tar</code>, C compiler.</p>
+            <h3>C++ completion weak / no class members</h3>
+            <p>Generate and symlink <code>compile_commands.json</code> (see C/C++ section).</p>
+            <h3>snap.nvim playwright-core error</h3>
+            <p>Re-run <code>scripts/install_snap_backend.sh</code> — install must include <code>bin/node_modules/</code>.</p>
+            <h3>Theme / syntax colors</h3>
+            <p>Edit roles in <code>lua/config/theme.lua</code> (<code>vim.theme.syntax</code>), restart Neovim.</p>
+            <h3>Discover keys anytime</h3>
+            <p>Press <kbd class="leader">Space</kbd> and pause — Which-key shows available bindings.</p>
+          </div>
+        </section>
+  
+        <!-- --- Repo layout --- -->
+  
+        <section class="card acc-repo wide" id="repo">
+          <div class="card-head"><div class="card-icon">⌂</div><h2>Repo Layout</h2></div>
+          <div class="card-body">
+            <pre>~/.config/nvim/
+  ├── index.html                  → redirects to workbench (GitHub Pages)
+  ├── workbench.html              ← main guide
+  ├── assets/workbench/
+  │   ├── css/workbench.css
+  │   └── js/workbench.js
+  ├── init.lua
+  ├── lua/
+  │   ├── chadrc.lua        theme (Gruvbox)
+  │   ├── mappings.lua
+  │   ├── config/           theme, snap, format
+  │   ├── configs/          lsp, lazy, conform
+  │   └── plugins/          blink, snap, dap, …
+  └── scripts/
+      ├── bootstrap.sh
+      ├── install_snap_backend.sh
+      └── install_jetbrains_mono_nerd.sh</pre>
+          </div>
+        </section>
+  
+      </main>
+  
+      <!-- Site footer -->
+      <footer>
+        <p class="sig-line">⌁ ThiwankaS · Personal Workbench</p>
+        <p>NvChad + Lazy.nvim · Gruvbox · JetBrainsMono Nerd Font · clangd · ESP-IDF</p>
+        <p class="footer-links">
+          <a href="https://github.com/ThiwankaS/workbench" target="_blank" rel="noopener">github.com/ThiwankaS/workbench</a>
+          · <a href="mailto:thivankas@outlook.com">thivankas@outlook.com</a>
+        </p>
+        <p class="footer-open">
+          <a href="https://thiwankas.github.io/workbench/" target="_blank" rel="noopener">thiwankas.github.io/workbench</a>
+          · <code>xdg-open ~/.config/nvim/workbench.html</code>
+        </p>
+      </footer>
+    </div>
+</body>
+</html>
