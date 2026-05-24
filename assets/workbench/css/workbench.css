@@ -1,0 +1,589 @@
+/**
+ * Thiwanka's Workbench — Stylesheet
+ * -----------------------------------------------------------------------------
+ * Gruvbox-themed layout for the personal Neovim reference guide.
+ *
+ * Structure:
+ *   1. Design tokens (:root)
+ *   2. Base & page background
+ *   3. Layout shell (.wrap)
+ *   4. Header & personal branding
+ *   5. Sticky section navigation
+ *   6. Card grid & section accents
+ *   7. Keybinding rows & <kbd>
+ *   8. Prose, tables, pills
+ *   9. Footer
+ *  10. Responsive overrides
+ *
+ * @author ThiwankaS
+ * @see    workbench.html
+ */
+
+/* =============================================================================
+   1. Design tokens — Gruvbox palette aligned with lua/chadrc.lua
+   ============================================================================= */
+
+:root {
+  --bg: #282828;
+  --bg-soft: #32302f;
+  --bg-card: #2e2e2e;
+  --bg-card-hover: #353535;
+  --bg-elevated: #3c3836;
+  --border: #504945;
+  --fg: #ebdbb2;
+  --fg-dim: #a89984;
+  --fg-muted: #928374;
+  --blue: #83a598;
+  --blue-deep: #458588;
+  --green: #b8bb26;
+  --yellow: #fabd2f;
+  --orange: #fe8019;
+  --red: #fb4934;
+  --purple: #d3869b;
+  --aqua: #8ec07c;
+  --pink: #ff75a0;
+  --lavender: #b4bbc8;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  --radius: 12px;
+  --font: "JetBrainsMono Nerd Font", "JetBrains Mono", "FiraCode Nerd Font",
+    ui-monospace, monospace;
+  --nav-height: 2.75rem;
+}
+
+/* =============================================================================
+   2. Base & page background
+   ============================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-height) + 1rem);
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.55;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(131, 165, 152, 0.08), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(250, 189, 47, 0.05), transparent);
+}
+
+/* =============================================================================
+   3. Layout shell
+   ============================================================================= */
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* =============================================================================
+   4. Header & personal branding
+   ============================================================================= */
+
+header {
+  text-align: center;
+  padding: 2.5rem 1rem 2rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+/* Gruvbox rainbow accent bar */
+header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--red),
+    var(--orange),
+    var(--yellow),
+    var(--green),
+    var(--blue),
+    var(--purple)
+  );
+  border-radius: 2px;
+}
+
+.logo {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.5rem;
+}
+
+.monogram {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--bg-elevated), var(--bg-card));
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--orange);
+  box-shadow: 0 0 0 4px rgba(254, 128, 25, 0.08), var(--shadow);
+}
+
+h1 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+}
+
+h1 span {
+  color: var(--green);
+}
+
+.subtitle {
+  color: var(--fg-dim);
+  font-size: 0.95rem;
+  max-width: 40rem;
+  margin: 0.75rem auto 0;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
+.badge {
+  font-size: 0.72rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--fg-dim);
+}
+
+.badge strong {
+  color: var(--yellow);
+}
+
+.footprint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px dashed var(--border);
+  background: rgba(60, 56, 54, 0.45);
+  font-size: 0.78rem;
+  color: var(--fg-dim);
+}
+
+.footprint a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.footprint a:hover {
+  color: var(--aqua);
+  text-decoration: underline;
+}
+
+.footprint .sig {
+  color: var(--orange);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.footprint .dot {
+  color: var(--fg-muted);
+}
+
+/* =============================================================================
+   5. Sticky section navigation
+   ============================================================================= */
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(40, 40, 40, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  margin: 0 -1.5rem 2rem;
+  padding: 0.65rem 1.5rem;
+  min-height: var(--nav-height);
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  justify-content: center;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+nav a {
+  color: var(--fg-dim);
+  text-decoration: none;
+  font-size: 0.76rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+
+nav a:hover {
+  color: var(--blue);
+  background: var(--bg-elevated);
+}
+
+/* Active section — toggled by workbench.js */
+nav a.is-active {
+  color: var(--blue);
+  background: var(--bg-elevated);
+  font-weight: 600;
+}
+
+/* =============================================================================
+   6. Card grid & per-section accent colors (.acc-*)
+   ============================================================================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+section.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+section.card:hover {
+  border-color: var(--blue-deep);
+  transform: translateY(-2px);
+}
+
+section.wide {
+  grid-column: 1 / -1;
+}
+
+.card-head {
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--bg-soft);
+}
+
+.card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.card-head h2 {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 1rem 1.1rem;
+}
+
+/* Section accent: icon background + heading color */
+.acc-install .card-icon { background: rgba(184, 187, 38, 0.15); color: var(--green); }
+.acc-install .card-head h2 { color: var(--green); }
+.acc-nav .card-icon { background: rgba(131, 165, 152, 0.2); color: var(--blue); }
+.acc-nav .card-head h2 { color: var(--blue); }
+.acc-motion .card-icon { background: rgba(180, 187, 200, 0.12); color: var(--lavender); }
+.acc-motion .card-head h2 { color: var(--lavender); }
+.acc-tree .card-icon { background: rgba(184, 187, 38, 0.15); color: var(--green); }
+.acc-tree .card-head h2 { color: var(--green); }
+.acc-buf .card-icon { background: rgba(250, 189, 47, 0.15); color: var(--yellow); }
+.acc-buf .card-head h2 { color: var(--yellow); }
+.acc-edit .card-icon { background: rgba(211, 134, 155, 0.15); color: var(--purple); }
+.acc-edit .card-head h2 { color: var(--purple); }
+.acc-cmp .card-icon { background: rgba(255, 117, 160, 0.12); color: var(--pink); }
+.acc-cmp .card-head h2 { color: var(--pink); }
+.acc-lsp .card-icon { background: rgba(142, 192, 124, 0.15); color: var(--aqua); }
+.acc-lsp .card-head h2 { color: var(--aqua); }
+.acc-snap .card-icon { background: rgba(255, 117, 160, 0.12); color: var(--pink); }
+.acc-snap .card-head h2 { color: var(--pink); }
+.acc-git .card-icon { background: rgba(254, 128, 25, 0.12); color: var(--orange); }
+.acc-git .card-head h2 { color: var(--orange); }
+.acc-dap .card-icon { background: rgba(251, 73, 52, 0.12); color: var(--red); }
+.acc-dap .card-head h2 { color: var(--red); }
+.acc-cpp .card-icon { background: rgba(69, 133, 136, 0.2); color: var(--blue-deep); }
+.acc-cpp .card-head h2 { color: var(--blue-deep); }
+.acc-tools .card-icon { background: rgba(180, 187, 200, 0.12); color: var(--lavender); }
+.acc-tools .card-head h2 { color: var(--lavender); }
+.acc-cmd .card-icon { background: rgba(168, 153, 132, 0.15); color: var(--fg-dim); }
+.acc-cmd .card-head h2 { color: var(--fg-dim); }
+.acc-help .card-icon { background: rgba(251, 73, 52, 0.12); color: var(--red); }
+.acc-help .card-head h2 { color: var(--red); }
+.acc-repo .card-icon { background: rgba(131, 165, 152, 0.2); color: var(--blue); }
+.acc-repo .card-head h2 { color: var(--blue); }
+
+/* =============================================================================
+   7. Keybinding rows & <kbd> styling
+   ============================================================================= */
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(9rem, auto) 1fr;
+  gap: 0.75rem 1rem;
+  padding: 0.5rem 0;
+  align-items: baseline;
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(80, 73, 69, 0.25);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+kbd {
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 0.72rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  color: var(--yellow);
+}
+
+kbd.leader {
+  color: var(--green);
+}
+
+kbd.mod {
+  color: var(--blue);
+}
+
+.desc {
+  color: var(--fg-dim);
+}
+
+/* =============================================================================
+   8. Prose, tables, pills, notes
+   ============================================================================= */
+
+code,
+pre {
+  font-family: var(--font);
+  font-size: 0.78rem;
+  color: var(--aqua);
+  background: rgba(142, 192, 124, 0.08);
+  border-radius: 4px;
+}
+
+code {
+  padding: 0.1rem 0.35rem;
+}
+
+pre {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+  color: var(--fg-dim);
+  line-height: 1.45;
+}
+
+.note,
+.prose p,
+.prose li {
+  font-size: 0.8rem;
+  color: var(--fg-dim);
+}
+
+.prose p {
+  margin: 0.5rem 0;
+}
+
+.prose ul,
+.prose ol {
+  margin: 0.5rem 0 0.5rem 1.25rem;
+}
+
+.prose li {
+  margin: 0.35rem 0;
+}
+
+.prose h3 {
+  font-size: 0.85rem;
+  color: var(--yellow);
+  margin: 1rem 0 0.4rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin: 0.75rem 0;
+}
+
+th,
+td {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+th {
+  background: var(--bg-elevated);
+  color: var(--yellow);
+}
+
+td {
+  color: var(--fg-dim);
+}
+
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.pill {
+  font-size: 0.72rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--aqua);
+}
+
+/* =============================================================================
+   9. Footer
+   ============================================================================= */
+
+footer {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--fg-muted);
+}
+
+footer .sig-line {
+  color: var(--orange);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.35rem;
+}
+
+footer a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: var(--aqua);
+  text-decoration: underline;
+}
+
+footer .footer-links {
+  margin-top: 0.5rem;
+}
+
+footer .footer-open {
+  margin-top: 0.5rem;
+}
+
+/* Back-to-top — shown by workbench.js after scrolling */
+.back-to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 60;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--orange);
+  font-family: var(--font);
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.5rem);
+  transition: opacity 0.2s, visibility 0.2s, transform 0.2s, background 0.15s;
+  box-shadow: var(--shadow);
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: var(--bg-card-hover);
+  color: var(--yellow);
+}
+
+.back-to-top:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* =============================================================================
+   10. Responsive overrides
+   ============================================================================= */
+
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  nav ul {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+}
