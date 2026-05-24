@@ -1,64 +1,22 @@
-# Thiwanka's Workbench
+# CoreForge Workbench
 
-Personal Neovim setup — **NvChad v2.5** + **Lazy.nvim**, tuned for desktop C++, ESP-IDF embedded, LSP, DAP, and snap.nvim.
+Personal Neovim setup by ThiwankaS.
 
-**Author:** [ThiwankaS](https://github.com/ThiwankaS) · [github.com/ThiwankaS/workbench](https://github.com/ThiwankaS/workbench)
+## Start Here
 
-## Quick start
+- Website: [https://thiwankas.github.io/workbench/](https://thiwankas.github.io/workbench/)
+- Local file: `xdg-open ~/.config/nvim/workbench.html`
+
+## Setup
 
 ```bash
 bash ./scripts/bootstrap.sh
 nvim
 ```
 
-Then run `:Mason` and `:checkhealth`.
-
-## Documentation
-
-**Live site (renders as a webpage):** [thiwankas.github.io/workbench](https://thiwankas.github.io/workbench/)
-
-GitHub’s file browser always shows HTML as **source code** (security). Use the link above — same experience as `xdg-open` locally.
-
-**Local file:**
-
-```bash
-xdg-open ~/.config/nvim/workbench.html
-```
-
-From Neovim:
+Then run in Neovim:
 
 ```vim
-:!xdg-open ~/.config/nvim/workbench.html
+:Mason
+:checkhealth
 ```
-
-### GitHub Pages (live website)
-
-GitHub’s file view always shows HTML as **source**. Use Pages for a real site.
-
-1. Push to `main` — workflow **Deploy workbench to GitHub Pages** updates the `gh-pages` branch.
-2. **Settings → Pages →** Source: **Deploy from a branch** → branch **`gh-pages`**, folder **`/ (root)`**.
-3. Open **https://thiwankas.github.io/workbench/**
-
-Step-by-step: [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md)
-
-| | |
-|---|---|
-| **Leader** | `Space` |
-| **Theme** | Gruvbox — `<leader>th` to switch |
-| **Font** | JetBrainsMono Nerd Font |
-| **Focus** | C/C++ · ESP-IDF · Linux |
-| **Discover keys** | Press `<leader>` and pause (Which-key) |
-
-## Daily picks
-
-| Keys | Action |
-|------|--------|
-| `<leader>ff` | Find files |
-| `<leader>fg` | Live grep |
-| `<leader>e` | Toggle file tree |
-| `<leader>cf` | Format buffer |
-| `<leader>ss` | Code snapshot |
-| `<leader>gg` | Lazygit |
-| `:lsp restart` | Restart LSP |
-
-See the [live workbench](https://thiwankas.github.io/workbench/) or **workbench.html** locally for the full reference.
