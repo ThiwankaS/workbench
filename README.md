@@ -15,7 +15,11 @@ Then run `:Mason` and `:checkhealth`.
 
 ## Documentation
 
-**Full guide & cheat sheet:** open [`workbench.html`](workbench.html) in your browser (HTML + `assets/workbench/` CSS/JS).
+**Live site (renders as a webpage):** [thiwankas.github.io/workbench](https://thiwankas.github.io/workbench/)
+
+GitHub’s file browser always shows HTML as **source code** (security). Use the link above — same experience as `xdg-open` locally.
+
+**Local file:**
 
 ```bash
 xdg-open ~/.config/nvim/workbench.html
@@ -26,6 +30,16 @@ From Neovim:
 ```vim
 :!xdg-open ~/.config/nvim/workbench.html
 ```
+
+### GitHub Pages (one-time)
+
+After you push, enable Pages once:
+
+1. Repo **Settings** → **Pages**
+2. **Build and deployment** → **Source:** **GitHub Actions**
+3. Push to `main` — workflow `.github/workflows/pages.yml` deploys `workbench.html` + `assets/`
+
+Site files: `index.html` (redirect), `workbench.html`, `assets/workbench/`.
 
 | | |
 |---|---|
@@ -47,4 +61,4 @@ From Neovim:
 | `<leader>gg` | Lazygit |
 | `:lsp restart` | Restart LSP |
 
-See **workbench.html** for the full personal reference.
+See the [live workbench](https://thiwankas.github.io/workbench/) or **workbench.html** locally for the full reference.
