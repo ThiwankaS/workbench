@@ -1,10 +1,14 @@
-# Publish workbench.html as a live site on GitHub Pages.
-# Repo browser still shows HTML as source; use the Pages URL to view the page.
+# Deploy workbench.html to GitHub Pages via the gh-pages branch.
 #
-# Live URL (after first deploy):
-#   https://thiwankas.github.io/workbench/
+# Why not "GitHub Actions" Pages source?
+#   configure-pages fails with 404 until Pages is enabled manually in Settings.
+#   This workflow only pushes static files; you enable Pages once (see below).
 #
-# Enable once: Settings → Pages → Build and deployment → Source: GitHub Actions
+# After the first successful run:
+#   Settings → Pages → Build and deployment → Deploy from a branch
+#   Branch: gh-pages  /  Folder: / (root)
+#
+# Live URL: https://thiwankas.github.io/workbench/
 
 name: Deploy workbench to GitHub Pages
 
@@ -20,38 +24,31 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: pages-gh-pages
   cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare static site
+      - name: Build static site
         run: |
           mkdir -p _site
           cp index.html workbench.html .nojekyll _site/
           cp -r assets _site/
+          echo "Site root:"
+          find _site -type f | head -20
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Push to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: _site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages
+          commit_message: "deploy: workbench site"

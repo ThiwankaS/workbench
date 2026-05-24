@@ -31,15 +31,15 @@ From Neovim:
 :!xdg-open ~/.config/nvim/workbench.html
 ```
 
-### GitHub Pages (one-time)
+### GitHub Pages (live website)
 
-After you push, enable Pages once:
+GitHub’s file view always shows HTML as **source**. Use Pages for a real site.
 
-1. Repo **Settings** → **Pages**
-2. **Build and deployment** → **Source:** **GitHub Actions**
-3. Push to `main` — workflow `.github/workflows/pages.yml` deploys `workbench.html` + `assets/`
+1. Push to `main` — workflow **Deploy workbench to GitHub Pages** updates the `gh-pages` branch.
+2. **Settings → Pages →** Source: **Deploy from a branch** → branch **`gh-pages`**, folder **`/ (root)`**.
+3. Open **https://thiwankas.github.io/workbench/**
 
-Site files: `index.html` (redirect), `workbench.html`, `assets/workbench/`.
+Step-by-step: [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md)
 
 | | |
 |---|---|
