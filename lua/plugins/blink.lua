@@ -18,12 +18,34 @@ return {
     },
     opts = {
       snippets = { preset = "luasnip" },
-      -- "enter" maps <CR> to accept; we extend Tab for menu navigation + LuaSnip jumps.
+      -- Tab: completion/snippets only when active; otherwise normal indent (spaces).
       keymap = {
         preset = "enter",
         ["<CR>"] = { "select_and_accept", "fallback" },
-        ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
-        ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+        ["<Tab>"] = {
+          function(cmp)
+            if cmp.snippet_active({ direction = 1 }) then
+              return cmp.snippet_forward()
+            end
+            if cmp.is_menu_visible() then
+              return cmp.select_next()
+            end
+            return false
+          end,
+          "fallback",
+        },
+        ["<S-Tab>"] = {
+          function(cmp)
+            if cmp.snippet_active({ direction = -1 }) then
+              return cmp.snippet_backward()
+            end
+            if cmp.is_menu_visible() then
+              return cmp.select_prev()
+            end
+            return false
+          end,
+          "fallback",
+        },
       },
       appearance = {
         nerd_font_variant = "mono",

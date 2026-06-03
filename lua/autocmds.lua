@@ -78,6 +78,10 @@ vim.api.nvim_create_autocmd("FileType", {
     local buf = args.buf
     local lang = vim.bo[buf].filetype == "c" and "c" or "cpp"
 
+    -- cindent handles #define / braces better than smartindent for C/C++.
+    vim.bo[buf].smartindent = false
+    vim.bo[buf].cindent = true
+
     vim.schedule(function()
       if pcall(vim.treesitter.start, buf, lang) then
         -- Regex syntax stacks with TS; turning it off makes :Inspect show @ captures.
