@@ -18,7 +18,7 @@ return {
     },
     opts = {
       snippets = { preset = "luasnip" },
-      -- Tab: completion/snippets only when active; otherwise normal indent (spaces).
+      -- Tab: snippets/menu when active; otherwise blink "fallback" → config/indent.lua.
       keymap = {
         preset = "enter",
         ["<CR>"] = { "select_and_accept", "fallback" },
@@ -46,6 +46,8 @@ return {
           end,
           "fallback",
         },
+        ["<C-j>"] = { "select_next", "fallback" },
+        ["<C-k>"] = { "select_prev", "fallback" },
       },
       appearance = {
         nerd_font_variant = "mono",
@@ -56,7 +58,7 @@ return {
           auto_show_delay_ms = 150,
         },
         trigger = {
-          prefetch_on_insert = true,
+          prefetch_on_insert = false,
           show_on_keyword = true,
           show_on_trigger_character = true,
         },

@@ -4,6 +4,7 @@ pack/
 spell/
 spellfile.vim
 session/
+docs/
 
 # Persistent local state
 undodir/
