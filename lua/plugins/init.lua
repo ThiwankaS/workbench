@@ -1,13 +1,12 @@
+--- Core plugin overrides (imported from init.lua `{ import = "plugins" }`).
 return {
   {
     "stevearc/conform.nvim",
     opts = require("configs.conform"),
   },
 
-  -- NvChad bundles cmp + LuaSnip here; we use blink.cmp instead (`lua/plugins/blink.lua`).
-  { "hrsh7th/nvim-cmp", enabled = false },
+  { "hrsh7th/nvim-cmp", enabled = false }, -- replaced by blink.cmp
 
-  -- Extends NvChad's nvim-treesitter / nvim-lspconfig specs; `config` runs after NvChad's so LSP hooks apply.
   {
     "neovim/nvim-lspconfig",
     priority = 45,

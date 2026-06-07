@@ -1,3 +1,4 @@
+--- Conform.nvim formatters — clang-format settings from `lua/config/format.lua`.
 local F = require("config.format")
 
 local clang_prep = vim.deepcopy(F.clang_format_prepend_args or {})

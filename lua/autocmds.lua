@@ -1,9 +1,37 @@
+--- User autocmds (extends nvchad.autocmds).
 require("nvchad.autocmds")
 
+local theme = require("config.theme")
 local augroup = vim.api.nvim_create_augroup("user_config", { clear = true })
 
--- blink.cmp: floating completion/docs can rarely stay on screen after leaving Insert or switching
--- windows (terminal redraw / ModeChanged ordering). Force-hide when that happens.
+-- ── Treesitter syntax colors ─────────────────────────────────────────────────
+-- NvChad reloads cached base46 treesitter HL on BufReadPost; re-apply ours after.
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = augroup,
+  callback = function()
+    theme.schedule_apply(50)
+  end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  group = augroup,
+  pattern = "NvThemeReload",
+  callback = function()
+    theme.schedule_apply(50)
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+  group = augroup,
+  callback = function(args)
+    if vim.tbl_contains({ "c", "cpp" }, vim.bo[args.buf].filetype) then
+      theme.schedule_apply(800)
+    end
+  end,
+})
+
+-- ── blink.cmp: hide stuck completion popups ───────────────────────────────────
 local function blink_cmp_hide_if_open()
   pcall(function()
     local blink = require("blink.cmp")
@@ -33,14 +61,19 @@ vim.api.nvim_create_autocmd("VimResized", {
   callback = blink_cmp_hide_if_open,
 })
 
--- Refresh statusline clock (`chadrc.lua` `ui.statusline.modules.clock`) every minute.
+-- ── Statusline clock (see chadrc.lua statusline.modules.clock) ────────────────
 local clock_timer = vim.uv.new_timer()
 clock_timer:start(60000, 60000, function()
   vim.schedule(function()
-    pcall(vim.cmd.redrawstatus, { bang = true })
+    if vim.fn.has("nvim-0.11") == 1 then
+      pcall(vim.cmd.redrawstatus, { bang = true })
+    else
+      pcall(vim.cmd, "redrawstatus!")
+    end
   end)
 end)
 
+-- ── General editing ───────────────────────────────────────────────────────────
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = augroup,
   callback = function()
@@ -71,6 +104,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
   end,
 })
 
+-- ── C / C++: cindent + Treesitter (no regex syntax stack) ─────────────────────
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
   pattern = { "c", "cpp" },
@@ -78,19 +112,19 @@ vim.api.nvim_create_autocmd("FileType", {
     local buf = args.buf
     local lang = vim.bo[buf].filetype == "c" and "c" or "cpp"
 
-    -- cindent handles #define / braces better than smartindent for C/C++.
     vim.bo[buf].smartindent = false
     vim.bo[buf].cindent = true
 
     vim.schedule(function()
       if pcall(vim.treesitter.start, buf, lang) then
-        -- Regex syntax stacks with TS; turning it off makes :Inspect show @ captures.
         vim.bo[buf].syntax = ""
       end
+      theme.schedule_apply(300)
     end)
   end,
 })
 
+-- ── Assembly: label navigation ────────────────────────────────────────────────
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
   pattern = { "asm", "nasm", "gas" },

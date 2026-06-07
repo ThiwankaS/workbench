@@ -19,11 +19,14 @@ return {
       -- which can return non-JSON responses and break vim.json.decode.
       -- Override only the request builder, keep the rest of plugin behavior untouched.
       local cmd = require("godbolt.cmd")
+      local cache_dir = vim.fn.stdpath("cache") .. "/godbolt"
+      vim.fn.mkdir(cache_dir, "p")
+
       cmd["build-cmd"] = function(compiler, text, options, exec_asm)
         local json = vim.json.encode({ source = text, options = options })
         local config = require("godbolt").config
-        local req = string.format("godbolt_request_%s.json", exec_asm)
-        local res = string.format("godbolt_response_%s.json", exec_asm)
+        local req = cache_dir .. "/request_" .. exec_asm .. ".json"
+        local res = cache_dir .. "/response_" .. exec_asm .. ".json"
         local file = io.open(req, "w")
         if file then
           file:write(json)

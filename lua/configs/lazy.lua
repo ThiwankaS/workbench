@@ -1,3 +1,4 @@
+--- lazy.nvim global options (passed from init.lua).
 return {
   defaults = { lazy = true },
 
@@ -18,6 +19,7 @@ return {
 
   performance = {
     rtp = {
+      -- Disable bundled plugins we replace (netrw → nvim-tree, syntax → treesitter).
       disabled_plugins = {
         "2html_plugin",
         "tohtml",

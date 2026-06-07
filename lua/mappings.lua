@@ -1,9 +1,20 @@
+--- User keymaps (extends nvchad.mappings). Re-loaded on LazyDone to win over plugin maps.
+---
+--- Notable bindings:
+---   Tab / S-Tab (i)     indent / unindent (blink.cmp fallback when no menu)
+---   A-j / A-k           move line or selection
+---   leader md / mu      move line fallback (no Meta in terminal)
+---   H / L               previous / next buffer
+---   leader cf           format via Conform (+ LSP fallback)
+---   leader gq           format via LSP only
+---   leader t- / t\      terminal horizontal / vertical split
+---   leader df, [d, ]d   diagnostics float / prev / next
 require("nvchad.mappings")
 
 local map = vim.keymap.set
 local map_opts = { noremap = true, silent = true }
 
--- Insert Tab target for blink.cmp "fallback" (desc must not start with "blink.cmp:").
+-- Insert Tab for blink.cmp "fallback" preset (desc must not start with "blink.cmp:").
 local function insert_tabstop()
   local col = vim.fn.col(".") - 1
   local sw = vim.bo.softtabstop
@@ -28,7 +39,6 @@ map("i", "<S-Tab>", function()
   return vim.api.nvim_replace_termcodes("<C-d>", true, true, true)
 end, vim.tbl_extend("force", { expr = true, desc = "Unindent in insert mode" }, map_opts))
 
--- Move line / selection. Do NOT use `execute 'move' v:count …` — v:count is 0 without a count prefix.
 local function move_line(delta)
   return function()
     for _ = 1, vim.v.count1 do
@@ -69,14 +79,11 @@ for _, key in ipairs({ "<A-k>", "<M-k>" }) do
   map("v", key, move_sel_up, vim.tbl_extend("force", { desc = "Move selection up" }, map_opts))
 end
 
--- Fallback when the terminal does not send Meta+arrow keys (Space md / Space mu).
 map("n", "<leader>md", move_down, { desc = "Move line down" })
 map("n", "<leader>mu", move_up, { desc = "Move line up" })
 map("v", "<leader>md", move_sel_down, { desc = "Move selection down" })
 map("v", "<leader>mu", move_sel_up, { desc = "Move selection up" })
 
--- Default `U` is “undo all changes on this line” — surprising vs `u` (step undo). Most people expect
--- Shift+U / `U` to redo (same role as `<C-r>`). Leave Visual `U` unchanged (uppercase selection).
 map("n", "U", "<C-r>", { desc = "Redo" })
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
@@ -95,7 +102,6 @@ map("v", ">", ">gv", { desc = "Indent right and re-select" })
 
 map("n", "<leader><leader>", ":", { desc = "Command line" })
 
--- Diagnostics (see `:help diagnostic`). `<leader>ds` is NvChad → loclist; `<leader>dl` is DAP.
 map("n", "<leader>df", vim.diagnostic.open_float, { desc = "Diagnostic messages (float at cursor)" })
 map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
@@ -104,14 +110,9 @@ map("n", "<leader>t-", "<cmd>split | terminal<CR>", { desc = "Terminal horizonta
 map("n", "<leader>t\\", "<cmd>vsplit | terminal<CR>", { desc = "Terminal vertical split (right)" })
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal insert" })
 
-map(
-  { "n", "v" },
-  "<leader>cf",
-  function()
-    require("conform").format({ async = true, lsp_fallback = true })
-  end,
-  { desc = "Format buffer (Conform)" }
-)
+map({ "n", "v" }, "<leader>cf", function()
+  require("conform").format({ async = true, lsp_fallback = true })
+end, { desc = "Format buffer (Conform)" })
 
 map({ "n", "v", "x" }, "<leader>gq", "<cmd>lua vim.lsp.buf.format({ async = true })<cr>", {
   desc = "Format via LSP",

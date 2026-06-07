@@ -1,107 +1,179 @@
---- Palette + highlight overrides for Treesitter + LSP semantic tokens (base46 `hl_override`).
---- Use base46 Gruvbox color names (not Catppuccin names like lavender/mauve/peach).
+--- =============================================================================
+--- SYNTAX COLORS — edit `vim.theme.syntax` below, then :WorkbenchThemeReload
+--- =============================================================================
+--- File: lua/config/theme.lua
+--- Maps Gruvbox-style roles → Treesitter @-groups for C/C++.
+--- LSP semantic tokens are OFF (see configs/lspconfig.lua); Treesitter paints code.
+--- =============================================================================
 vim.theme = vim.theme or {}
 
 vim.theme.syntax = vim.tbl_deep_extend("force", {
-  keyword_type = "dark_purple",
-  type = "yellow",
-  type_builtin = "yellow",
-  preproc_arg = "orange",
+  -- Control flow
+  keyword = "#fb4934",
+  keyword_type = "#fb4934",
+  keyword_modifier = "#fe8019",
+  keyword_exception = "#fb4934",
+  keyword_operator = "#fb4934",
 
-  func = "nord_blue",
-  func_call = "nord_blue",
-  constructor = "nord_blue",
-  method = "teal",
-  method_call = "teal",
+  -- Types
+  type = "#fabd2f",
+  type_builtin = "#d79921",
 
-  namespace = "yellow",
-  variable = "purple",
-  parameter = "orange",
-  field = "purple",
-  variable_builtin = "red",
-  property = "teal",
+  -- Functions (declarations vs calls use different hues)
+  func = "#83a598",
+  func_call = "#fabd2f",
+  method = "#8ec07c",
+  method_call = "#fabd2f",
+  constructor = "#fabd2f",
 
-  operator = "cyan",
-  keyword_operator = "pink",
-  punctuation = "grey_fg",
+  -- Namespaces
+  namespace = "#83a598",
+  module = "#83a598",
+
+  -- Variables
+  variable = "#ebdbb2",
+  parameter = "#fe8019",
+  field = "#d3869b",
+  property = "#d3869b",
+  variable_builtin = "#fb4934",
+
+  -- Constants & macros
+  constant = "#fe8019",
+  constant_builtin = "#fe8019",
+
+  -- Literals
+  string = "#b8bb26",
+  number = "#d3869b",
+  boolean = "#fb4934",
+
+  -- Misc
+  operator = "#a89984",
+  punctuation = "#a89984",
+  comment = "#928374",
+  preproc = "#8ec07c",
+  preproc_arg = "#fe8019",
+  label = "#fe8019",
+  attribute = "#fe8019",
 }, vim.theme.syntax or {})
+
+-- Treesitter capture → syntax role (+ optional highlight opts).
+local CAPTURES = {
+  { "@keyword", "keyword" },
+  { "@keyword.return", "keyword" },
+  { "@keyword.conditional", "keyword" },
+  { "@keyword.repeat", "keyword" },
+  { "@keyword.modifier", "keyword_modifier" },
+  { "@keyword.type", "keyword_type" },
+  { "@keyword.operator", "keyword_operator" },
+  { "@keyword.import", "preproc" },
+  { "@keyword.directive", "preproc" },
+  { "@keyword.exception", "keyword_exception" },
+  { "@keyword.coroutine", "keyword" },
+
+  { "@type", "type" },
+  { "@type.builtin", "type_builtin" },
+  { "@type.definition", "type" },
+
+  { "@function", "func" },
+  { "@function.call", "func_call" },
+  { "@function.builtin", "func_call" },
+  { "@function.method", "method" },
+  { "@function.method.call", "method_call" },
+  { "@constructor", "constructor" },
+
+  { "@variable", "variable" },
+  { "@variable.parameter", "parameter", { italic = true } },
+  { "@variable.member", "field" },
+  { "@variable.builtin", "variable_builtin" },
+  { "@field", "field" },
+  { "@property", "property" },
+
+  { "@namespace", "namespace" },
+  { "@module", "module", { italic = true } },
+  { "@constant", "constant" },
+  { "@constant.builtin", "constant_builtin" },
+  { "@label", "label" },
+
+  { "@operator", "operator" },
+  { "@punctuation.delimiter", "punctuation" },
+  { "@punctuation.bracket", "punctuation" },
+  { "@punctuation.special", "punctuation" },
+  { "@string", "string" },
+  { "@string.regex", "string" },
+  { "@character", "string" },
+  { "@number", "number" },
+  { "@number.float", "number" },
+  { "@boolean", "boolean" },
+  { "@comment", "comment", { italic = true } },
+  { "@comment.documentation", "comment", { italic = true } },
+  { "@attribute", "attribute" },
+  { "@preproc", "preproc" },
+  { "@preproc.arg", "preproc_arg" },
+}
 
 local M = {}
 
-local function fgp(role, fallback)
+local function hex(role)
   local v = vim.theme.syntax[role]
-  if type(v) == "string" then
+  if type(v) == "string" and v:sub(1, 1) == "#" then
     return v
   end
-  return fallback
+  return "#ebdbb2"
 end
 
-local function pair_rows(rows)
-  local out = {}
-  for _, row in ipairs(rows) do
-    local hl_name, role_key, fb = row[1], row[2], row[3]
-    out[hl_name] = { fg = fgp(role_key, fb) }
-  end
-  return out
+local function hl_spec(role, opts)
+  return vim.tbl_extend("force", { fg = hex(role) }, opts or {})
+end
+
+local function with_ft(out, base, spec)
+  out[base] = spec
+  out[base .. ".c"] = vim.deepcopy(spec)
+  out[base .. ".cpp"] = vim.deepcopy(spec)
 end
 
 local function treesitter_caps()
-  local r = {
-    { "@function.call", "func_call", "nord_blue" },
-    { "@function", "func", "nord_blue" },
-    { "@function.method.call", "method_call", "teal" },
-    { "@function.method", "method", "teal" },
-    { "@constructor", "constructor", "nord_blue" },
-    { "@type.builtin", "type_builtin", "yellow" },
-    { "@namespace", "namespace", "yellow" },
-    { "@variable", "variable", "purple" },
-    { "@variable.parameter", "parameter", "orange" },
-    { "@variable.member", "field", "purple" },
-    { "@variable.builtin", "variable_builtin", "red" },
-    { "@operator", "operator", "cyan" },
-    { "@punctuation.delimiter", "punctuation", "grey_fg" },
-    { "@punctuation.bracket", "punctuation", "grey_fg" },
-    { "@keyword.operator", "keyword_operator", "pink" },
-    { "@property", "property", "teal" },
-  }
-
   local out = {}
-  for _, row in ipairs(r) do
-    local base, role_key, fb = row[1], row[2], row[3]
-    local spec = { fg = fgp(role_key, fb) }
-    out[base] = spec
-    out[base .. ".c"] = spec
-    out[base .. ".cpp"] = spec
+  for _, row in ipairs(CAPTURES) do
+    local capture, role, opts = row[1], row[2], row[3]
+    with_ft(out, capture, hl_spec(role, opts))
   end
-
-  out["@keyword.type.c"] = { fg = fgp("keyword_type", "dark_purple") }
-  out["@keyword.type.cpp"] = { fg = fgp("keyword_type", "dark_purple") }
-  out["@type.c"] = { fg = fgp("type", "yellow") }
-  out["@type.cpp"] = { fg = fgp("type", "yellow") }
-  out["@preproc.arg"] = { fg = fgp("preproc_arg", "orange") }
-
   return out
 end
 
-local function lsp_semantic_caps()
-  return pair_rows({
-    { "@lsp.type.function", "func_call", "nord_blue" },
-    { "@lsp.type.method", "method_call", "teal" },
-    { "@lsp.type.namespace", "namespace", "yellow" },
-    { "@lsp.type.parameter", "parameter", "orange" },
-    { "@lsp.type.variable", "variable", "purple" },
-    { "@lsp.type.property", "field", "purple" },
-    { "@lsp.type.class", "type", "yellow" },
-    { "@lsp.type.enum", "type", "yellow" },
-    { "@lsp.type.typeParameter", "type", "yellow" },
-    { "@lsp.type.decorator", "namespace", "yellow" },
-    { "@lsp.mod.readonly", "variable_builtin", "red" },
-  })
+--- base46 `hl_override` — baked when chadrc loads; use :WorkbenchThemeReload after edits.
+function M.hl_override()
+  return treesitter_caps()
 end
 
---- Used by `chadrc.lua` as `base46.hl_override`.
-function M.hl_override()
-  return vim.tbl_deep_extend("force", treesitter_caps(), lsp_semantic_caps())
+--- Runtime apply (after NvChad reloads cached treesitter highlights on BufReadPost).
+function M.apply_treesitter_hl()
+  for name, spec in pairs(treesitter_caps()) do
+    vim.api.nvim_set_hl(0, name, vim.tbl_extend("force", spec, { force = true }))
+  end
+end
+
+local hl_gen = 0
+
+--- Debounced apply — used from autocmds.lua on buffer open / theme events.
+function M.schedule_apply(delay)
+  hl_gen = hl_gen + 1
+  local gen = hl_gen
+  vim.defer_fn(function()
+    if gen == hl_gen then
+      M.apply_treesitter_hl()
+    end
+  end, delay or 80)
+end
+
+--- Full reload: rebuild base46 cache from chadrc + re-apply Treesitter colors.
+function M.reload()
+  package.loaded["chadrc"] = nil
+  package.loaded["nvconfig"] = nil
+  local ok, err = pcall(require("base46").load_all_highlights)
+  if not ok then
+    vim.notify("WorkbenchThemeReload: " .. tostring(err), vim.log.levels.WARN)
+  end
+  M.apply_treesitter_hl()
 end
 
 return M

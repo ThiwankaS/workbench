@@ -1,6 +1,7 @@
+--- Editor options (extends nvchad.options).
 require("nvchad.options")
 
--- Third-party parsers / tooling live under stdpath('data')/site — keep queries on rtp.
+-- nvim-treesitter v2 install_dir must be on rtp (see plugins/treesitter.lua).
 vim.opt.rtp:append(vim.fn.stdpath("data") .. "/site")
 
 local opt = vim.opt
@@ -27,8 +28,7 @@ opt.smartcase = true
 opt.signcolumn = "yes:1"
 opt.updatetime = 200
 opt.timeoutlen = 300
--- Faster merge of Esc+key into Meta in some terminals (Alt+j / Alt+k).
-opt.ttimeoutlen = 20
+opt.ttimeoutlen = 20 -- faster Meta key merge (Alt+j/k in terminal)
 opt.splitright = true
 opt.splitbelow = true
 opt.scrolloff = 8

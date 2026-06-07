@@ -1,4 +1,7 @@
--- Blink.cmp extends LSP capabilities (completion kinds, etc.). Merge with NvChad defaults.
+--- LSP setup: blink capabilities, semantic-token disable, clangd, server enable.
+--- Loaded from `lua/plugins/init.lua` after NvChad's lspconfig spec.
+
+-- Merge blink.cmp capabilities with NvChad defaults.
 do
   local ok, blink = pcall(require, "blink.cmp")
   if ok then
@@ -9,29 +12,19 @@ do
   end
 end
 
--- NvChad disables semantic tokens for every client for compatibility. Clangd uses them heavily for
--- readable highlighting (@lsp.type.* → hl groups). This handler duplicates NvChad's strip logic but
--- skips clangd. Loaded after NvChad's nvim-lspconfig config (lower Lazy priority) so it merges
--- into vim.lsp.config("*") and replaces only `on_init`; NvChad capabilities stay intact.
+-- Treesitter handles syntax; LSP semantic tokens override with a flat layer — off for all clients.
 vim.lsp.config("*", {
   on_init = function(client, _)
-    if client.name == "clangd" then
-      return
-    end
     if vim.fn.has("nvim-0.11") ~= 1 then
       if client.supports_method("textDocument/semanticTokens") then
         client.server_capabilities.semanticTokensProvider = nil
       end
-    else
-      if client:supports_method("textDocument/semanticTokens") then
-        client.server_capabilities.semanticTokensProvider = nil
-      end
+    elseif client:supports_method("textDocument/semanticTokens") then
+      client.server_capabilities.semanticTokensProvider = nil
     end
   end,
 })
 
--- Keep nvim's bundled clangd extras (editsNearCursor, utf-8/utf-16); merge preserves them when set here too.
--- Prefer PATH, then Mason (NvChad often installs clangd there; FilePost may run before Mason is on PATH).
 local function clangd_executable()
   if vim.fn.executable("clangd") == 1 then
     return "clangd"
@@ -53,9 +46,7 @@ vim.lsp.config("clangd", (function()
     "--function-arg-placeholders",
     "--pch-storage=memory",
   }
-  -- Cross-compilers (ESP-IDF, ARM GCC, etc.): clangd must be allowed to query the real driver for
-  -- target-specific flags. Set once in shell or direnv, e.g.:
-  --   export CLANGD_QUERY_DRIVER="$HOME/.espressif/tools/**/bin/*-gcc,$HOME/.espressif/tools/**/bin/*-g++"
+  -- ESP-IDF / cross-GCC: export CLANGD_QUERY_DRIVER="$HOME/.espressif/tools/**/bin/*-gcc,..."
   local qd = vim.env.CLANGD_QUERY_DRIVER
   if qd and qd ~= "" then
     table.insert(cmd, "--query-driver=" .. qd)
@@ -63,61 +54,50 @@ vim.lsp.config("clangd", (function()
   return {
     cmd = cmd,
     capabilities = {
-    textDocument = {
-      completion = {
-        editsNearCursor = true,
+      textDocument = {
+        completion = { editsNearCursor = true },
       },
+      offsetEncoding = { "utf-8", "utf-16" },
     },
-    offsetEncoding = { "utf-8", "utf-16" },
-  },
-  init_options = {
-    clangdFileStatus = true,
-    usePlaceholders = true,
-    completeUnimported = true,
-  },
-  root_markers = {
-    "compile_commands.json",
-    "compile_flags.txt",
-    ".clangd",
-    "CMakeLists.txt",
-    ".git",
-  },
+    init_options = {
+      clangdFileStatus = true,
+      usePlaceholders = true,
+      completeUnimported = true,
+    },
+    root_markers = {
+      "compile_commands.json",
+      "compile_flags.txt",
+      ".clangd",
+      "CMakeLists.txt",
+      ".git",
+    },
   }
 end)())
 
--- NvChad lazy-loads nvim-lspconfig on `User FilePost` (after UIEnter + real file). That can run
--- *after* VimEnter, so a VimEnter-only `vim.lsp.enable` never fired and clangd never started — only
--- snippets/buffer completion appeared. Enable when this config runs if startup already finished,
--- else defer to VimEnter (same idea as nvim-lite’s immediate enable at end of init).
-do
-  local servers = {
-    "clangd",
-    "ts_ls",
-    "pyright",
-    "bashls",
-    "marksman",
-  }
+-- Enable servers (NvChad may load lspconfig after VimEnter).
+local servers = { "clangd", "ts_ls", "pyright", "bashls", "marksman" }
 
-  local function enable_lsps()
-    vim.schedule(function()
-      vim.lsp.enable(servers)
-    end)
-  end
-
-  if vim.v.vim_did_enter == 1 then
-    enable_lsps()
-  else
-    vim.api.nvim_create_autocmd("VimEnter", {
-      once = true,
-      callback = enable_lsps,
-    })
-  end
+local function enable_lsps()
+  vim.schedule(function()
+    vim.lsp.enable(servers)
+  end)
 end
 
--- Hint once per session when clangd has no usable compilation database (weak completion / no members).
+if vim.v.vim_did_enter == 1 then
+  enable_lsps()
+else
+  vim.api.nvim_create_autocmd("VimEnter", {
+    once = true,
+    callback = enable_lsps,
+  })
+end
+
+-- One-time hint when clangd has no compile_commands.json.
 do
   local warned = {}
+  local lsp_group = vim.api.nvim_create_augroup("user_lsp", { clear = true })
   vim.api.nvim_create_autocmd("LspAttach", {
+    group = lsp_group,
     callback = function(args)
       local client = vim.lsp.get_client_by_id(args.data.client_id)
       if not client or client.name ~= "clangd" then
@@ -139,8 +119,7 @@ do
           vim.notify(
             "clangd: compile_commands.json is in "
               .. sub
-              .. "/ — symlink it to the project root or add .clangd with CompilationDatabase: "
-              .. sub,
+              .. "/ — symlink to project root or set .clangd CompilationDatabase",
             vim.log.levels.WARN,
             { title = "clangd" }
           )
@@ -149,8 +128,7 @@ do
       end
       warned[root] = true
       vim.notify(
-        "clangd: no compile_commands.json — C/C++ completion may lack members and stdlib. "
-          .. "Generate one (e.g. cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON) or use compile_flags.txt.",
+        "clangd: no compile_commands.json — add compile_flags.txt or generate with CMake.",
         vim.log.levels.WARN,
         { title = "clangd" }
       )

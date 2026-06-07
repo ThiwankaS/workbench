@@ -1,3 +1,5 @@
+--- NvChad user config (loaded as `nvconfig` by base46).
+--- UI tweaks live here; syntax colors live in `lua/config/theme.lua`.
 local theme = require("config.theme")
 
 local M = {}
@@ -6,7 +8,6 @@ M.base46 = {
   transparency = true,
   theme = "gruvbox",
   hl_override = theme.hl_override(),
-  integrations = { "semantic_tokens" },
 }
 
 M.ui = {
