@@ -18,34 +18,12 @@ return {
     },
     opts = {
       snippets = { preset = "luasnip" },
-      -- Tab: snippets/menu when active; otherwise blink "fallback" → config/indent.lua.
+      -- Tab: blink enter preset — snippets then fallback to Insert Tab in mappings.lua.
       keymap = {
         preset = "enter",
         ["<CR>"] = { "select_and_accept", "fallback" },
-        ["<Tab>"] = {
-          function(cmp)
-            if cmp.snippet_active({ direction = 1 }) then
-              return cmp.snippet_forward()
-            end
-            if cmp.is_menu_visible() then
-              return cmp.select_next()
-            end
-            return false
-          end,
-          "fallback",
-        },
-        ["<S-Tab>"] = {
-          function(cmp)
-            if cmp.snippet_active({ direction = -1 }) then
-              return cmp.snippet_backward()
-            end
-            if cmp.is_menu_visible() then
-              return cmp.select_prev()
-            end
-            return false
-          end,
-          "fallback",
-        },
+        ["<Tab>"] = { "snippet_forward", "fallback" },
+        ["<S-Tab>"] = { "snippet_backward", "fallback" },
         ["<C-j>"] = { "select_next", "fallback" },
         ["<C-k>"] = { "select_prev", "fallback" },
       },

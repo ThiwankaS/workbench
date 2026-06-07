@@ -1,6 +1,79 @@
 require("nvchad.mappings")
 
 local map = vim.keymap.set
+local map_opts = { noremap = true, silent = true }
+
+-- Insert Tab target for blink.cmp "fallback" (desc must not start with "blink.cmp:").
+local function insert_tabstop()
+  local col = vim.fn.col(".") - 1
+  local sw = vim.bo.softtabstop
+  if sw == 0 then
+    sw = vim.bo.shiftwidth
+  end
+  local width = sw - (col % sw)
+  if width == 0 then
+    width = sw
+  end
+  if vim.bo.expandtab then
+    return string.rep(" ", width)
+  end
+  return "\t"
+end
+
+map("i", "<Tab>", function()
+  return insert_tabstop()
+end, vim.tbl_extend("force", { expr = true, desc = "Insert tab / soft indent" }, map_opts))
+
+map("i", "<S-Tab>", function()
+  return vim.api.nvim_replace_termcodes("<C-d>", true, true, true)
+end, vim.tbl_extend("force", { expr = true, desc = "Unindent in insert mode" }, map_opts))
+
+-- Move line / selection. Do NOT use `execute 'move' v:count …` — v:count is 0 without a count prefix.
+local function move_line(delta)
+  return function()
+    for _ = 1, vim.v.count1 do
+      if delta > 0 then
+        vim.cmd("move .+1")
+      else
+        vim.cmd("move .-2")
+      end
+    end
+    vim.cmd("normal! ==")
+  end
+end
+
+local function move_visual(delta)
+  return function()
+    if delta > 0 then
+      vim.cmd("move '>+1")
+    else
+      vim.cmd("move '<-2")
+    end
+    vim.cmd("normal! gv")
+    vim.cmd("normal! ==")
+  end
+end
+
+local move_down = move_line(1)
+local move_up = move_line(-1)
+local move_sel_down = move_visual(1)
+local move_sel_up = move_visual(-1)
+
+for _, key in ipairs({ "<A-j>", "<M-j>" }) do
+  map("n", key, move_down, vim.tbl_extend("force", { desc = "Move line down" }, map_opts))
+  map("v", key, move_sel_down, vim.tbl_extend("force", { desc = "Move selection down" }, map_opts))
+end
+
+for _, key in ipairs({ "<A-k>", "<M-k>" }) do
+  map("n", key, move_up, vim.tbl_extend("force", { desc = "Move line up" }, map_opts))
+  map("v", key, move_sel_up, vim.tbl_extend("force", { desc = "Move selection up" }, map_opts))
+end
+
+-- Fallback when the terminal does not send Meta+arrow keys (Space md / Space mu).
+map("n", "<leader>md", move_down, { desc = "Move line down" })
+map("n", "<leader>mu", move_up, { desc = "Move line up" })
+map("v", "<leader>md", move_sel_down, { desc = "Move selection down" })
+map("v", "<leader>mu", move_sel_up, { desc = "Move selection up" })
 
 -- Default `U` is “undo all changes on this line” — surprising vs `u` (step undo). Most people expect
 -- Shift+U / `U` to redo (same role as `<C-r>`). Leave Visual `U` unchanged (uppercase selection).

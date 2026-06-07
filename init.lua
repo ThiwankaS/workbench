@@ -42,8 +42,17 @@ dofile(vim.g.base46_cache .. "statusline")
 
 require("options")
 require("autocmds")
-require("config.indent").setup()
 
-vim.schedule(function()
+local function load_user_maps()
+  package.loaded["mappings"] = nil
   require("mappings")
-end)
+end
+
+load_user_maps()
+
+vim.api.nvim_create_autocmd("User", {
+  group = vim.api.nvim_create_augroup("user_config", { clear = false }),
+  pattern = "LazyDone",
+  once = true,
+  callback = load_user_maps,
+})

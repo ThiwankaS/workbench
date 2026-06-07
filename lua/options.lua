@@ -27,6 +27,8 @@ opt.smartcase = true
 opt.signcolumn = "yes:1"
 opt.updatetime = 200
 opt.timeoutlen = 300
+-- Faster merge of Esc+key into Meta in some terminals (Alt+j / Alt+k).
+opt.ttimeoutlen = 20
 opt.splitright = true
 opt.splitbelow = true
 opt.scrolloff = 8

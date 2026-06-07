@@ -6,6 +6,7 @@ M.base46 = {
   transparency = true,
   theme = "gruvbox",
   hl_override = theme.hl_override(),
+  integrations = { "semantic_tokens" },
 }
 
 M.ui = {
