@@ -4,9 +4,7 @@ require("nvchad.autocmds")
 local theme = require("config.theme")
 local augroup = vim.api.nvim_create_augroup("user_config", { clear = true })
 
--- ── Treesitter syntax colors ─────────────────────────────────────────────────
--- NvChad reloads cached base46 treesitter HL on BufReadPost; re-apply ours after.
-
+-- Re-apply Treesitter colors after base46 theme reload (not on every BufReadPost).
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = augroup,
   callback = function()
@@ -22,16 +20,7 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
-  group = augroup,
-  callback = function(args)
-    if vim.tbl_contains({ "c", "cpp" }, vim.bo[args.buf].filetype) then
-      theme.schedule_apply(800)
-    end
-  end,
-})
-
--- ── blink.cmp: hide stuck completion popups ───────────────────────────────────
+-- blink.cmp: hide stuck completion popups
 local function blink_cmp_hide_if_open()
   pcall(function()
     local blink = require("blink.cmp")
@@ -61,7 +50,7 @@ vim.api.nvim_create_autocmd("VimResized", {
   callback = blink_cmp_hide_if_open,
 })
 
--- ── Statusline clock (see chadrc.lua statusline.modules.clock) ────────────────
+-- Statusline clock (chadrc.lua statusline.modules.clock)
 local clock_timer = vim.uv.new_timer()
 clock_timer:start(60000, 60000, function()
   vim.schedule(function()
@@ -73,14 +62,11 @@ clock_timer:start(60000, 60000, function()
   end)
 end)
 
--- ── General editing ───────────────────────────────────────────────────────────
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = augroup,
   callback = function()
     if vim.hl and vim.hl.on_yank then
       vim.hl.on_yank()
-    else
-      vim.highlight.on_yank()
     end
   end,
 })
@@ -104,27 +90,19 @@ vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
   end,
 })
 
--- ── C / C++: cindent + Treesitter (no regex syntax stack) ─────────────────────
+-- C/C++: disable regex syntax (Treesitter only). NvChad already calls treesitter.start on FileType *.
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
   pattern = { "c", "cpp" },
   callback = function(args)
     local buf = args.buf
-    local lang = vim.bo[buf].filetype == "c" and "c" or "cpp"
-
     vim.bo[buf].smartindent = false
     vim.bo[buf].cindent = true
-
-    vim.schedule(function()
-      if pcall(vim.treesitter.start, buf, lang) then
-        vim.bo[buf].syntax = ""
-      end
-      theme.schedule_apply(300)
-    end)
+    vim.bo[buf].syntax = ""
   end,
 })
 
--- ── Assembly: label navigation ────────────────────────────────────────────────
+-- Assembly label navigation
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup,
   pattern = { "asm", "nasm", "gas" },

@@ -37,9 +37,10 @@ vim.theme.syntax = vim.tbl_deep_extend("force", {
   property = "#d3869b",
   variable_builtin = "#fb4934",
 
-  -- Constants & macros
-  constant = "#fe8019",
-  constant_builtin = "#fe8019",
+  -- Constants & macros — steel blue (not teal like @function #83a598)
+  constant = "#729fcf",
+  constant_macro = "#729fcf",
+  constant_builtin = "#729fcf",
 
   -- Literals
   string = "#b8bb26",
@@ -92,6 +93,7 @@ local CAPTURES = {
   { "@module", "module", { italic = true } },
   { "@constant", "constant" },
   { "@constant.builtin", "constant_builtin" },
+  { "@constant.macro", "constant_macro" },
   { "@label", "label" },
 
   { "@operator", "operator" },

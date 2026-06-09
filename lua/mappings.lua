@@ -94,6 +94,12 @@ map("n", "<C-a>", "ggVG", { desc = "Select all in buffer" })
 
 map("n", "<leader>cd", "<cmd>lcd %:p:h<cr><cmd>pwd<cr>", { desc = "Cd to buffer directory" })
 
+map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle explorer" })
+map("n", "<leader>ef", "<cmd>NvimTreeFindFile<CR>", { desc = "Find file in explorer" })
+map("n", "<leader>fm", function()
+  require("conform").format({ async = true, lsp_fallback = true })
+end, { desc = "Format buffer (Conform)" })
+
 map("i", "<C-u>", "<Esc>gUiwgi", { desc = "Uppercase current word" })
 map("i", "<C-l>", "<Esc>guiwgi", { desc = "Lowercase current word" })
 

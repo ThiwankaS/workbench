@@ -2,7 +2,7 @@ return {
   {
     -- Fuzzy finder for files, text, buffers, commands.
     "nvim-telescope/telescope.nvim",
-    -- Stable release branch for Telescope 0.1 API.
+    priority = 1000,
     branch = "0.1.x",
     dependencies = {
       "nvim-lua/plenary.nvim",

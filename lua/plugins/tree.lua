@@ -1,13 +1,11 @@
 return {
   {
-    -- File explorer sidebar.
     "nvim-tree/nvim-tree.lua",
+    priority = 1000,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      -- Buffer-local keymaps when tree window is active.
       local function on_attach(bufnr)
         local api = require("nvim-tree.api")
-        -- Keep default mappings and add preferred overrides.
         api.config.mappings.default_on_attach(bufnr)
         local opts = function(desc)
           return { buffer = bufnr, noremap = true, silent = true, nowait = true, desc = "tree: " .. desc }
@@ -19,20 +17,10 @@ return {
 
       require("nvim-tree").setup({
         on_attach = on_attach,
-        -- Keep cursor position stable during tree updates.
         hijack_cursor = true,
-        update_focused_file = {
-          enable = true,
-          update_root = false,
-        },
-        view = {
-          -- Sidebar width.
-          width = 36,
-        },
+        update_focused_file = { enable = true, update_root = false },
+        view = { width = 36 },
       })
-
-      vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle explorer" })
-      vim.keymap.set("n", "<leader>ef", "<cmd>NvimTreeFindFile<CR>", { desc = "Find current file in explorer" })
     end,
   },
 }

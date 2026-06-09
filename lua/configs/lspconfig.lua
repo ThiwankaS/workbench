@@ -1,29 +1,9 @@
---- LSP setup: blink capabilities, semantic-token disable, clangd, server enable.
---- Loaded from `lua/plugins/init.lua` after NvChad's lspconfig spec.
+--- Single LSP entry point. Runs after NvChad `FilePost` so blink capabilities are not overwritten.
+local M = {}
 
--- Merge blink.cmp capabilities with NvChad defaults.
-do
-  local ok, blink = pcall(require, "blink.cmp")
-  if ok then
-    local nvchad = require("nvchad.configs.lspconfig")
-    vim.lsp.config("*", {
-      capabilities = blink.get_lsp_capabilities(nvchad.capabilities),
-    })
-  end
-end
+local nvchad = require("nvchad.configs.lspconfig")
 
--- Treesitter handles syntax; LSP semantic tokens override with a flat layer — off for all clients.
-vim.lsp.config("*", {
-  on_init = function(client, _)
-    if vim.fn.has("nvim-0.11") ~= 1 then
-      if client.supports_method("textDocument/semanticTokens") then
-        client.server_capabilities.semanticTokensProvider = nil
-      end
-    elseif client:supports_method("textDocument/semanticTokens") then
-      client.server_capabilities.semanticTokensProvider = nil
-    end
-  end,
-})
+local SERVERS = { "clangd", "lua_ls", "ts_ls", "pyright", "bashls", "marksman" }
 
 local function clangd_executable()
   if vim.fn.executable("clangd") == 1 then
@@ -36,7 +16,53 @@ local function clangd_executable()
   return "clangd"
 end
 
-vim.lsp.config("clangd", (function()
+local function disable_semantic_tokens(client)
+  if vim.fn.has("nvim-0.11") ~= 1 then
+    if client.supports_method("textDocument/semanticTokens") then
+      client.server_capabilities.semanticTokensProvider = nil
+    end
+  elseif client:supports_method("textDocument/semanticTokens") then
+    client.server_capabilities.semanticTokensProvider = nil
+  end
+end
+
+function M.on_init(client, _)
+  disable_semantic_tokens(client)
+end
+
+function M.apply_globals()
+  dofile(vim.g.base46_cache .. "lsp")
+  require("nvchad.lsp").diagnostic_config()
+
+  local caps = nvchad.capabilities
+  local ok, blink = pcall(require, "blink.cmp")
+  if ok then
+    caps = blink.get_lsp_capabilities(caps)
+  end
+
+  vim.lsp.config("*", {
+    capabilities = caps,
+    on_init = M.on_init,
+  })
+
+  vim.lsp.config("lua_ls", {
+    settings = {
+      Lua = {
+        runtime = { version = "LuaJIT" },
+        workspace = {
+          library = {
+            vim.fn.expand("$VIMRUNTIME/lua"),
+            vim.fn.stdpath("data") .. "/lazy/ui/nvchad_types",
+            vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy",
+            "${3rd}/luv/library",
+          },
+        },
+      },
+    },
+  })
+end
+
+local function clangd_config()
   local cmd = {
     clangd_executable(),
     "--background-index",
@@ -46,7 +72,6 @@ vim.lsp.config("clangd", (function()
     "--function-arg-placeholders",
     "--pch-storage=memory",
   }
-  -- ESP-IDF / cross-GCC: export CLANGD_QUERY_DRIVER="$HOME/.espressif/tools/**/bin/*-gcc,..."
   local qd = vim.env.CLANGD_QUERY_DRIVER
   if qd and qd ~= "" then
     table.insert(cmd, "--query-driver=" .. qd)
@@ -72,32 +97,38 @@ vim.lsp.config("clangd", (function()
       ".git",
     },
   }
-end)())
-
--- Enable servers (NvChad may load lspconfig after VimEnter).
-local servers = { "clangd", "ts_ls", "pyright", "bashls", "marksman" }
-
-local function enable_lsps()
-  vim.schedule(function()
-    vim.lsp.enable(servers)
-  end)
 end
 
-if vim.v.vim_did_enter == 1 then
-  enable_lsps()
-else
-  vim.api.nvim_create_autocmd("VimEnter", {
-    once = true,
-    callback = enable_lsps,
-  })
+vim.lsp.config("clangd", clangd_config())
+
+function M.enable_servers()
+  vim.lsp.enable(SERVERS)
 end
 
--- One-time hint when clangd has no compile_commands.json.
-do
-  local warned = {}
-  local lsp_group = vim.api.nvim_create_augroup("user_lsp", { clear = true })
+function M.setup()
+  local lsp_group = vim.api.nvim_create_augroup("workbench_lsp", { clear = true })
+
   vim.api.nvim_create_autocmd("LspAttach", {
     group = lsp_group,
+    callback = function(args)
+      nvchad.on_attach(_, args.buf)
+    end,
+  })
+
+  vim.api.nvim_create_autocmd("User", {
+    group = lsp_group,
+    pattern = "FilePost",
+    callback = function()
+      vim.schedule(function()
+        M.apply_globals()
+        M.enable_servers()
+      end)
+    end,
+  })
+
+  local warned = {}
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("workbench_clangd_hint", { clear = true }),
     callback = function(args)
       local client = vim.lsp.get_client_by_id(args.data.client_id)
       if not client or client.name ~= "clangd" then
@@ -135,3 +166,5 @@ do
     end,
   })
 end
+
+return M

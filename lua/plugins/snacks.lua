@@ -1,26 +1,18 @@
 return {
   {
-    -- UI/performance utility collection.
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
     opts = {
-      -- Better behavior for very large files.
       bigfile = { enabled = true },
-      -- Startup dashboard.
       dashboard = { enabled = true },
-      -- Notification UI.
       notifier = { enabled = true },
-      -- Smooth scrolling helpers.
       scroll = { enabled = true },
-      -- Fast open for quick single-file workflows.
       quickfile = { enabled = true },
-      -- Picker helpers used by snacks features.
-      picker = { enabled = true },
+      picker = { enabled = false },
     },
   },
   {
-    -- Lazygit integration inside Neovim.
     "kdheepak/lazygit.nvim",
     cmd = {
       "LazyGit",
