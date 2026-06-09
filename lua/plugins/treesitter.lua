@@ -1,23 +1,16 @@
---- nvim-treesitter v2 — sole owner spec (overrides NvChad BufReadPost + TSInstallAll build).
+--- nvim-treesitter v2 — focused parsers for C/C++, TS/JS, Markdown (+ config editing).
 local parsers = {
-  "asm",
   "bash",
   "c",
-  "cmake",
   "cpp",
   "javascript",
   "json",
   "lua",
-  "luadoc",
-  "make",
   "markdown",
   "markdown_inline",
-  "python",
-  "printf",
   "typescript",
   "vim",
   "vimdoc",
-  "yaml",
 }
 
 local install_dir = vim.fs.normalize(vim.fn.stdpath("data") .. "/site")
@@ -35,10 +28,8 @@ return {
         dofile(vim.g.base46_cache .. "treesitter")
       end)
 
-      vim.schedule(function()
-        pcall(function()
-          require("nvim-treesitter").install(parsers)
-        end)
+      pcall(function()
+        require("nvim-treesitter").install(parsers)
       end)
     end,
   },

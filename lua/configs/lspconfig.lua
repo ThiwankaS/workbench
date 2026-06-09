@@ -1,4 +1,4 @@
---- Single LSP entry point. Runs after NvChad `FilePost` so blink capabilities are not overwritten.
+--- Synchronous LSP setup: NvChad defaults + blink capabilities + essential servers.
 local M = {}
 
 local nvchad = require("nvchad.configs.lspconfig")
@@ -14,52 +14,6 @@ local function clangd_executable()
     return mason
   end
   return "clangd"
-end
-
-local function disable_semantic_tokens(client)
-  if vim.fn.has("nvim-0.11") ~= 1 then
-    if client.supports_method("textDocument/semanticTokens") then
-      client.server_capabilities.semanticTokensProvider = nil
-    end
-  elseif client:supports_method("textDocument/semanticTokens") then
-    client.server_capabilities.semanticTokensProvider = nil
-  end
-end
-
-function M.on_init(client, _)
-  disable_semantic_tokens(client)
-end
-
-function M.apply_globals()
-  dofile(vim.g.base46_cache .. "lsp")
-  require("nvchad.lsp").diagnostic_config()
-
-  local caps = nvchad.capabilities
-  local ok, blink = pcall(require, "blink.cmp")
-  if ok then
-    caps = blink.get_lsp_capabilities(caps)
-  end
-
-  vim.lsp.config("*", {
-    capabilities = caps,
-    on_init = M.on_init,
-  })
-
-  vim.lsp.config("lua_ls", {
-    settings = {
-      Lua = {
-        runtime = { version = "LuaJIT" },
-        workspace = {
-          library = {
-            vim.fn.expand("$VIMRUNTIME/lua"),
-            vim.fn.stdpath("data") .. "/lazy/ui/nvchad_types",
-            vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy",
-            "${3rd}/luv/library",
-          },
-        },
-      },
-    },
-  })
 end
 
 local function clangd_config()
@@ -99,32 +53,41 @@ local function clangd_config()
   }
 end
 
-vim.lsp.config("clangd", clangd_config())
-
-function M.enable_servers()
-  vim.lsp.enable(SERVERS)
-end
-
 function M.setup()
-  local lsp_group = vim.api.nvim_create_augroup("workbench_lsp", { clear = true })
+  nvchad.defaults()
 
-  vim.api.nvim_create_autocmd("LspAttach", {
-    group = lsp_group,
-    callback = function(args)
-      nvchad.on_attach(_, args.buf)
-    end,
+  local caps = nvchad.capabilities
+  local ok, blink = pcall(require, "blink.cmp")
+  if ok then
+    caps = vim.tbl_deep_extend("force", caps, blink.get_lsp_capabilities({}))
+  end
+
+  vim.lsp.config("*", {
+    capabilities = caps,
+    on_init = nvchad.on_init,
   })
 
-  vim.api.nvim_create_autocmd("User", {
-    group = lsp_group,
-    pattern = "FilePost",
-    callback = function()
-      vim.schedule(function()
-        M.apply_globals()
-        M.enable_servers()
-      end)
-    end,
+  vim.lsp.config("lua_ls", {
+    settings = {
+      Lua = {
+        runtime = { version = "LuaJIT" },
+        workspace = {
+          library = {
+            vim.fn.expand("$VIMRUNTIME/lua"),
+            vim.fn.stdpath("data") .. "/lazy/ui/nvchad_types",
+            vim.fn.stdpath("data") .. "/lazy/lazy.nvim/lua/lazy",
+            "${3rd}/luv/library",
+          },
+        },
+      },
+    },
   })
+
+  vim.lsp.config("clangd", clangd_config())
+
+  for _, server in ipairs(SERVERS) do
+    vim.lsp.enable(server)
+  end
 
   local warned = {}
   vim.api.nvim_create_autocmd("LspAttach", {

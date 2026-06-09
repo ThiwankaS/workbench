@@ -5,7 +5,7 @@
 ---   lua/options.lua   editor options
 ---   lua/mappings.lua  keymaps (re-loaded after LazyDone)
 ---   lua/autocmds.lua  autocmds
----   lua/config/       user modules (theme, format, snap, …)
+---   lua/config/       user modules (theme, format, ts_compat)
 ---   lua/configs/      plugin option tables (lazy, lsp, conform)
 ---   lua/plugins/      lazy.nvim plugin specs
 vim.loader.enable()

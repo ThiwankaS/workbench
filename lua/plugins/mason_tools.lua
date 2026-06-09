@@ -12,7 +12,6 @@ return {
         "bash-language-server",
         "marksman",
         "stylua",
-        -- codelldb: installed via mason-nvim-dap (`lua/plugins/dap.lua`)
       },
     },
     config = function(_, opts)
