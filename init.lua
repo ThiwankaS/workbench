@@ -31,6 +31,7 @@ vim.pack.add({
   "https://github.com/mason-org/mason.nvim",
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/akinsho/bufferline.nvim",
+  "https://github.com/nvim-lualine/lualine.nvim",
   "https://github.com/hrsh7th/cmp-nvim-lsp",
   "https://github.com/hrsh7th/cmp-buffer",
   "https://github.com/hrsh7th/nvim-cmp",
