@@ -1,40 +1,83 @@
+-- Keymaps tuned for a 65% keyboard (no arrow cluster, brackets on Fn layer).
+-- Leader = Space. Prefer home-row chords over Shift+Tab and [ ] keys.
+
 local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
+local extend = function(desc)
+  return vim.tbl_extend("force", { desc = desc }, opts)
+end
 
--- File tree
-map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", vim.tbl_extend("force", { desc = "Toggle file tree" }, opts))
-map("n", "<leader>E", "<cmd>NvimTreeFindFile<CR>", vim.tbl_extend("force", { desc = "Reveal file in tree" }, opts))
+local tabufline = function()
+  return require("nvchad.tabufline")
+end
 
--- Telescope
-map("n", "<leader>ff", function()
+local function toggle_buffer()
+  if vim.fn.bufnr("#") == -1 then
+    return
+  end
+  vim.cmd.buffer("#")
+end
+
+-- Themes
+map("n", "<leader>th", function()
+  require("nvchad.themes").open()
+end, extend("Theme picker"))
+map("n", "<leader>tt", function()
+  require("base46").toggle_theme()
+end, extend("Toggle theme pair"))
+
+-- File tree (e = explorer, j = jump to file in tree — no Shift+E)
+map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", extend("Toggle file tree"))
+map("n", "<leader>j", "<cmd>NvimTreeFindFile<CR>", extend("Reveal file in tree"))
+
+-- Telescope — single home-row key after leader
+map("n", "<leader>f", function()
   require("telescope.builtin").find_files()
-end, vim.tbl_extend("force", { desc = "Find files" }, opts))
-
-map("n", "<leader>fg", function()
+end, extend("Find files"))
+map("n", "<leader>g", function()
   require("telescope.builtin").live_grep()
-end, vim.tbl_extend("force", { desc = "Live grep" }, opts))
-
-map("n", "<leader>fb", function()
+end, extend("Live grep"))
+map("n", "<leader>p", function()
   require("telescope.builtin").buffers()
-end, vim.tbl_extend("force", { desc = "Buffers" }, opts))
-
-map("n", "<leader>fr", function()
+end, extend("Pick buffer"))
+map("n", "<leader>o", function()
   require("telescope.builtin").oldfiles()
-end, vim.tbl_extend("force", { desc = "Recent files" }, opts))
+end, extend("Recent files"))
 
--- Buffers / windows
-map("n", "<leader>w", "<cmd>w<CR>", vim.tbl_extend("force", { desc = "Save" }, opts))
-map("n", "<leader>q", "<cmd>q<CR>", vim.tbl_extend("force", { desc = "Quit" }, opts))
-map("n", "<leader>x", "<cmd>bdelete<CR>", vim.tbl_extend("force", { desc = "Close buffer" }, opts))
-map("n", "<Esc>", "<cmd>nohlsearch<CR>", vim.tbl_extend("force", { desc = "Clear search" }, opts))
-map("n", "<C-h>", "<C-w>h", opts)
-map("n", "<C-j>", "<C-w>j", opts)
-map("n", "<C-k>", "<C-w>k", opts)
-map("n", "<C-l>", "<C-w>l", opts)
+-- Buffers — gb + home-row h/l (Ctrl+h/l = windows, Space+h/l = buffers)
+map("n", "gb", toggle_buffer, extend("Toggle last two buffers"))
+map("n", "<leader>h", function()
+  tabufline().prev()
+end, extend("Previous buffer"))
+map("n", "<leader>l", function()
+  tabufline().next()
+end, extend("Next buffer"))
 
--- Insert: word case
-map("i", "<C-u>", "<Esc>gUiwgi", vim.tbl_extend("force", { desc = "Uppercase word" }, opts))
-map("i", "<C-l>", "<Esc>guiwgi", vim.tbl_extend("force", { desc = "Lowercase word" }, opts))
+-- Save / quit / close
+map("n", "<leader>w", "<cmd>w<CR>", extend("Save"))
+map("i", "<C-s>", "<Esc>:w<CR>a", extend("Save"))
+map("n", "<C-s>", "<cmd>w<CR>", extend("Save"))
+map("n", "<leader>q", "<cmd>q<CR>", extend("Quit"))
+map("n", "<leader>x", function()
+  tabufline().close_buffer()
+end, extend("Close buffer"))
+
+-- Windows — Ctrl+hjkl + Fn-layer arrows
+local win = { h = "<C-w>h", j = "<C-w>j", k = "<C-w>k", l = "<C-w>l" }
+for key, cmd in pairs(win) do
+  map("n", "<C-" .. key .. ">", cmd, opts)
+  map("n", "<A-" .. key .. ">", cmd, extend("Window " .. key))
+end
+map("n", "<Left>", win.h, extend("Window left"))
+map("n", "<Down>", win.j, extend("Window down"))
+map("n", "<Up>", win.k, extend("Window up"))
+map("n", "<Right>", win.l, extend("Window right"))
+
+map("n", "<Esc>", "<cmd>nohlsearch<CR>", extend("Clear search highlight"))
+
+-- Insert: word case (Ctrl+u/l — no shifted keys)
+map("i", "<C-u>", "<Esc>gUiwgi", extend("Uppercase word"))
+map("i", "<C-l>", "<Esc>guiwgi", extend("Lowercase word"))
 
 -- LSP (buffer-local on attach)
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -44,16 +87,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local function bmap(mode, lhs, rhs, desc)
       vim.keymap.set(mode, lhs, rhs, { buffer = buf, desc = desc, silent = true })
     end
+
     bmap("n", "gd", vim.lsp.buf.definition, "Definition")
     bmap("n", "gr", vim.lsp.buf.references, "References")
-    bmap("n", "K", vim.lsp.buf.hover, "Hover")
-    bmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename")
-    bmap({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
-    bmap("n", "<leader>cf", function()
+
+    -- No Shift+K on 65%
+    bmap("n", "<leader>k", vim.lsp.buf.hover, "Hover")
+    bmap("n", "<leader>n", vim.lsp.buf.rename, "Rename")
+    bmap({ "n", "v" }, "<leader>a", vim.lsp.buf.code_action, "Code action")
+    bmap("n", "<leader>m", function()
       vim.lsp.buf.format({ async = true })
     end, "Format")
-    bmap("n", "[d", vim.diagnostic.goto_prev, "Prev diagnostic")
-    bmap("n", "]d", vim.diagnostic.goto_next, "Next diagnostic")
-    bmap("n", "<leader>d", vim.diagnostic.open_float, "Diagnostic float")
+
+    -- No [d / ]d — use leader+hj (home row)
+    bmap("n", "<leader>dh", vim.diagnostic.goto_prev, "Prev diagnostic")
+    bmap("n", "<leader>dl", vim.diagnostic.goto_next, "Next diagnostic")
+    bmap("n", "<leader>df", vim.diagnostic.open_float, "Diagnostic float")
   end,
 })

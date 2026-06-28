@@ -26,6 +26,7 @@ opt.hlsearch = true
 opt.incsearch = true
 opt.showmode = false
 opt.laststatus = 3
+opt.switchbuf = "usetab,uselast" -- gb / buffer # jumps between open tabs
 
 local undodir = vim.fn.stdpath("config") .. "/undodir"
 opt.undodir = undodir
