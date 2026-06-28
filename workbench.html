@@ -6,6 +6,9 @@
   <meta name="description" content="CoreForge Workbench — minimal Neovim reference for C, C++, JavaScript, Python, and Assembly." />
   <meta name="author" content="ThiwankaS" />
   <title>CoreForge Workbench · Neovim Reference</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/workbench/css/workbench.css" />
   <script src="assets/workbench/js/workbench.js" defer></script>
 </head>
@@ -16,7 +19,7 @@
       <div class="monogram" aria-hidden="true">T</div>
       <div class="logo">ThiwankaS · Personal Workbench</div>
       <h1>CoreForge <span>Workbench</span></h1>
-      <p class="subtitle">Minimal Neovim — three Lua files, Gruvbox, Treesitter, Telescope, LSP, and completion.</p>
+      <p class="subtitle">Minimal Neovim — Lua modules for chrome, font, treesitter, LSP, and search. No NvChad framework.</p>
       <div class="badges">
         <span class="badge">Author <strong>ThiwankaS</strong></span>
         <span class="badge">Leader <strong>Space</strong></span>
@@ -37,6 +40,10 @@
       <ul>
         <li><a href="#install">Install</a></li>
         <li><a href="#stack">Stack</a></li>
+        <li><a href="#treesitter">Treesitter</a></li>
+        <li><a href="#chrome">Chrome</a></li>
+        <li><a href="#font">Font</a></li>
+        <li><a href="#tree">File tree</a></li>
         <li><a href="#search">Search</a></li>
         <li><a href="#buffers">Buffers</a></li>
         <li><a href="#edit">Edit</a></li>
@@ -75,16 +82,24 @@ nvim</pre>
       <section class="card acc-stack wide" id="stack">
         <div class="card-head"><div class="card-icon">◫</div><h2>Configuration &amp; Stack</h2></div>
         <div class="card-body prose">
-          <h3>Three-file layout</h3>
+          <h3>Module layout</h3>
           <pre>~/.config/nvim/
-├── init.lua           Options · lazy.nvim bootstrap
-├── lua/keymaps.lua    Keybindings
-└── lua/plugins.lua    Plugin specifications</pre>
+├── init.lua              Options · lazy.nvim bootstrap
+├── lua/keymaps.lua       Keybindings
+├── lua/plugins.lua       Plugin specifications
+├── lua/treesitter.lua    Syntax · indent · parsers
+├── lua/chrome.lua        Statusline · bufferline · git
+├── lua/font.lua          JetBrains Mono Nerd Font
+└── lua/nvim_tree.lua     Sidebar file explorer</pre>
           <table>
             <tr><th>File</th><th>Responsibility</th></tr>
-            <tr><td><code>init.lua</code></td><td>4-space tabs, relative numbers, clipboard, loads lazy.nvim and keymaps</td></tr>
-            <tr><td><code>lua/keymaps.lua</code></td><td>Telescope, LSP buffer maps, window navigation</td></tr>
-            <tr><td><code>lua/plugins.lua</code></td><td>Gruvbox, treesitter, telescope, mason, lspconfig, nvim-cmp</td></tr>
+            <tr><td><code>init.lua</code></td><td>Options, font, lazy.nvim, keymaps, chrome UI</td></tr>
+            <tr><td><code>lua/keymaps.lua</code></td><td>Telescope, LSP buffer maps, window navigation, word case</td></tr>
+            <tr><td><code>lua/plugins.lua</code></td><td>Gruvbox, treesitter, telescope, nvim-tree, gitsigns, bufferline, mason, lsp, cmp</td></tr>
+            <tr><td><code>lua/treesitter.lua</code></td><td>Parser install, highlight, indent, legacy syntax off</td></tr>
+            <tr><td><code>lua/chrome.lua</code></td><td>NvChad-style bottom bar + top tab bar</td></tr>
+            <tr><td><code>lua/font.lua</code></td><td>JetBrains Mono Nerd Font for GUI Neovim</td></tr>
+            <tr><td><code>lua/nvim_tree.lua</code></td><td>Sidebar file tree (nvim-tree)</td></tr>
           </table>
           <h3>Plugins</h3>
           <div class="pill-list">
@@ -94,7 +109,80 @@ nvim</pre>
             <span class="pill">mason.nvim</span>
             <span class="pill">nvim-lspconfig</span>
             <span class="pill">nvim-cmp</span>
+            <span class="pill">nvim-tree</span>
+            <span class="pill">gitsigns</span>
+            <span class="pill">bufferline</span>
           </div>
+        </div>
+      </section>
+
+      <!-- Treesitter -->
+      <section class="card acc-tree" id="treesitter">
+        <div class="card-head"><div class="card-icon">⌬</div><h2>Treesitter · Syntax</h2></div>
+        <div class="card-body prose">
+          <p>Configured in <code>lua/treesitter.lua</code>. AST-based highlighting and smart indent — regex syntax is disabled for code buffers so Treesitter owns colors.</p>
+          <div class="chip-row">
+            <span class="chip">c</span><span class="chip">cpp</span><span class="chip">javascript</span>
+            <span class="chip">python</span><span class="chip">asm</span><span class="chip">lua</span>
+            <span class="chip">vim</span><span class="chip">bash</span><span class="chip">json</span>
+          </div>
+          <div class="row"><div class="keys"><kbd>:TSInstall</kbd> <kbd>lang</kbd></div><div class="desc">Install a parser</div></div>
+          <div class="row"><div class="keys"><kbd>:TSUpdate</kbd></div><div class="desc">Update all parsers</div></div>
+          <div class="row"><div class="keys"><kbd>=</kbd></div><div class="desc">Auto-indent line (Treesitter indent)</div></div>
+        </div>
+      </section>
+
+      <!-- Chrome UI -->
+      <section class="card acc-status" id="chrome">
+        <div class="card-head"><div class="card-icon">▁</div><h2>Chrome · Statusline &amp; Tabs</h2></div>
+        <div class="card-body">
+          <p class="lead">NvChad-style UI in <code>lua/chrome.lua</code> — no NvChad framework.</p>
+          <div class="statusbar-mock" aria-label="Statusline preview">
+            <span class="sb-mode sb-insert">NORMAL</span>
+            <span class="sb-file">  main.cpp</span>
+            <span class="sb-item sb-lsp"> main</span>
+            <span class="sb-item" style="color:#fb4934"> 4</span>
+            <span class="sb-item" style="color:#fabd2f"> 5</span>
+            <span class="sb-spacer"></span>
+            <span class="sb-item sb-lsp">LSP ~ clangd</span>
+            <span class="sb-item" style="background:#fb4934;color:#1d2021;padding:0 0.35rem;border-radius:3px"> miniRedis </span>
+            <span class="sb-clock">17:10</span>
+            <span class="sb-item" style="background:#fabd2f;color:#1d2021;padding:0 0.35rem;border-radius:3px"> 38/1 </span>
+          </div>
+          <table class="compact">
+            <tr><th>Segment</th><th>Meaning</th></tr>
+            <tr><td>Mode pill</td><td>Colored badge — Normal, Insert, Visual, etc.</td></tr>
+            <tr><td>File + icon</td><td>Current buffer · <code>●</code> when modified</td></tr>
+            <tr><td>Git branch</td><td>From gitsigns (e.g. <code>main</code>)</td></tr>
+            <tr><td>Red / yellow counts</td><td>LSP error and warning totals</td></tr>
+            <tr><td>LSP</td><td>Active language server (e.g. <code>clangd</code>)</td></tr>
+            <tr><td>Red block</td><td>Project root folder name</td></tr>
+            <tr><td>Clock</td><td>Local time <code>HH:MM</code></td></tr>
+            <tr><td>Yellow block</td><td>Cursor <code>line/col</code></td></tr>
+          </table>
+          <p class="note">Top tab bar via <strong>bufferline.nvim</strong> — file tabs across the top, LSP diagnostics on tabs, offset for nvim-tree.</p>
+        </div>
+      </section>
+
+      <!-- Font -->
+      <section class="card acc-font" id="font">
+        <div class="card-head"><div class="card-icon">A</div><h2>Font · JetBrains Mono</h2></div>
+        <div class="card-body prose">
+          <p>Configured in <code>lua/font.lua</code> — <strong>JetBrainsMono Nerd Font</strong> at 14pt for GUI Neovim (<code>guifont</code>).</p>
+          <pre>bash ./scripts/install_jetbrains_mono_nerd.sh</pre>
+          <p class="note">In a terminal, set the same font in your emulator (Kitty, Alacritty, etc.). <code>guifont</code> does not apply inside TTY/SSH sessions.</p>
+          <p>Edit <code>lua/font.lua</code> to change size: <code>M.size = 14</code></p>
+        </div>
+      </section>
+
+      <!-- File tree -->
+      <section class="card acc-treebar" id="tree">
+        <div class="card-head"><div class="card-icon">☰</div><h2>File Tree · nvim-tree</h2></div>
+        <div class="card-body">
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>e</kbd></div><div class="desc">Toggle sidebar file tree</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>E</kbd></div><div class="desc">Reveal current file in tree</div></div>
+          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></div><div class="desc">Move between tree and editor windows</div></div>
+          <p class="note">Configured in <code>lua/nvim_tree.lua</code>. Opens on the left; press <kbd>Space</kbd><kbd>e</kbd> again to close.</p>
         </div>
       </section>
 
@@ -131,7 +219,6 @@ nvim</pre>
           <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>l</kbd></div><div class="desc">Lowercase word under cursor (insert mode)</div></div>
           <div class="row"><div class="keys"><kbd>u</kbd> <kbd>U</kbd></div><div class="desc">Undo · redo</div></div>
           <p class="note">Persistent undo is saved under <code>undodir/</code> (cleared for a fresh start; grows as you edit).</p>
-          <p class="note">Syntax highlighting via Treesitter. Regex syntax is disabled for C, C++, JS, Python, and ASM buffers.</p>
         </div>
       </section>
 
@@ -158,7 +245,7 @@ nvim</pre>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ca</kbd></div><div class="desc">Code action</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>rn</kbd></div><div class="desc">Rename symbol</div></div>
           <div class="row"><div class="keys"><kbd>[</kbd><kbd>d</kbd> <kbd>]</kbd><kbd>d</kbd></div><div class="desc">Previous · next diagnostic</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>e</kbd></div><div class="desc">Diagnostic float</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>d</kbd></div><div class="desc">Diagnostic float</div></div>
         </div>
       </section>
 
@@ -236,7 +323,11 @@ ln -sf build/compile_commands.json .</pre>
 │   └── js/workbench.js
 ├── lua/
 │   ├── keymaps.lua
-│   └── plugins.lua
+│   ├── plugins.lua
+│   ├── treesitter.lua
+│   ├── chrome.lua
+│   ├── font.lua
+│   └── nvim_tree.lua
 └── scripts/
     └── bootstrap.sh</pre>
         </div>
@@ -246,7 +337,7 @@ ln -sf build/compile_commands.json .</pre>
 
     <footer>
       <p class="sig-line">⌁ ThiwankaS · Personal Workbench</p>
-      <p>lazy.nvim · Gruvbox · Treesitter · Telescope · clangd · nvim-cmp</p>
+      <p>lazy.nvim · Gruvbox · Treesitter · bufferline · gitsigns · Telescope · clangd</p>
       <p class="footer-links">
         <a href="https://github.com/ThiwankaS/workbench" target="_blank" rel="noopener">github.com/ThiwankaS/workbench</a>
       </p>
