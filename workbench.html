@@ -82,7 +82,6 @@
             <tr><td><kbd class="leader">Space</kbd><kbd>q</kbd></td><td>Normal</td><td>Quit</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>x</kbd></td><td>Normal</td><td>Close buffer</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd> or <kbd>Alt</kbd> <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></td><td>Normal</td><td>Move between windows</td></tr>
-            <tr><td><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd></td><td>Normal</td><td>Move between windows (Fn-layer arrows)</td></tr>
             <tr><td><kbd>Esc</kbd></td><td>Normal</td><td>Clear search highlight</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>u</kbd> / <kbd>l</kbd></td><td>Insert</td><td>Uppercase / lowercase word</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>n</kbd> / <kbd>p</kbd></td><td>Insert</td><td>Next / prev completion item</td></tr>
@@ -97,7 +96,7 @@
             <tr><td><kbd class="leader">Space</kbd><kbd>dh</kbd> / <kbd>dl</kbd></td><td>Normal</td><td>Prev / next diagnostic</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>df</kbd></td><td>Normal</td><td>Diagnostic float</td></tr>
           </table>
-          <p class="note"><strong>65% tips:</strong> <kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>l</kbd> jumps windows; <kbd class="leader">Space</kbd><kbd>h</kbd><kbd>l</kbd> cycles buffers. LSP maps apply when a server is attached. <kbd>Tab</kbd> is not used in normal mode — free for your terminal.</p>
+          <p class="note"><strong>65% tips:</strong> <kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>l</kbd> jumps windows (from tree: <kbd>l</kbd> → editor); <kbd class="leader">Space</kbd><kbd>h</kbd><kbd>l</kbd> cycles buffers in code buffers only. Arrow keys work in nvim-tree and Telescope — never remapped globally.</p>
         </div>
       </section>
 
@@ -188,13 +187,14 @@ nvim</pre>
             <span class="sb-spacer"></span>
             <span class="sb-item sb-lsp">LSP ~ clangd</span>
             <span class="sb-item" style="background:#fb4934;color:#1d2021;padding:0 0.35rem;border-radius:3px"> project </span>
-            <span class="sb-clock">17:10</span>
+            <span class="sb-clock">17:10:42  Thu · 04 Jun 2026</span>
             <span class="sb-item" style="background:#fabd2f;color:#1d2021;padding:0 0.35rem;border-radius:3px"> 38/1 </span>
           </div>
           <table class="compact">
             <tr><th>UI part</th><th>Module</th><th>Notes</th></tr>
             <tr><td>Statusline</td><td>NvChad <code>stl</code></td><td>Mode, file, git, diagnostics, LSP, location</td></tr>
             <tr><td>Tab bar</td><td><strong>tabufline</strong></td><td>Buffer tabs with nvim-tree offset</td></tr>
+            <tr><td>Clock</td><td><code>setup/clock.lua</code></td><td>Live digital time + date on the statusline</td></tr>
             <tr><td>Git gutter</td><td>gitsigns</td><td>▎ markers in sign column</td></tr>
             <tr><td>Hex / CSS colors</td><td>colorify</td><td>Virtual text for color values</td></tr>
             <tr><td>LSP signature</td><td>nvchad.lsp.signature</td><td>Auto signature help on attach</td></tr>
@@ -227,6 +227,9 @@ base46 = {
         <div class="card-body">
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>e</kbd></div><div class="desc">Toggle sidebar file tree</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>j</kbd></div><div class="desc">Reveal current file in tree</div></div>
+          <div class="row"><div class="keys"><kbd>↑</kbd><kbd>↓</kbd></div><div class="desc">Move up / down entries</div></div>
+          <div class="row"><div class="keys"><kbd>←</kbd><kbd>→</kbd></div><div class="desc">Parent / open folder</div></div>
+          <div class="row"><div class="keys"><kbd>j</kbd><kbd>k</kbd></div><div class="desc">Same as arrow up / down</div></div>
           <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></div><div class="desc">Move between tree and editor windows</div></div>
           <p class="note">Configured in <code>lua/setup/tree.lua</code>. Tabufline offsets the tab bar when the tree is open.</p>
         </div>
@@ -402,6 +405,7 @@ ln -sf build/compile_commands.json .</pre>
 │   │   └── font.lua
 │   └── setup/
 │       ├── nvui.lua
+│       ├── clock.lua
 │       ├── gitsigns.lua
 │       ├── treesitter.lua
 │       ├── tree.lua

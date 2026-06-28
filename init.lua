@@ -47,6 +47,7 @@ vim.pack.add({
 }, { confirm = false })
 
 require("setup.nvui")
+require("setup.clock").setup()
 require("setup.treesitter")
 require("setup.tree")
 require("setup.telescope")

@@ -50,6 +50,7 @@ Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons).
 │   │   └── font.lua         GUI font
 │   └── setup/
 │       ├── nvui.lua         Base46 cache + require("nvchad")
+│       ├── clock.lua        digital clock + date (statusline)
 │       ├── gitsigns.lua
 │       ├── treesitter.lua
 │       ├── tree.lua         nvim-tree
@@ -76,12 +77,11 @@ Tuned for a **65% keyboard** — home-row chords, no `[` `]` keys, `Ctrl+h/j/k/l
 | `Space p` | Pick buffer |
 | `Space o` | Recent files |
 | `gb` | Toggle last two buffers |
-| `Space h` / `Space l` | Previous / next buffer |
+| `Space h` / `Space l` | Previous / next buffer (not in tree / Telescope) |
 | `Space w` or `Ctrl+s` | Save |
 | `Space q` | Quit |
 | `Space x` | Close buffer |
-| `Ctrl` or `Alt` `h/j/k/l` | Move between windows |
-| Arrow keys | Move between windows (Fn layer) |
+| `Ctrl` or `Alt` `h/j/k/l` | Move between windows (from tree: `l` → editor) |
 | `Space k` | Hover (LSP) |
 | `Space n` | Rename (LSP) |
 | `Space a` | Code action (LSP) |
@@ -119,6 +119,7 @@ Run `:MasonInstallAll` to install servers declared in `lua/setup/lsp.lua`.
 - **68 themes** — `Space th` opens the Volt theme picker (`:h nvui.theme-picker`)
 - **Quick toggle** — `Space tt` switches between themes in `theme_toggle` inside `lua/chadrc.lua`
 - **Statusline + tabufline** — configured in `chadrc.lua` under `ui.statusline` and `ui.tabufline`
+- **Digital clock** — `lua/setup/clock.lua` shows live `HH:MM:SS` + date on the statusline (right side)
 - **Transparency** — `base46.transparency = true` in `chadrc.lua` (works with Ghostty `background-opacity`)
 
 Edit `lua/chadrc.lua` to change the default theme, statusline style, or transparency.

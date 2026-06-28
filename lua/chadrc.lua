@@ -15,6 +15,12 @@ return {
       enabled = true,
       theme = "default",
       separator_style = "arrow",
+      order = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "clock", "cursor" },
+      modules = {
+        clock = function()
+          return require("setup.clock").statusline()
+        end,
+      },
     },
     tabufline = {
       enabled = true,
