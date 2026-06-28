@@ -5,7 +5,7 @@ set -euo pipefail
 # - Installs Neovim + required tools
 # - Backs up existing ~/.config/nvim
 # - Copies this repo to ~/.config/nvim (unless already there)
-# - Installs plugins and C/C++ Treesitter parsers headlessly
+# - Installs plugins and Treesitter parsers headlessly
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET_DIR="${TARGET_DIR:-$HOME/.config/nvim}"
@@ -97,13 +97,9 @@ prime_neovim() {
     return
   }
 
-  info "Installing Treesitter parsers (c/cpp)"
-  nvim --headless "+TSInstall c cpp" +qa || warn "TSInstall failed; run :TSInstall c cpp manually."
-
-  if [[ -x "$TARGET_DIR/scripts/install_snap_backend.sh" ]]; then
-    info "Installing snap.nvim backend (optional, ~127 MB)"
-    "$TARGET_DIR/scripts/install_snap_backend.sh" || warn "snap backend install failed; run scripts/install_snap_backend.sh later"
-  fi
+  info "Installing Treesitter parsers (c cpp javascript typescript markdown lua)"
+  nvim --headless "+lua require('nvim-treesitter').install({'c','cpp','javascript','typescript','markdown','markdown_inline','lua','vim','vimdoc','bash','json'})" +qa \
+    || warn "Treesitter install failed; run :TSInstall c cpp in Neovim."
 }
 
 main() {
@@ -118,9 +114,10 @@ main() {
 Done.
 Next steps:
   1) Open Neovim: nvim
-  2) If needed: :Mason (install LSP tools), :checkhealth
-  3) Theme switcher: <leader>th
-  4) Code snapshots: <leader>ss (needs snap backend; see scripts/install_snap_backend.sh)
+  2) :Mason — verify clangd, clang-format, stylua, ts_ls, etc.
+  3) :checkhealth
+  4) Optional: :Lazy clean — remove orphaned plugins from old installs
+  5) User guide: xdg-open ~/.config/nvim/workbench.html
 
 EOF
 }

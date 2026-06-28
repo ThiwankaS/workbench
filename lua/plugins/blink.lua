@@ -1,5 +1,26 @@
 -- Replaces NvChad's nvim-cmp stack (`hrsh7th/nvim-cmp` disabled in `lua/plugins/init.lua`).
 -- LuaSnip stays available via explicit dependency + `nvchad.configs.luasnip`.
+
+local function insert_tabstop()
+  local col = vim.fn.col(".") - 1
+  local sw = vim.bo.softtabstop
+  if sw == 0 then
+    sw = vim.bo.shiftwidth
+  end
+  local width = sw - (col % sw)
+  if width == 0 then
+    width = sw
+  end
+  if vim.bo.expandtab then
+    return string.rep(" ", width)
+  end
+  return "\t"
+end
+
+local function unindent_tabstop()
+  return vim.api.nvim_replace_termcodes("<C-d>", true, true, true)
+end
+
 return {
   {
     "saghen/blink.cmp",
@@ -18,12 +39,12 @@ return {
     },
     opts = {
       snippets = { preset = "luasnip" },
-      -- Tab: blink enter preset — snippets then fallback to Insert Tab in mappings.lua.
+      -- Tab order: completion menu → snippet jump → soft indent (no mappings.lua Tab override).
       keymap = {
         preset = "enter",
         ["<CR>"] = { "select_and_accept", "fallback" },
-        ["<Tab>"] = { "snippet_forward", "fallback" },
-        ["<S-Tab>"] = { "snippet_backward", "fallback" },
+        ["<Tab>"] = { "select_next", "snippet_forward", insert_tabstop },
+        ["<S-Tab>"] = { "select_prev", "snippet_backward", unindent_tabstop },
         ["<C-j>"] = { "select_next", "fallback" },
         ["<C-k>"] = { "select_prev", "fallback" },
       },

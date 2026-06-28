@@ -62,8 +62,10 @@ vim.api.nvim_create_autocmd("User", {
   pattern = "LazyDone",
   once = true,
   callback = function()
-    load_user_maps()
-    vim.schedule(require("config.theme").reload)
+    vim.schedule(function()
+      load_user_maps()
+      require("config.theme").reload()
+    end)
   end,
 })
 

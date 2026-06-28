@@ -1,7 +1,7 @@
 --- User keymaps (extends nvchad.mappings). Re-loaded on LazyDone to win over plugin maps.
 ---
 --- Notable bindings:
----   Tab / S-Tab (i)     indent / unindent (blink.cmp fallback when no menu)
+---   Tab / S-Tab (i)     blink.cmp: menu → snippet → indent (lua/plugins/blink.lua)
 ---   A-j / A-k           move line or selection
 ---   leader md / mu      move line fallback (no Meta in terminal)
 ---   H / L               previous / next buffer
@@ -14,39 +14,23 @@ require("nvchad.mappings")
 local map = vim.keymap.set
 local map_opts = { noremap = true, silent = true }
 
--- Insert Tab for blink.cmp "fallback" preset (desc must not start with "blink.cmp:").
-local function insert_tabstop()
-  local col = vim.fn.col(".") - 1
-  local sw = vim.bo.softtabstop
-  if sw == 0 then
-    sw = vim.bo.shiftwidth
-  end
-  local width = sw - (col % sw)
-  if width == 0 then
-    width = sw
-  end
-  if vim.bo.expandtab then
-    return string.rep(" ", width)
-  end
-  return "\t"
-end
-
-map("i", "<Tab>", function()
-  return insert_tabstop()
-end, vim.tbl_extend("force", { expr = true, desc = "Insert tab / soft indent" }, map_opts))
-
-map("i", "<S-Tab>", function()
-  return vim.api.nvim_replace_termcodes("<C-d>", true, true, true)
-end, vim.tbl_extend("force", { expr = true, desc = "Unindent in insert mode" }, map_opts))
-
 local function move_line(delta)
   return function()
-    for _ = 1, vim.v.count1 do
-      if delta > 0 then
-        vim.cmd("move .+1")
-      else
-        vim.cmd("move .-2")
+    local row = vim.api.nvim_win_get_cursor(0)[1]
+    local n = vim.v.count1
+    if delta > 0 then
+      local last = vim.api.nvim_buf_line_count(0)
+      if row >= last then
+        return
       end
+      local dest = math.min(row + n, last)
+      vim.cmd(string.format("%dm%s", row, dest))
+    else
+      if row <= 1 then
+        return
+      end
+      local dest = math.max(row - n - 1, -1)
+      vim.cmd(string.format("%dm%s", row, dest))
     end
     vim.cmd("normal! ==")
   end
@@ -54,10 +38,21 @@ end
 
 local function move_visual(delta)
   return function()
+    local start_line = vim.fn.line("v")
+    local end_line = vim.fn.line(".")
+    if start_line > end_line then
+      start_line, end_line = end_line, start_line
+    end
     if delta > 0 then
-      vim.cmd("move '>+1")
+      if end_line >= vim.api.nvim_buf_line_count(0) then
+        return
+      end
+      vim.cmd(string.format("%d,%dm%d", start_line, end_line, end_line + 1))
     else
-      vim.cmd("move '<-2")
+      if start_line <= 1 then
+        return
+      end
+      vim.cmd(string.format("%d,%dm%d", start_line, end_line, start_line - 2))
     end
     vim.cmd("normal! gv")
     vim.cmd("normal! ==")
