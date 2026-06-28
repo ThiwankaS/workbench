@@ -1,87 +1,106 @@
 # CoreForge Workbench
 
-Minimal Neovim configuration for **C**, **C++**, **JavaScript**, **Python**, and **Assembly**.
+Minimal **Neovim 0.12** config using the built-in **[vim.pack](https://neovim.io/doc/user/pack.html)** plugin manager.
 
-## Structure
-
-```
-~/.config/nvim/
-├── init.lua              Options and lazy.nvim bootstrap
-├── lua/
-│   ├── keymaps.lua       Keybindings
-│   ├── plugins.lua       Plugin specifications
-│   ├── treesitter.lua    Syntax, indent, parsers
-│   ├── chrome.lua        NvChad-style statusline + tab bar
-│   ├── font.lua          JetBrains Mono Nerd Font
-│   └── nvim_tree.lua     Sidebar file tree
-└── workbench.html        Full reference guide
-```
-
-## Installation
-
-```bash
-bash ./scripts/bootstrap.sh
-bash ./scripts/install_jetbrains_mono_nerd.sh   # optional — Nerd Font icons
-nvim
-```
-
-Inside Neovim:
-
-```vim
-:Lazy sync
-:Mason
-:checkhealth
-```
-
-Set your **terminal font** to `JetBrainsMono Nerd Font` (GUI Neovim picks it up from `lua/font.lua`).
+Focus: **C**, **C++**, **JavaScript**, **Python** — Gruvbox Material, Treesitter, Telescope, nvim-tree, Mason LSP, NvChad-style UI.
 
 ## Documentation
 
-- **Web:** https://thiwankas.github.io/workbench/
-- **Local:** `xdg-open ~/.config/nvim/workbench.html`
+- **Web guide:** https://thiwankas.github.io/workbench/
+- **Local guide:** `xdg-open ~/.config/nvim/workbench.html`
 
-## Chrome UI (statusline + tabs)
+## Requirements
 
-Bottom bar: mode · file · git branch · errors/warnings · LSP · project · clock · line/col.
+- Neovim **≥ 0.12** (with `vim.pack`)
+- `git`, `ripgrep` (for live grep), `gcc` / `clang` (for Treesitter parsers)
 
-Top tab bar: bufferline (file tabs with LSP indicators).
+## Quick start (Debian 13)
 
-## File tree
+```bash
+git clone https://github.com/ThiwankaS/workbench.git ~/.config/nvim
+cd ~/.config/nvim
+bash ./scripts/bootstrap.sh
+nvim
+```
+
+On first launch, `vim.pack` installs plugins. Confirm with `y` (or `a` for all) if prompted.
+
+```vim
+:checkhealth vim.pack
+:Mason
+:TSInstall c cpp javascript python
+```
+
+Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons and slanted tabs).
+
+## Layout
+
+```
+~/.config/nvim/
+├── init.lua                 vim.pack.add + bootstrap
+├── nvim-pack-lock.json      plugin lockfile (commit this)
+├── workbench.html           full reference guide
+├── lua/
+│   ├── core/
+│   │   ├── options.lua      editor defaults
+│   │   ├── keymaps.lua      leader maps + LSP
+│   │   └── font.lua         GUI font
+│   └── setup/
+│       ├── theme.lua        gruvbox-material
+│       ├── treesitter.lua
+│       ├── tree.lua         nvim-tree
+│       ├── telescope.lua
+│       ├── lsp.lua          clangd, ts_ls, pyright
+│       ├── cmp.lua
+│       └── chrome.lua       tabline + statusline (NvChad-style)
+└── scripts/
+    ├── bootstrap.sh
+    └── install_jetbrains_mono_nerd.sh
+```
+
+## Keymaps
 
 | Keys | Action |
 |------|--------|
-| `Space e` | Toggle sidebar file tree |
-| `Space E` | Reveal current file in tree |
+| `Space e` | Toggle file tree |
+| `Space E` | Reveal file in tree |
+| `Space ff` | Find files |
+| `Space fg` | Live grep |
+| `Space fb` | Buffers |
+| `Space fr` | Recent files |
+| `Space cf` | Format (LSP) |
+| `Space d` | Diagnostic float |
+| `gd` | Go to definition |
+| `K` | Hover |
+| `Ctrl h/j/k/l` | Move between windows |
+| `Ctrl+u` / `Ctrl+l` | Uppercase / lowercase word (insert mode) |
 
-## Stack
+## Plugin management
 
-| Component | Plugin / module |
-|-----------|-----------------|
-| Theme | gruvbox.nvim |
-| Syntax | nvim-treesitter · `lua/treesitter.lua` |
-| UI chrome | bufferline + gitsigns · `lua/chrome.lua` |
-| Font | `lua/font.lua` |
-| File tree | nvim-tree · `lua/nvim_tree.lua` |
-| Search | telescope.nvim |
-| LSP | mason + nvim-lspconfig |
-| Completion | nvim-cmp |
+```vim
+:lua vim.pack.update()
+:lua vim.pack.update(nil, { force = true })
+:checkhealth vim.pack
+```
 
-## Language servers
+## LSP servers (via Mason)
 
 | Language | Server |
 |----------|--------|
 | C / C++ | clangd |
-| JavaScript / TypeScript | ts_ls |
+| JavaScript / TypeScript | typescript-language-server (`ts_ls`) |
 | Python | pyright |
-| Assembly | asm_lsp |
 
-C/C++ projects require `compile_commands.json` in the project root for full clangd support.
+C/C++ needs `compile_commands.json` in the project root for full clangd support.
 
-## Editing shortcuts
+## Theme
 
-| Keys (insert mode) | Action |
-|--------------------|--------|
-| `Ctrl+u` | Uppercase word under cursor |
-| `Ctrl+l` | Lowercase word under cursor |
+[sainnhe/gruvbox-material](https://github.com/sainnhe/gruvbox-material) — hard background, material foreground.
+
+Edit `lua/setup/theme.lua` to tweak `vim.g.gruvbox_material_*` options.
+
+## NvChad-style UI
+
+`lua/setup/chrome.lua` provides bufferline tabs, gitsigns, and a powerline statusline (no full NvChad / lazy.nvim stack).
 
 Persistent undo is stored in `~/.config/nvim/undodir/` (gitignored).

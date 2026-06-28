@@ -1,93 +1,46 @@
---- CoreForge Workbench — minimal Neovim (lazy.nvim)
+--- CoreForge Workbench — Neovim 0.12 + vim.pack
+--- https://echasnovski.com/blog/2026-03-13-a-guide-to-vim-pack
 vim.loader.enable()
 
-vim.g.loaded_perl_provider = 0
-vim.g.loaded_ruby_provider = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-require("font").setup()
+require("core.options")
+require("core.font")
 
-local opt = vim.opt
-opt.number = true
-opt.relativenumber = true
-opt.expandtab = true
-opt.tabstop = 4
-opt.softtabstop = 4
-opt.shiftwidth = 4
-opt.smartindent = true
-opt.clipboard = "unnamedplus"
-opt.signcolumn = "yes"
-opt.updatetime = 250
-opt.timeoutlen = 300
-opt.splitright = true
-opt.splitbelow = true
-opt.termguicolors = true
-opt.ignorecase = true
-opt.smartcase = true
-opt.scrolloff = 8
-opt.sidescrolloff = 8
-opt.swapfile = false
-opt.backup = false
-opt.undofile = true
-opt.hlsearch = true
-opt.incsearch = true
-opt.showmode = false
-
-local undodir = vim.fn.stdpath("config") .. "/undodir"
-opt.undodir = undodir
-vim.fn.mkdir(undodir, "p")
-
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.uv.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
-end
-vim.opt.rtp:prepend(lazypath)
-
-require("lazy").setup(require("plugins"), {
-  defaults = { lazy = true },
-  install = { colorscheme = { "gruvbox" } },
-  checker = { enabled = false },
-  rocks = { enabled = false },
-  performance = {
-    rtp = {
-      disabled_plugins = {
-        "netrw",
-        "netrwPlugin",
-        "netrwSettings",
-        "netrwFileHandlers",
-        "tohtml",
-        "tutor",
-        "matchit",
-        "tarPlugin",
-        "zipPlugin",
-        "gzip",
-        "zip",
-        "vimballPlugin",
-        "vimball",
-        "getscriptPlugin",
-        "getscript",
-        "2html_plugin",
-        "logipat",
-        "rrhelper",
-        "spellfile_plugin",
-        "rplugin",
-        "syntax",
-        "synmenu",
-        "optwin",
-        "compiler",
-        "bugreport",
-      },
-    },
-  },
+vim.api.nvim_create_autocmd("PackChanged", {
+  callback = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if name == "nvim-treesitter" and kind == "update" then
+      if not ev.data.active then
+        vim.cmd.packadd("nvim-treesitter")
+      end
+      pcall(vim.cmd.TSUpdate)
+    end
+  end,
 })
 
-require("keymaps")
-require("chrome").setup()
+vim.pack.add({
+  "https://github.com/sainnhe/gruvbox-material",
+  "https://github.com/nvim-lua/plenary.nvim",
+  "https://github.com/nvim-telescope/telescope.nvim",
+  "https://github.com/nvim-tree/nvim-web-devicons",
+  { src = "https://github.com/nvim-tree/nvim-tree.lua", name = "nvim-tree" },
+  "https://github.com/nvim-treesitter/nvim-treesitter",
+  "https://github.com/neovim/nvim-lspconfig",
+  "https://github.com/mason-org/mason.nvim",
+  "https://github.com/lewis6991/gitsigns.nvim",
+  "https://github.com/akinsho/bufferline.nvim",
+  "https://github.com/hrsh7th/cmp-nvim-lsp",
+  "https://github.com/hrsh7th/cmp-buffer",
+  "https://github.com/hrsh7th/nvim-cmp",
+}, { confirm = false })
+
+require("setup.theme")
+require("setup.treesitter")
+require("setup.tree")
+require("setup.telescope")
+require("setup.lsp")
+require("setup.cmp")
+require("setup.chrome")
+require("core.keymaps")
