@@ -338,12 +338,12 @@ section.wide {
 .acc-cmp .card-head h2 { color: var(--pink); }
 .acc-lsp .card-icon { background: rgba(142, 192, 124, 0.15); color: var(--aqua); }
 .acc-lsp .card-head h2 { color: var(--aqua); }
-.acc-snap .card-icon { background: rgba(255, 117, 160, 0.12); color: var(--pink); }
-.acc-snap .card-head h2 { color: var(--pink); }
+.acc-stack .card-icon { background: rgba(131, 165, 152, 0.12); color: var(--aqua); }
+.acc-stack .card-head h2 { color: var(--aqua); }
 .acc-git .card-icon { background: rgba(254, 128, 25, 0.12); color: var(--orange); }
 .acc-git .card-head h2 { color: var(--orange); }
-.acc-dap .card-icon { background: rgba(251, 73, 52, 0.12); color: var(--red); }
-.acc-dap .card-head h2 { color: var(--red); }
+.acc-theme .card-icon { background: rgba(250, 189, 47, 0.12); color: var(--yellow); }
+.acc-theme .card-head h2 { color: var(--yellow); }
 .acc-cpp .card-icon { background: rgba(69, 133, 136, 0.2); color: var(--blue-deep); }
 .acc-cpp .card-head h2 { color: var(--blue-deep); }
 .acc-tools .card-icon { background: rgba(180, 187, 200, 0.12); color: var(--lavender); }
