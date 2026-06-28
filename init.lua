@@ -6,6 +6,8 @@ vim.g.loaded_ruby_provider = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+require("font").setup()
+
 local opt = vim.opt
 opt.number = true
 opt.relativenumber = true
@@ -88,3 +90,4 @@ require("lazy").setup(require("plugins"), {
 })
 
 require("keymaps")
+require("chrome").setup()

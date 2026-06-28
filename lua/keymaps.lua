@@ -23,6 +23,10 @@ map("n", "<leader>fh", function()
   require("telescope.builtin").help_tags()
 end, vim.tbl_extend("force", { desc = "Help tags" }, opts))
 
+-- File tree
+map("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", vim.tbl_extend("force", { desc = "Toggle file tree" }, opts))
+map("n", "<leader>E", "<cmd>NvimTreeFindFile<CR>", vim.tbl_extend("force", { desc = "Reveal file in tree" }, opts))
+
 -- Buffers
 map("n", "<leader>q", "<cmd>q<CR>", vim.tbl_extend("force", { desc = "Quit" }, opts))
 map("n", "<leader>w", "<cmd>w<CR>", vim.tbl_extend("force", { desc = "Write" }, opts))
@@ -60,6 +64,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end, "Format buffer")
     bmap("n", "[d", vim.diagnostic.goto_prev, "Previous diagnostic")
     bmap("n", "]d", vim.diagnostic.goto_next, "Next diagnostic")
-    bmap("n", "<leader>e", vim.diagnostic.open_float, "Diagnostic float")
+    bmap("n", "<leader>d", vim.diagnostic.open_float, "Diagnostic float")
   end,
 })

@@ -1,8 +1,6 @@
 --- Lazy.nvim plugin specifications (single module).
 local M = {}
 
-local parsers = { "c", "cpp", "javascript", "python", "asm", "lua", "vim", "vimdoc", "bash", "json" }
-
 M = {
   -- Colorscheme
   {
@@ -25,26 +23,13 @@ M = {
     lazy = false,
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter").setup({})
-      vim.schedule(function()
-        pcall(function()
-          require("nvim-treesitter").install(parsers)
-        end)
-      end)
-      vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("treesitter_syntax", { clear = true }),
-        pattern = { "c", "cpp", "javascript", "python", "asm", "nasm", "gas" },
-        callback = function(args)
-          vim.bo[args.buf].syntax = ""
-        end,
-      })
+      require("treesitter").setup()
     end,
   },
 
   -- Fuzzy finder
   {
     "nvim-telescope/telescope.nvim",
-    branch = "0.1.x",
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = "Telescope",
     config = function()
@@ -56,6 +41,38 @@ M = {
           layout_config = { horizontal = { prompt_position = "top" } },
         },
       })
+    end,
+  },
+
+  -- File tree
+  {
+    "nvim-tree/nvim-tree.lua",
+    lazy = false,
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("nvim_tree").setup()
+    end,
+  },
+
+  -- Git signs (statusline branch + gutter)
+  {
+    "lewis6991/gitsigns.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require("chrome").setup_gitsigns()
+    end,
+  },
+
+  -- Top tab bar (NvChad-style bufferline)
+  {
+    "akinsho/bufferline.nvim",
+    lazy = false,
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+      "lewis6991/gitsigns.nvim",
+    },
+    config = function()
+      require("chrome").setup_bufferline()
     end,
   },
 
