@@ -44,6 +44,7 @@ vim.pack.add({
   "https://github.com/hrsh7th/cmp-nvim-lsp",
   "https://github.com/hrsh7th/cmp-buffer",
   "https://github.com/hrsh7th/nvim-cmp",
+  "https://github.com/windwp/nvim-autopairs",
 }, { confirm = false })
 
 require("setup.nvui")
@@ -52,6 +53,7 @@ require("setup.treesitter")
 require("setup.tree")
 require("setup.telescope")
 require("setup.lsp")
+require("setup.autopairs")
 require("setup.cmp")
 require("setup.gitsigns")
 require("core.keymaps")

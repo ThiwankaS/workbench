@@ -30,7 +30,14 @@ end
 
 function M.guard_cmd(cmd, opts)
   return M.guard(function()
-    vim.cmd(cmd)
+    if cmd == "q" and vim.bo.modified then
+      vim.cmd("confirm q")
+      return
+    end
+    local ok = pcall(vim.cmd, cmd)
+    if not ok and cmd == "q" then
+      vim.cmd("confirm q")
+    end
   end, opts)
 end
 

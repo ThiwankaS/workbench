@@ -91,11 +91,17 @@ local lsp_ft_skip = {
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("user_lsp", { clear = true }),
   callback = function(args)
-    if lsp_ft_skip[vim.bo[args.buf].filetype] then
-      return
+    local buf = args.buf
+    local ft = vim.bo[buf].filetype
+
+    -- Neovim 0.11+ built-in completion fights nvim-cmp (Enter vs Ctrl-y)
+    if vim.lsp.completion and vim.lsp.completion.enable then
+      pcall(vim.lsp.completion.enable, false, args.data.client_id, buf)
     end
 
-    local buf = args.buf
+    if lsp_ft_skip[ft] then
+      return
+    end
     local function bmap(mode, lhs, rhs, desc)
       vim.keymap.set(mode, lhs, rhs, { buffer = buf, desc = desc, silent = true, noremap = true })
     end

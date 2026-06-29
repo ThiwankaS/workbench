@@ -89,7 +89,10 @@ Tuned for a **65% keyboard** — home-row chords, no `[` `]` keys, `Ctrl+h/j/k/l
 | `Space dh` / `Space dl` | Prev / next diagnostic |
 | `Space df` | Diagnostic float |
 | `gd` / `gr` | Definition / references |
-| `Ctrl+n` / `Ctrl+p` | Completion next / prev (insert) |
+| `Enter` or `Ctrl+y` | Confirm completion |
+| `Ctrl+n` / `Ctrl+p` | Next / prev item (or open menu) |
+| `↑` / `↓` | Next / prev item (when menu open) |
+| `Alt+e` | Jump outside closing bracket/quote (fast wrap) |
 | `Ctrl+u` / `Ctrl+l` | Uppercase / lowercase word (insert) |
 
 ## Plugin management
