@@ -56,4 +56,4 @@ require("setup.lsp")
 require("setup.autopairs")
 require("setup.cmp")
 require("setup.gitsigns")
-require("core.keymaps")
+require("core.keymaps") -- last so plugin defaults do not override user maps

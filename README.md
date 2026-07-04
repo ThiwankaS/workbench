@@ -45,8 +45,9 @@ Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons).
 ├── lua/
 │   ├── chadrc.lua           NvUI / Base46 options (theme, statusline, tabufline)
 │   ├── core/
-│   │   ├── options.lua      editor defaults
+│   │   ├── options.lua      editor defaults + diagnostics
 │   │   ├── keymaps.lua      leader maps + LSP
+│   │   ├── maputil.lua      guard helpers for plugin buffers
 │   │   └── font.lua         GUI font
 │   └── setup/
 │       ├── nvui.lua         Base46 cache + require("nvchad")
@@ -55,6 +56,7 @@ Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons).
 │       ├── treesitter.lua
 │       ├── tree.lua         nvim-tree
 │       ├── telescope.lua
+│       ├── autopairs.lua
 │       ├── lsp.lua          clangd, ts_ls, pyright
 │       └── cmp.lua
 └── scripts/
@@ -64,7 +66,7 @@ Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons).
 
 ## Keymaps
 
-Tuned for a **65% keyboard** — home-row chords, no `[` `]` keys, `Ctrl+h/j/k/l` for windows.
+Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 
 | Keys | Action |
 |------|--------|
@@ -77,23 +79,26 @@ Tuned for a **65% keyboard** — home-row chords, no `[` `]` keys, `Ctrl+h/j/k/l
 | `Space p` | Pick buffer |
 | `Space o` | Recent files |
 | `gb` | Toggle last two buffers |
-| `Space h` / `Space l` | Previous / next buffer (not in tree / Telescope) |
-| `Space w` or `Ctrl+s` | Save |
+| `Space h` / `Space l` | Previous / next buffer |
+| `Space w` | Save (normal mode) |
+| `Ctrl+s` | Save (insert mode) |
 | `Space q` | Quit |
 | `Space x` | Close buffer |
-| `Ctrl` or `Alt` `h/j/k/l` | Move between windows (from tree: `l` → editor) |
+| `Ctrl+h/j/k/l` | Move between windows |
+| `Alt+j` / `Alt+k` | Move line down / up (normal + visual) |
+| `Alt+e` | Jump past closing bracket/quote |
 | `Space k` | Hover (LSP) |
 | `Space n` | Rename (LSP) |
 | `Space a` | Code action (LSP) |
 | `Space m` | Format (LSP) |
-| `Space dh` / `Space dl` | Prev / next diagnostic |
-| `Space df` | Diagnostic float |
+| `Space dd` | Diagnostic message at cursor |
+| `Space dk` / `Space dj` | Prev / next diagnostic |
 | `gd` / `gr` | Definition / references |
 | `Enter` or `Ctrl+y` | Confirm completion |
-| `Ctrl+n` / `Ctrl+p` | Next / prev item (or open menu) |
-| `↑` / `↓` | Next / prev item (when menu open) |
-| `Alt+e` | Jump outside closing bracket/quote (fast wrap) |
+| `Ctrl+n` / `Ctrl+p` | Next / prev completion item (or open menu) |
 | `Ctrl+u` / `Ctrl+l` | Uppercase / lowercase word (insert) |
+
+Diagnostic text also appears inline at the end of each problem line.
 
 ## Plugin management
 

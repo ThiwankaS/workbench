@@ -78,25 +78,27 @@
             <tr><td><kbd class="leader">Space</kbd><kbd>o</kbd></td><td>Normal</td><td>Recent files</td></tr>
             <tr><td><kbd>gb</kbd></td><td>Normal</td><td>Toggle last two buffers</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>h</kbd> / <kbd>l</kbd></td><td>Normal</td><td>Previous / next buffer</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>w</kbd> or <kbd class="mod">Ctrl</kbd><kbd>s</kbd></td><td>Normal · Insert</td><td>Save</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>w</kbd></td><td>Normal</td><td>Save</td></tr>
+            <tr><td><kbd class="mod">Ctrl</kbd><kbd>s</kbd></td><td>Insert</td><td>Save</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>q</kbd></td><td>Normal</td><td>Quit</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>x</kbd></td><td>Normal</td><td>Close buffer</td></tr>
-            <tr><td><kbd class="mod">Ctrl</kbd> or <kbd>Alt</kbd> <kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></td><td>Normal</td><td>Move between windows</td></tr>
+            <tr><td><kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></td><td>Normal</td><td>Move between windows</td></tr>
+            <tr><td><kbd>Alt</kbd><kbd>j</kbd> / <kbd>k</kbd></td><td>Normal · Visual</td><td>Move line / selection down / up</td></tr>
+            <tr><td><kbd>Alt</kbd><kbd>e</kbd></td><td>Insert</td><td>Jump past closing bracket or quote</td></tr>
             <tr><td><kbd>Esc</kbd></td><td>Normal</td><td>Clear search highlight</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>u</kbd> / <kbd>l</kbd></td><td>Insert</td><td>Uppercase / lowercase word</td></tr>
-            <tr><td><kbd class="mod">Ctrl</kbd><kbd>n</kbd> / <kbd>p</kbd></td><td>Insert</td><td>Next / prev completion item</td></tr>
-            <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd><kbd>Tab</kbd></td><td>Insert</td><td>Next / prev completion (alternate)</td></tr>
-            <tr><td><kbd>Enter</kbd></td><td>Insert</td><td>Confirm completion</td></tr>
+            <tr><td><kbd class="mod">Ctrl</kbd><kbd>n</kbd> / <kbd>p</kbd></td><td>Insert</td><td>Next / prev completion item (or open menu)</td></tr>
+            <tr><td><kbd>Enter</kbd> or <kbd class="mod">Ctrl</kbd><kbd>y</kbd></td><td>Insert</td><td>Confirm completion</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>Space</kbd></td><td>Insert</td><td>Trigger completion menu</td></tr>
             <tr><td><kbd>gd</kbd> / <kbd>gr</kbd></td><td>Normal</td><td>Definition / references (LSP)</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>k</kbd></td><td>Normal</td><td>Hover (no Shift+K)</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>n</kbd></td><td>Normal</td><td>Rename symbol</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>a</kbd></td><td>Normal · Visual</td><td>Code action</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>m</kbd></td><td>Normal</td><td>Format buffer</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>dh</kbd> / <kbd>dl</kbd></td><td>Normal</td><td>Prev / next diagnostic</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>df</kbd></td><td>Normal</td><td>Diagnostic float</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>dk</kbd> / <kbd>dj</kbd></td><td>Normal</td><td>Prev / next diagnostic</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>dd</kbd></td><td>Normal</td><td>Diagnostic message at cursor</td></tr>
           </table>
-          <p class="note"><strong>65% tips:</strong> <kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>l</kbd> jumps windows (from tree: <kbd>l</kbd> → editor); <kbd class="leader">Space</kbd><kbd>h</kbd><kbd>l</kbd> cycles buffers in code buffers only. Arrow keys work in nvim-tree and Telescope — never remapped globally.</p>
+          <p class="note"><strong>65% tips:</strong> <kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>l</kbd> jumps windows; <kbd class="leader">Space</kbd><kbd>h</kbd><kbd>l</kbd> cycles buffers; <kbd>gb</kbd> toggles the last two files. Error text shows inline at the end of each line. Arrow keys work in nvim-tree and Telescope — never remapped globally.</p>
         </div>
       </section>
 
@@ -135,15 +137,18 @@ nvim</pre>
 ├── lua/
 │   ├── chadrc.lua           NvUI / Base46 options (theme, statusline, tabufline)
 │   ├── core/
-│   │   ├── options.lua      editor defaults
+│   │   ├── options.lua      editor defaults + diagnostics
 │   │   ├── keymaps.lua      all leader maps + LSP
+│   │   ├── maputil.lua      guard helpers for plugin buffers
 │   │   └── font.lua         JetBrains Mono Nerd Font
 │   └── setup/
 │       ├── nvui.lua         Base46 cache + require("nvchad")
+│       ├── clock.lua        statusline clock
 │       ├── gitsigns.lua     git gutter signs
 │       ├── treesitter.lua   parsers + highlight
 │       ├── tree.lua         nvim-tree sidebar
 │       ├── telescope.lua    fuzzy finder
+│       ├── autopairs.lua    auto pairs + Alt+e fast wrap
 │       ├── lsp.lua          mason + clangd, ts_ls, pyright
 │       └── cmp.lua          completion
 └── scripts/
@@ -253,7 +258,8 @@ base46 = {
         <div class="card-body">
           <div class="row"><div class="keys"><kbd>gb</kbd></div><div class="desc">Toggle between last two buffers</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>h</kbd> <kbd>l</kbd></div><div class="desc">Previous · next buffer (home row)</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>w</kbd> <kbd class="mod">Ctrl</kbd><kbd>s</kbd></div><div class="desc">Save</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>w</kbd></div><div class="desc">Save (normal mode)</div></div>
+          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>s</kbd></div><div class="desc">Save (insert mode)</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>q</kbd></div><div class="desc">Quit</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>x</kbd></div><div class="desc">Close buffer</div></div>
           <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></div><div class="desc">Move between windows</div></div>
@@ -266,7 +272,8 @@ base46 = {
       <section class="card acc-edit" id="edit">
         <div class="card-head"><div class="card-icon">✎</div><h2>Editing</h2></div>
         <div class="card-body">
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>m</kbd></div><div class="desc">Format buffer (LSP, when attached)</div></div>
+          <div class="row"><div class="keys"><kbd>Alt</kbd><kbd>j</kbd> <kbd>k</kbd></div><div class="desc">Move line / selection down · up (normal + visual)</div></div>
+          <div class="row"><div class="keys"><kbd>Alt</kbd><kbd>e</kbd></div><div class="desc">Jump past closing bracket or quote (insert)</div></div>
           <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>u</kbd></div><div class="desc">Uppercase word under cursor (insert mode)</div></div>
           <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>l</kbd></div><div class="desc">Lowercase word under cursor (insert mode)</div></div>
           <div class="row"><div class="keys"><kbd>u</kbd> <kbd>Ctrl</kbd><kbd>r</kbd></div><div class="desc">Undo · redo</div></div>
@@ -278,9 +285,8 @@ base46 = {
       <section class="card acc-cmp" id="completion">
         <div class="card-head"><div class="card-icon">▤</div><h2>Completion · nvim-cmp</h2></div>
         <div class="card-body">
-          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>n</kbd> <kbd>p</kbd></div><div class="desc">Next · previous item (insert mode, recommended)</div></div>
-          <div class="row"><div class="keys"><kbd>Tab</kbd> <kbd>Shift</kbd><kbd>Tab</kbd></div><div class="desc">Next · previous item (alternate)</div></div>
-          <div class="row"><div class="keys"><kbd>Enter</kbd></div><div class="desc">Confirm selection</div></div>
+          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>n</kbd> <kbd>p</kbd></div><div class="desc">Next · previous item (insert mode)</div></div>
+          <div class="row"><div class="keys"><kbd>Enter</kbd> <kbd class="mod">Ctrl</kbd><kbd>y</kbd></div><div class="desc">Confirm selection</div></div>
           <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>Space</kbd></div><div class="desc">Open completion menu</div></div>
           <p class="note">Sources: LSP, then buffer words. Configured in <code>lua/setup/cmp.lua</code>.</p>
         </div>
@@ -297,8 +303,9 @@ base46 = {
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>a</kbd></div><div class="desc">Code action (normal or visual)</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>n</kbd></div><div class="desc">Rename symbol</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>m</kbd></div><div class="desc">Format buffer</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dh</kbd> <kbd>dl</kbd></div><div class="desc">Previous · next diagnostic</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>df</kbd></div><div class="desc">Diagnostic float</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dk</kbd> <kbd>dj</kbd></div><div class="desc">Previous · next diagnostic</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dd</kbd></div><div class="desc">Diagnostic message at cursor</div></div>
+          <p class="note">Inline diagnostic text appears at the end of each problem line. Use <kbd class="leader">Space</kbd><kbd>dd</kbd> for a popup on demand.</p>
         </div>
       </section>
 
@@ -402,6 +409,7 @@ ln -sf build/compile_commands.json .</pre>
 │   ├── core/
 │   │   ├── options.lua
 │   │   ├── keymaps.lua
+│   │   ├── maputil.lua
 │   │   └── font.lua
 │   └── setup/
 │       ├── nvui.lua
@@ -410,6 +418,7 @@ ln -sf build/compile_commands.json .</pre>
 │       ├── treesitter.lua
 │       ├── tree.lua
 │       ├── telescope.lua
+│       ├── autopairs.lua
 │       ├── lsp.lua
 │       └── cmp.lua
 └── scripts/

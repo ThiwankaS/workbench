@@ -19,6 +19,7 @@ opt.splitright = true
 opt.splitbelow = true
 opt.updatetime = 250
 opt.timeoutlen = 300
+opt.ttimeoutlen = 50 -- Alt/Meta chords in terminal (Ghostty: enable option-as-meta)
 opt.swapfile = false
 opt.backup = false
 opt.undofile = true
@@ -26,7 +27,26 @@ opt.hlsearch = true
 opt.incsearch = true
 opt.showmode = false
 opt.laststatus = 3
-opt.switchbuf = "usetab,uselast" -- gb / buffer # jumps between open tabs
+opt.switchbuf = "usetab,uselast" -- gb jumps to the alternate buffer
+
+-- Diagnostic message text (not just E/W signs in the gutter).
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = "●",
+    source = "if_many",
+    spacing = 2,
+  },
+  signs = true,
+  underline = true,
+  severity_sort = true,
+  float = {
+    border = "rounded",
+    source = true,
+    header = "",
+    prefix = "",
+    focusable = true,
+  },
+})
 
 local undodir = vim.fn.stdpath("config") .. "/undodir"
 opt.undodir = undodir

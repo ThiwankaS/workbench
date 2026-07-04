@@ -20,9 +20,11 @@ local options = vim.tbl_deep_extend("force", require("nvchad.cmp"), {
     ["<C-Space>"] = cmp.mapping.complete(),
     ["<CR>"] = cmp.mapping(confirm, { "i", "s" }),
     ["<C-y>"] = cmp.mapping(confirm, { "i", "s" }),
-    ["<C-n>"] = cmp.mapping(function(fallback)
+    ["<C-n>"] = cmp.mapping(function()
       if cmp.visible() then
         cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+      elseif vim.snippet.active({ direction = 1 }) then
+        vim.snippet.jump(1)
       else
         cmp.complete()
       end
@@ -30,30 +32,12 @@ local options = vim.tbl_deep_extend("force", require("nvchad.cmp"), {
     ["<C-p>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-      else
-        fallback()
-      end
-    end),
-    ["<Down>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
-    ["<Up>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-      elseif vim.snippet.active({ direction = 1 }) then
-        vim.snippet.jump(1)
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
       elseif vim.snippet.active({ direction = -1 }) then
         vim.snippet.jump(-1)
       else
         fallback()
       end
-    end, { "i", "s" }),
+    end),
   }),
   sources = {
     { name = "nvim_lsp" },
