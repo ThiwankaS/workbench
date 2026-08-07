@@ -1,4 +1,16 @@
-local parsers = { "c", "cpp", "javascript", "python", "lua", "vim", "vimdoc", "bash", "json" }
+local parsers = {
+  "c",
+  "cpp",
+  "javascript",
+  "python",
+  "lua",
+  "vim",
+  "vimdoc",
+  "bash",
+  "json",
+  "markdown",
+  "markdown_inline",
+}
 
 require("nvim-treesitter").setup({
   highlight = { enable = true },

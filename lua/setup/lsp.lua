@@ -43,6 +43,13 @@ function M.setup()
   enable("clangd", {
     filetypes = { "c", "cpp" },
     root_markers = { "compile_commands.json", "compile_flags.txt", ".clangd", "CMakeLists.txt", ".git" },
+    cmd = {
+      "clangd",
+      "--background-index",
+      "--clang-tidy",
+      "--header-insertion=iwyu",
+      "--function-arg-placeholders",
+    },
   })
   enable("ts_ls")
   enable("pyright", {

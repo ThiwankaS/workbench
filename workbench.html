@@ -50,6 +50,7 @@
         <li><a href="#edit">Edit</a></li>
         <li><a href="#completion">Completion</a></li>
         <li><a href="#lsp">LSP</a></li>
+        <li><a href="#explore">Explore</a></li>
         <li><a href="#languages">Languages</a></li>
         <li><a href="#treesitter">Treesitter</a></li>
         <li><a href="#font">Font</a></li>
@@ -90,7 +91,11 @@
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>n</kbd> / <kbd>p</kbd></td><td>Insert</td><td>Next / prev completion item (or open menu)</td></tr>
             <tr><td><kbd>Enter</kbd> or <kbd class="mod">Ctrl</kbd><kbd>y</kbd></td><td>Insert</td><td>Confirm completion</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>Space</kbd></td><td>Insert</td><td>Trigger completion menu</td></tr>
-            <tr><td><kbd>gd</kbd> / <kbd>gr</kbd></td><td>Normal</td><td>Definition / references (LSP)</td></tr>
+            <tr><td><kbd>gd</kbd> / <kbd>gr</kbd> / <kbd>gi</kbd> / <kbd>gt</kbd></td><td>Normal</td><td>Definition / references / implementation / type (LSP)</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>u</kbd></td><td>Normal</td><td>Toggle symbol outline (Aerial)</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>ss</kbd> / <kbd>sw</kbd></td><td>Normal</td><td>Symbols in file / project (Telescope)</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>si</kbd> / <kbd>so</kbd></td><td>Normal</td><td>Incoming / outgoing calls</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>sn</kbd></td><td>Normal</td><td>Architecture note for symbol (Obsidian vault)</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>k</kbd></td><td>Normal</td><td>Hover (no Shift+K)</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>n</kbd></td><td>Normal</td><td>Rename symbol</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>a</kbd></td><td>Normal · Visual</td><td>Code action</td></tr>
@@ -297,8 +302,7 @@ base46 = {
         <div class="card-head"><div class="card-icon">◈</div><h2>LSP &amp; Diagnostics</h2></div>
         <div class="card-body">
           <p class="lead">Buffer-local maps — active when a language server attaches.</p>
-          <div class="row"><div class="keys"><kbd>gd</kbd></div><div class="desc">Go to definition</div></div>
-          <div class="row"><div class="keys"><kbd>gr</kbd></div><div class="desc">References</div></div>
+          <div class="row"><div class="keys"><kbd>gd</kbd> <kbd>gr</kbd> <kbd>gi</kbd> <kbd>gt</kbd></div><div class="desc">Definition · references · implementation · type</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>k</kbd></div><div class="desc">Hover documentation</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>a</kbd></div><div class="desc">Code action (normal or visual)</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>n</kbd></div><div class="desc">Rename symbol</div></div>
@@ -306,6 +310,37 @@ base46 = {
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dk</kbd> <kbd>dj</kbd></div><div class="desc">Previous · next diagnostic</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dd</kbd></div><div class="desc">Diagnostic message at cursor</div></div>
           <p class="note">Inline diagnostic text appears at the end of each problem line. Use <kbd class="leader">Space</kbd><kbd>dd</kbd> for a popup on demand.</p>
+        </div>
+      </section>
+
+      <!-- Explore codebase -->
+      <section class="card acc-explore wide" id="explore">
+        <div class="card-head"><div class="card-icon">◎</div><h2>Explore a Codebase</h2></div>
+        <div class="card-body prose">
+          <p class="lead">For ~2.5k LOC projects: outline sidebar, LSP call trees, and optional Obsidian notes with Mermaid class diagrams. Configured in <code>lua/setup/explore.lua</code>.</p>
+          <h3>Start here (once)</h3>
+          <pre>nvim
+:lua vim.pack.update()
+:TSInstall markdown markdown_inline
+cd /path/to/your/project
+nvim .</pre>
+          <p>C/C++: generate <code>compile_commands.json</code> so clangd and call hierarchy work:</p>
+          <pre>cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake --build build
+ln -sf build/compile_commands.json .</pre>
+          <h3>Obsidian vault (optional)</h3>
+          <pre>export OBSIDIAN_VAULT="$HOME/path/to/vault"
+# or in init.lua: vim.g.obsidian_vault = "/path/to/vault"</pre>
+          <p>Use a repo folder such as <code>./docs</code> as the vault; notes go under <code>notes/</code>. Open the same folder in the Obsidian app for graph view.</p>
+          <h3>Typical session</h3>
+          <ol>
+            <li><kbd class="leader">Space</kbd><kbd>f</kbd> open a file · <kbd class="leader">Space</kbd><kbd>u</kbd> show outline</li>
+            <li>Put cursor on a function · <kbd class="leader">Space</kbd><kbd>si</kbd> who calls it · <kbd class="leader">Space</kbd><kbd>so</kbd> what it calls</li>
+            <li><kbd>gd</kbd> / <kbd>gr</kbd> jump and see all usages</li>
+            <li><kbd class="leader">Space</kbd><kbd>sn</kbd> write an architecture note (Mermaid stub included)</li>
+            <li>In markdown, <kbd>gf</kbd> follows <code>[[wiki links]]</code> when Obsidian.nvim is active</li>
+          </ol>
+          <p class="note">Neovim does not auto-generate UML from the whole repo; use call hierarchy + Mermaid in notes, or export from Obsidian. Python/TS call graphs also need LSP attached (<code>:LspInfo</code>).</p>
         </div>
       </section>
 
@@ -420,6 +455,7 @@ ln -sf build/compile_commands.json .</pre>
 │       ├── telescope.lua
 │       ├── autopairs.lua
 │       ├── lsp.lua
+│       ├── explore.lua
 │       └── cmp.lua
 └── scripts/
     ├── bootstrap.sh

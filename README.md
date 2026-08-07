@@ -58,6 +58,7 @@ Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons).
 │       ├── telescope.lua
 │       ├── autopairs.lua
 │       ├── lsp.lua          clangd, ts_ls, pyright
+│       ├── explore.lua      outline, call graph pickers, Obsidian notes
 │       └── cmp.lua
 └── scripts/
     ├── bootstrap.sh
@@ -93,12 +94,53 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | `Space m` | Format (LSP) |
 | `Space dd` | Diagnostic message at cursor |
 | `Space dk` / `Space dj` | Prev / next diagnostic |
-| `gd` / `gr` | Definition / references |
+| `gd` / `gr` / `gi` / `gt` | Definition / references / implementation / type |
+| `Space u` | Toggle symbol outline (Aerial) |
+| `Space ss` / `Space sw` | Symbols in file / project |
+| `Space si` / `Space so` | Incoming / outgoing calls |
+| `Space sn` | Architecture note for word under cursor (needs vault) |
 | `Enter` or `Ctrl+y` | Confirm completion |
 | `Ctrl+n` / `Ctrl+p` | Next / prev completion item (or open menu) |
 | `Ctrl+u` / `Ctrl+l` | Uppercase / lowercase word (insert) |
 
 Diagnostic text also appears inline at the end of each problem line.
+
+## Exploring a codebase (~2.5k LOC)
+
+**One-time setup**
+
+1. Restart Neovim so new plugins load (first launch may run `:lua vim.pack.update()` automatically).
+2. Open your project root (`nvim .` or `cd` into the repo first).
+3. For **C/C++**, generate `compile_commands.json` so clangd knows includes and call hierarchy works:
+   ```bash
+   cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+   cmake --build build
+   ln -sf build/compile_commands.json .
+   ```
+4. **Optional — Obsidian / markdown notes:** point at a vault folder (can be `your-repo/docs`):
+   ```bash
+   export OBSIDIAN_VAULT="$HOME/path/to/vault"
+   ```
+   Or uncomment and set `vim.g.obsidian_vault` in `init.lua`.
+
+**Daily workflow**
+
+| Step | Keys | What you get |
+|------|------|----------------|
+| File map | `Space u` | Symbol outline sidebar (classes, functions) |
+| Jump in file | `Space ss` | Pick class/function in current file |
+| Jump in project | `Space sw` | Search symbols across the repo |
+| Who calls this? | `Space si` | Incoming call hierarchy (needs LSP) |
+| What does this call? | `Space so` | Outgoing call hierarchy |
+| Go to definition | `gd` | Jump to implementation |
+| All references | `gr` | Every use of symbol |
+| Implementation | `gi` | Override / concrete impl |
+| Type | `gt` | Type definition |
+| Architecture note | `Space sn` | Create/open `notes/Symbol.md` in vault (Mermaid stub) |
+
+Use **`Space si`** / **`Space so`** on a function name, then fill **`Space sn`** notes with what you learned. Open the same vault in **Obsidian** for graph view and class diagrams in Mermaid blocks.
+
+Markdown notes render in Neovim (headings, fenced code). Follow `[[wiki links]]` with **`gf`** when Obsidian.nvim is enabled.
 
 ## Plugin management
 

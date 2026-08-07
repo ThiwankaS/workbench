@@ -88,6 +88,24 @@ map("n", "<leader>o", guard(function()
   require("telescope.builtin").oldfiles()
 end), extend("Recent files"))
 
+-- Code structure (LSP + outline) — prefix Space s
+local builtin = function(name)
+  return guard(function()
+    require("telescope.builtin")[name]()
+  end)
+end
+
+map("n", "<leader>u", guard(function()
+  require("aerial").toggle()
+end), extend("Toggle symbol outline"))
+map("n", "<leader>ss", builtin("lsp_document_symbols"), extend("Symbols in file"))
+map("n", "<leader>sw", builtin("lsp_dynamic_workspace_symbols"), extend("Symbols in project"))
+map("n", "<leader>si", builtin("lsp_incoming_calls"), extend("Incoming calls"))
+map("n", "<leader>so", builtin("lsp_outgoing_calls"), extend("Outgoing calls"))
+map("n", "<leader>sn", guard(function()
+  require("setup.explore").note_for_cursor()
+end), extend("Architecture note for symbol"))
+
 -- Buffers
 map("n", "gb", guard(toggle_buffer), extend("Toggle last two buffers"))
 map("n", "<leader>h", guard(prev_buffer), extend("Previous buffer"))
@@ -168,6 +186,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     bmap("n", "gd", vim.lsp.buf.definition, "Definition")
     bmap("n", "gr", vim.lsp.buf.references, "References")
+    bmap("n", "gi", vim.lsp.buf.implementation, "Implementation")
+    bmap("n", "gt", vim.lsp.buf.type_definition, "Type definition")
     bmap("n", "<leader>k", vim.lsp.buf.hover, "Hover")
     bmap("n", "<leader>n", vim.lsp.buf.rename, "Rename")
     bmap({ "n", "v" }, "<leader>a", vim.lsp.buf.code_action, "Code action")

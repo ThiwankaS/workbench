@@ -6,6 +6,9 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
 
+-- Optional Obsidian vault for architecture notes (export OBSIDIAN_VAULT=... or set path here):
+-- vim.g.obsidian_vault = vim.fn.expand("~/Documents/Obsidian/Main")
+
 require("core.options")
 require("core.font")
 
@@ -45,6 +48,9 @@ vim.pack.add({
   "https://github.com/hrsh7th/cmp-buffer",
   "https://github.com/hrsh7th/nvim-cmp",
   "https://github.com/windwp/nvim-autopairs",
+  "https://github.com/stevearc/aerial.nvim",
+  "https://github.com/MeanderingProgrammer/markdown.nvim",
+  "https://github.com/epwalsh/obsidian.nvim",
 }, { confirm = false })
 
 require("setup.nvui")
@@ -52,6 +58,7 @@ require("setup.clock").setup()
 require("setup.treesitter")
 require("setup.tree")
 require("setup.telescope")
+require("setup.explore").setup()
 require("setup.lsp")
 require("setup.autopairs")
 require("setup.cmp")
