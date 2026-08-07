@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="CoreForge Workbench — Neovim reference for C, C++, JavaScript, and Python with vim.pack and NvUI." />
+  <meta name="description" content="CoreForge Workbench — Neovim keymaps and usage guide." />
   <meta name="author" content="ThiwankaS" />
   <title>CoreForge Workbench · Neovim Reference</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,21 +19,11 @@
       <div class="monogram" aria-hidden="true">T</div>
       <div class="logo">ThiwankaS · Personal Workbench</div>
       <h1>CoreForge <span>Workbench</span></h1>
-      <p class="subtitle">Neovim 0.12 with <strong>vim.pack</strong> and <strong>NvUI</strong>. Keymaps tuned for a <strong>65% keyboard</strong> — leader is <kbd>Space</kbd>.</p>
-      <div class="badges">
-        <span class="badge">Author <strong>ThiwankaS</strong></span>
-        <span class="badge">Keyboard <strong>65%</strong></span>
-        <span class="badge">Leader <strong>Space</strong></span>
-        <span class="badge">UI <strong>NvUI · Base46</strong></span>
-        <span class="badge">Focus <strong>C · C++ · JS · Py</strong></span>
-        <span class="badge">Config <strong>~/.config/nvim</strong></span>
-      </div>
+      <p class="subtitle">Neovim reference — leader is <kbd>Space</kbd> (65% keyboard).</p>
       <div class="footprint">
-        <span class="sig">⌁ Thiwanka's footprint</span>
-        <span class="dot">·</span>
         <a href="https://github.com/ThiwankaS/workbench" target="_blank" rel="noopener">github.com/ThiwankaS/workbench</a>
         <span class="dot">·</span>
-        <span>Neovim 0.12 · vim.pack · NvUI</span>
+        <span><code>~/.config/nvim</code></span>
       </div>
     </header>
 
@@ -41,8 +31,6 @@
       <ul>
         <li><a href="#shortcuts">Shortcuts</a></li>
         <li><a href="#install">Install</a></li>
-        <li><a href="#stack">Stack</a></li>
-        <li><a href="#chrome">Chrome</a></li>
         <li><a href="#theme">Theme</a></li>
         <li><a href="#tree">File tree</a></li>
         <li><a href="#search">Search</a></li>
@@ -50,30 +38,24 @@
         <li><a href="#edit">Edit</a></li>
         <li><a href="#completion">Completion</a></li>
         <li><a href="#lsp">LSP</a></li>
-        <li><a href="#explore">Explore</a></li>
-        <li><a href="#languages">Languages</a></li>
-        <li><a href="#treesitter">Treesitter</a></li>
-        <li><a href="#font">Font</a></li>
+        <li><a href="#explore">Explore code</a></li>
         <li><a href="#commands">Commands</a></li>
-        <li><a href="#help">Help</a></li>
-        <li><a href="#repo">Layout</a></li>
+        <li><a href="#help">Troubleshooting</a></li>
       </ul>
     </nav>
 
     <main class="grid">
 
-      <!-- All shortcuts -->
       <section class="card acc-nav wide" id="shortcuts">
         <div class="card-head"><div class="card-icon">⌨</div><h2>Keyboard Shortcuts</h2></div>
         <div class="card-body prose">
-          <p class="lead">Maps in <code>lua/core/keymaps.lua</code>, optimized for a 65% layout: home-row <kbd class="leader">Space</kbd> chords, no <kbd>[</kbd><kbd>]</kbd> keys, <kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd> for windows.</p>
           <table>
             <tr><th>Keys</th><th>Mode</th><th>Action</th></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>th</kbd></td><td>Normal</td><td>Theme picker (68 Base46 themes)</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>tt</kbd></td><td>Normal</td><td>Toggle theme pair (<code>chadrc.lua</code>)</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>th</kbd></td><td>Normal</td><td>Theme picker</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>tt</kbd></td><td>Normal</td><td>Toggle theme pair</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>e</kbd></td><td>Normal</td><td>Toggle file tree</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>j</kbd></td><td>Normal</td><td>Reveal current file in tree</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>f</kbd></td><td>Normal</td><td>Find files (Telescope)</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>j</kbd></td><td>Normal</td><td>Reveal file in tree</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>f</kbd></td><td>Normal</td><td>Find files</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>g</kbd></td><td>Normal</td><td>Live grep</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>p</kbd></td><td>Normal</td><td>Pick buffer</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>o</kbd></td><td>Normal</td><td>Recent files</td></tr>
@@ -88,378 +70,172 @@
             <tr><td><kbd>Alt</kbd><kbd>e</kbd></td><td>Insert</td><td>Jump past closing bracket or quote</td></tr>
             <tr><td><kbd>Esc</kbd></td><td>Normal</td><td>Clear search highlight</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>u</kbd> / <kbd>l</kbd></td><td>Insert</td><td>Uppercase / lowercase word</td></tr>
-            <tr><td><kbd class="mod">Ctrl</kbd><kbd>n</kbd> / <kbd>p</kbd></td><td>Insert</td><td>Next / prev completion item (or open menu)</td></tr>
+            <tr><td><kbd class="mod">Ctrl</kbd><kbd>n</kbd> / <kbd>p</kbd></td><td>Insert</td><td>Next / prev completion (or open menu)</td></tr>
             <tr><td><kbd>Enter</kbd> or <kbd class="mod">Ctrl</kbd><kbd>y</kbd></td><td>Insert</td><td>Confirm completion</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>Space</kbd></td><td>Insert</td><td>Trigger completion menu</td></tr>
-            <tr><td><kbd>gd</kbd> / <kbd>gr</kbd> / <kbd>gi</kbd> / <kbd>gt</kbd></td><td>Normal</td><td>Definition / references / implementation / type (LSP)</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>u</kbd></td><td>Normal</td><td>Toggle symbol outline (Aerial)</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>ss</kbd> / <kbd>sw</kbd></td><td>Normal</td><td>Symbols in file / project (Telescope)</td></tr>
+            <tr><td><kbd>gd</kbd> / <kbd>gr</kbd> / <kbd>gi</kbd> / <kbd>gt</kbd></td><td>Normal</td><td>Definition / references / implementation / type</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>u</kbd></td><td>Normal</td><td>Toggle symbol outline</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>ss</kbd> / <kbd>sw</kbd></td><td>Normal</td><td>Symbols in file / project</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>si</kbd> / <kbd>so</kbd></td><td>Normal</td><td>Incoming / outgoing calls</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>sn</kbd></td><td>Normal</td><td>Architecture note for symbol (Obsidian vault)</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>k</kbd></td><td>Normal</td><td>Hover (no Shift+K)</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>sn</kbd></td><td>Normal</td><td>Architecture note for symbol (vault)</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>k</kbd></td><td>Normal</td><td>Hover</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>n</kbd></td><td>Normal</td><td>Rename symbol</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>a</kbd></td><td>Normal · Visual</td><td>Code action</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>m</kbd></td><td>Normal</td><td>Format buffer</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>dk</kbd> / <kbd>dj</kbd></td><td>Normal</td><td>Prev / next diagnostic</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>dd</kbd></td><td>Normal</td><td>Diagnostic message at cursor</td></tr>
           </table>
-          <p class="note"><strong>65% tips:</strong> <kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>l</kbd> jumps windows; <kbd class="leader">Space</kbd><kbd>h</kbd><kbd>l</kbd> cycles buffers; <kbd>gb</kbd> toggles the last two files. Error text shows inline at the end of each line. Arrow keys work in nvim-tree and Telescope — never remapped globally.</p>
         </div>
       </section>
 
-      <!-- Setup -->
       <section class="card acc-install wide" id="install">
-        <div class="card-head"><div class="card-icon">⬇</div><h2>Install &amp; Setup</h2></div>
+        <div class="card-head"><div class="card-icon">⬇</div><h2>Install</h2></div>
         <div class="card-body prose">
-          <p>One-command bootstrap from the repository root:</p>
           <pre>git clone https://github.com/ThiwankaS/workbench.git ~/.config/nvim
 cd ~/.config/nvim
 bash ./scripts/bootstrap.sh
 nvim</pre>
-          <table>
-            <tr><th>Manager</th><th>Command</th><th>Purpose</th></tr>
-            <tr><td>vim.pack</td><td><code>:lua vim.pack.update()</code></td><td>Neovim 0.12 built-in plugin manager</td></tr>
-            <tr><td>Mason</td><td><code>:Mason</code> · <code>:MasonInstallAll</code></td><td>Language servers on PATH</td></tr>
-            <tr><td>Base46</td><td>auto on first launch</td><td>Compiles theme highlights to <code>~/.local/share/nvim/base46_cache/</code></td></tr>
-          </table>
           <h3>First launch</h3>
-          <pre>:checkhealth vim.pack
-:Mason
+          <pre>:lua vim.pack.update()
+:checkhealth vim.pack
 :MasonInstallAll
-:TSInstall c cpp javascript python</pre>
-          <p class="note">Set your terminal font to <strong>JetBrainsMono Nerd Font</strong> for icons in the statusline and tab bar.</p>
+:TSInstall c cpp javascript python markdown markdown_inline</pre>
+          <p>Set terminal font to <strong>JetBrainsMono Nerd Font</strong> (<code>bash ./scripts/install_jetbrains_mono_nerd.sh</code>).</p>
         </div>
       </section>
 
-      <!-- Architecture -->
-      <section class="card acc-stack wide" id="stack">
-        <div class="card-head"><div class="card-icon">◫</div><h2>Configuration &amp; Stack</h2></div>
-        <div class="card-body prose">
-          <h3>Module layout</h3>
-          <pre>~/.config/nvim/
-├── init.lua                 vim.pack.add + bootstrap
-├── nvim-pack-lock.json      plugin lockfile
-├── lua/
-│   ├── chadrc.lua           NvUI / Base46 options (theme, statusline, tabufline)
-│   ├── core/
-│   │   ├── options.lua      editor defaults + diagnostics
-│   │   ├── keymaps.lua      all leader maps + LSP
-│   │   ├── maputil.lua      guard helpers for plugin buffers
-│   │   └── font.lua         JetBrains Mono Nerd Font
-│   └── setup/
-│       ├── nvui.lua         Base46 cache + require("nvchad")
-│       ├── clock.lua        statusline clock
-│       ├── gitsigns.lua     git gutter signs
-│       ├── treesitter.lua   parsers + highlight
-│       ├── tree.lua         nvim-tree sidebar
-│       ├── telescope.lua    fuzzy finder
-│       ├── autopairs.lua    auto pairs + Alt+e fast wrap
-│       ├── lsp.lua          mason + clangd, ts_ls, pyright
-│       └── cmp.lua          completion
-└── scripts/
-    ├── bootstrap.sh
-    └── install_jetbrains_mono_nerd.sh</pre>
-          <table>
-            <tr><th>File</th><th>Responsibility</th></tr>
-            <tr><td><code>init.lua</code></td><td>vim.pack plugins, NvUI bootstrap, load setup modules</td></tr>
-            <tr><td><code>lua/chadrc.lua</code></td><td>Theme, transparency, statusline, tabufline, colorify</td></tr>
-            <tr><td><code>lua/core/keymaps.lua</code></td><td>Telescope, buffers, themes, LSP buffer maps</td></tr>
-            <tr><td><code>lua/setup/nvui.lua</code></td><td>Load Base46 highlights and NvChad UI</td></tr>
-            <tr><td><code>lua/setup/lsp.lua</code></td><td>Mason, clangd, ts_ls, pyright</td></tr>
-          </table>
-          <h3>Plugins</h3>
-          <div class="pill-list">
-            <span class="pill">NvChad/ui</span>
-            <span class="pill">NvChad/base46</span>
-            <span class="pill">NvChad/volt</span>
-            <span class="pill">nvim-treesitter</span>
-            <span class="pill">telescope.nvim</span>
-            <span class="pill">mason.nvim</span>
-            <span class="pill">nvim-lspconfig</span>
-            <span class="pill">nvim-cmp</span>
-            <span class="pill">nvim-tree</span>
-            <span class="pill">gitsigns</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Chrome UI -->
-      <section class="card acc-status" id="chrome">
-        <div class="card-head"><div class="card-icon">▁</div><h2>Chrome · NvUI</h2></div>
-        <div class="card-body">
-          <p class="lead">Statusline and tab bar from <a href="https://nvchad.com/news/nvui/" target="_blank" rel="noopener">NvUI</a> — configured in <code>lua/chadrc.lua</code>.</p>
-          <div class="statusbar-mock" aria-label="Statusline preview">
-            <span class="sb-mode sb-insert">NORMAL</span>
-            <span class="sb-file">  main.cpp</span>
-            <span class="sb-item sb-lsp"> main</span>
-            <span class="sb-item" style="color:#fb4934"> 4</span>
-            <span class="sb-item" style="color:#fabd2f"> 5</span>
-            <span class="sb-spacer"></span>
-            <span class="sb-item sb-lsp">LSP ~ clangd</span>
-            <span class="sb-item" style="background:#fb4934;color:#1d2021;padding:0 0.35rem;border-radius:3px"> project </span>
-            <span class="sb-clock">17:10:42  Thu · 04 Jun 2026</span>
-            <span class="sb-item" style="background:#fabd2f;color:#1d2021;padding:0 0.35rem;border-radius:3px"> 38/1 </span>
-          </div>
-          <table class="compact">
-            <tr><th>UI part</th><th>Module</th><th>Notes</th></tr>
-            <tr><td>Statusline</td><td>NvChad <code>stl</code></td><td>Mode, file, git, diagnostics, LSP, location</td></tr>
-            <tr><td>Tab bar</td><td><strong>tabufline</strong></td><td>Buffer tabs with nvim-tree offset</td></tr>
-            <tr><td>Clock</td><td><code>setup/clock.lua</code></td><td>Live digital time + date on the statusline</td></tr>
-            <tr><td>Git gutter</td><td>gitsigns</td><td>▎ markers in sign column</td></tr>
-            <tr><td>Hex / CSS colors</td><td>colorify</td><td>Virtual text for color values</td></tr>
-            <tr><td>LSP signature</td><td>nvchad.lsp.signature</td><td>Auto signature help on attach</td></tr>
-          </table>
-          <p class="note">Transparency is enabled via <code>base46.transparency = true</code> in <code>chadrc.lua</code> — pairs with Ghostty <code>background-opacity</code>.</p>
-        </div>
-      </section>
-
-      <!-- Theme -->
       <section class="card acc-theme" id="theme">
-        <div class="card-head"><div class="card-icon">◐</div><h2>Theme · Base46</h2></div>
-        <div class="card-body prose">
-          <p><strong>68 themes</strong> via <a href="https://github.com/NvChad/base46" target="_blank" rel="noopener">NvChad/base46</a>. Default and options live in <code>lua/chadrc.lua</code>.</p>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>th</kbd></div><div class="desc">Open theme picker (Volt UI)</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>tt</kbd></div><div class="desc">Toggle between two themes in <code>theme_toggle</code></div></div>
-          <pre>-- lua/chadrc.lua
-base46 = {
-  theme = "gruvbox",           -- default theme name
-  transparency = true,
-  theme_toggle = { "gruvbox", "catppuccin" },
-}</pre>
-          <p>Docs inside Neovim: <code>:h nvui</code> · <code>:h nvui.theme-picker</code></p>
-          <p class="note">Popular Base46 themes: <code>catppuccin</code>, <code>gruvbox</code>, <code>gruvchad</code>, <code>everblush</code>, <code>onedark</code>, <code>nord</code>.</p>
-        </div>
-      </section>
-
-      <!-- File tree -->
-      <section class="card acc-treebar" id="tree">
-        <div class="card-head"><div class="card-icon">☰</div><h2>File Tree · nvim-tree</h2></div>
+        <div class="card-head"><div class="card-icon">◐</div><h2>Theme</h2></div>
         <div class="card-body">
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>e</kbd></div><div class="desc">Toggle sidebar file tree</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>j</kbd></div><div class="desc">Reveal current file in tree</div></div>
-          <div class="row"><div class="keys"><kbd>↑</kbd><kbd>↓</kbd></div><div class="desc">Move up / down entries</div></div>
-          <div class="row"><div class="keys"><kbd>←</kbd><kbd>→</kbd></div><div class="desc">Parent / open folder</div></div>
-          <div class="row"><div class="keys"><kbd>j</kbd><kbd>k</kbd></div><div class="desc">Same as arrow up / down</div></div>
-          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></div><div class="desc">Move between tree and editor windows</div></div>
-          <p class="note">Configured in <code>lua/setup/tree.lua</code>. Tabufline offsets the tab bar when the tree is open.</p>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>th</kbd></div><div class="desc">Theme picker</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>tt</kbd></div><div class="desc">Toggle theme pair</div></div>
         </div>
       </section>
 
-      <!-- Telescope -->
+      <section class="card acc-treebar" id="tree">
+        <div class="card-head"><div class="card-icon">☰</div><h2>File Tree</h2></div>
+        <div class="card-body">
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>e</kbd></div><div class="desc">Toggle tree</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>j</kbd></div><div class="desc">Reveal file in tree</div></div>
+          <div class="row"><div class="keys"><kbd>↑</kbd><kbd>↓</kbd> or <kbd>j</kbd><kbd>k</kbd></div><div class="desc">Move in tree</div></div>
+          <div class="row"><div class="keys"><kbd>←</kbd><kbd>→</kbd></div><div class="desc">Parent / open</div></div>
+          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></div><div class="desc">Move to editor / other windows</div></div>
+        </div>
+      </section>
+
       <section class="card acc-nav" id="search">
-        <div class="card-head"><div class="card-icon">⌕</div><h2>Search · Telescope</h2></div>
+        <div class="card-head"><div class="card-icon">⌕</div><h2>Search</h2></div>
         <div class="card-body">
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>f</kbd></div><div class="desc">Find files</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>g</kbd></div><div class="desc">Live grep (needs <code>ripgrep</code>)</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>g</kbd></div><div class="desc">Live grep</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>p</kbd></div><div class="desc">Pick buffer</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>o</kbd></div><div class="desc">Recent files</div></div>
-          <p class="note">Inside Telescope: <kbd>j</kbd>/<kbd>k</kbd> move, <kbd>Enter</kbd> open, <kbd>Esc</kbd> close.</p>
+          <p class="note">In Telescope: <kbd>j</kbd>/<kbd>k</kbd>, <kbd>Enter</kbd> open, <kbd>Esc</kbd> close.</p>
         </div>
       </section>
 
-      <!-- Buffers & windows -->
       <section class="card acc-buf" id="buffers">
         <div class="card-head"><div class="card-icon">⎘</div><h2>Buffers &amp; Windows</h2></div>
         <div class="card-body">
-          <div class="row"><div class="keys"><kbd>gb</kbd></div><div class="desc">Toggle between last two buffers</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>h</kbd> <kbd>l</kbd></div><div class="desc">Previous · next buffer (home row)</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>w</kbd></div><div class="desc">Save (normal mode)</div></div>
-          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>s</kbd></div><div class="desc">Save (insert mode)</div></div>
+          <div class="row"><div class="keys"><kbd>gb</kbd></div><div class="desc">Toggle last two buffers</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>h</kbd> <kbd>l</kbd></div><div class="desc">Previous · next buffer</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>w</kbd></div><div class="desc">Save (normal)</div></div>
+          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>s</kbd></div><div class="desc">Save (insert)</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>q</kbd></div><div class="desc">Quit</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>x</kbd></div><div class="desc">Close buffer</div></div>
           <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></div><div class="desc">Move between windows</div></div>
           <div class="row"><div class="keys"><kbd>Esc</kbd></div><div class="desc">Clear search highlight</div></div>
-          <p class="note"><code>switchbuf=usetab,uselast</code> — <kbd>gb</kbd> jumps to the alternate buffer. <kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>l</kbd> moves windows; <kbd class="leader">Space</kbd><kbd>h</kbd><kbd>l</kbd> cycles buffers.</p>
         </div>
       </section>
 
-      <!-- Editing -->
       <section class="card acc-edit" id="edit">
         <div class="card-head"><div class="card-icon">✎</div><h2>Editing</h2></div>
         <div class="card-body">
-          <div class="row"><div class="keys"><kbd>Alt</kbd><kbd>j</kbd> <kbd>k</kbd></div><div class="desc">Move line / selection down · up (normal + visual)</div></div>
-          <div class="row"><div class="keys"><kbd>Alt</kbd><kbd>e</kbd></div><div class="desc">Jump past closing bracket or quote (insert)</div></div>
-          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>u</kbd></div><div class="desc">Uppercase word under cursor (insert mode)</div></div>
-          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>l</kbd></div><div class="desc">Lowercase word under cursor (insert mode)</div></div>
+          <div class="row"><div class="keys"><kbd>Alt</kbd><kbd>j</kbd> <kbd>k</kbd></div><div class="desc">Move line / selection down · up</div></div>
+          <div class="row"><div class="keys"><kbd>Alt</kbd><kbd>e</kbd></div><div class="desc">Jump past closing bracket (insert)</div></div>
+          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>u</kbd> <kbd>l</kbd></div><div class="desc">Uppercase · lowercase word (insert)</div></div>
           <div class="row"><div class="keys"><kbd>u</kbd> <kbd>Ctrl</kbd><kbd>r</kbd></div><div class="desc">Undo · redo</div></div>
-          <p class="note">Persistent undo in <code>~/.config/nvim/undodir/</code> (<code>undofile</code> enabled).</p>
         </div>
       </section>
 
-      <!-- Completion -->
       <section class="card acc-cmp" id="completion">
-        <div class="card-head"><div class="card-icon">▤</div><h2>Completion · nvim-cmp</h2></div>
+        <div class="card-head"><div class="card-icon">▤</div><h2>Completion</h2></div>
         <div class="card-body">
-          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>n</kbd> <kbd>p</kbd></div><div class="desc">Next · previous item (insert mode)</div></div>
-          <div class="row"><div class="keys"><kbd>Enter</kbd> <kbd class="mod">Ctrl</kbd><kbd>y</kbd></div><div class="desc">Confirm selection</div></div>
-          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>Space</kbd></div><div class="desc">Open completion menu</div></div>
-          <p class="note">Sources: LSP, then buffer words. Configured in <code>lua/setup/cmp.lua</code>.</p>
+          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>n</kbd> <kbd>p</kbd></div><div class="desc">Next · previous item</div></div>
+          <div class="row"><div class="keys"><kbd>Enter</kbd> <kbd class="mod">Ctrl</kbd><kbd>y</kbd></div><div class="desc">Confirm</div></div>
+          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>Space</kbd></div><div class="desc">Open menu</div></div>
         </div>
       </section>
 
-      <!-- LSP -->
       <section class="card acc-lsp" id="lsp">
         <div class="card-head"><div class="card-icon">◈</div><h2>LSP &amp; Diagnostics</h2></div>
         <div class="card-body">
-          <p class="lead">Buffer-local maps — active when a language server attaches.</p>
           <div class="row"><div class="keys"><kbd>gd</kbd> <kbd>gr</kbd> <kbd>gi</kbd> <kbd>gt</kbd></div><div class="desc">Definition · references · implementation · type</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>k</kbd></div><div class="desc">Hover documentation</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>a</kbd></div><div class="desc">Code action (normal or visual)</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>n</kbd></div><div class="desc">Rename symbol</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>m</kbd></div><div class="desc">Format buffer</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dk</kbd> <kbd>dj</kbd></div><div class="desc">Previous · next diagnostic</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dd</kbd></div><div class="desc">Diagnostic message at cursor</div></div>
-          <p class="note">Inline diagnostic text appears at the end of each problem line. Use <kbd class="leader">Space</kbd><kbd>dd</kbd> for a popup on demand.</p>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>k</kbd></div><div class="desc">Hover</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>a</kbd></div><div class="desc">Code action</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>n</kbd></div><div class="desc">Rename</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>m</kbd></div><div class="desc">Format</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dk</kbd> <kbd>dj</kbd></div><div class="desc">Prev · next diagnostic</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dd</kbd></div><div class="desc">Diagnostic message popup</div></div>
         </div>
       </section>
 
-      <!-- Explore codebase -->
       <section class="card acc-explore wide" id="explore">
         <div class="card-head"><div class="card-icon">◎</div><h2>Explore a Codebase</h2></div>
         <div class="card-body prose">
-          <p class="lead">For ~2.5k LOC projects: outline sidebar, LSP call trees, and optional Obsidian notes with Mermaid class diagrams. Configured in <code>lua/setup/explore.lua</code>.</p>
-          <h3>Start here (once)</h3>
-          <pre>nvim
-:lua vim.pack.update()
-:TSInstall markdown markdown_inline
-cd /path/to/your/project
+          <h3>Open a project</h3>
+          <pre>cd /path/to/your/repo
 nvim .</pre>
-          <p>C/C++: generate <code>compile_commands.json</code> so clangd and call hierarchy work:</p>
+          <h3>C/C++ — compile database</h3>
           <pre>cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 cmake --build build
-ln -sf build/compile_commands.json .</pre>
-          <h3>Obsidian vault (optional)</h3>
+ln -sf build/compile_commands.json .
+:LspRestart</pre>
+          <h3>Obsidian notes (optional)</h3>
           <pre>export OBSIDIAN_VAULT="$HOME/path/to/vault"
-# or in init.lua: vim.g.obsidian_vault = "/path/to/vault"</pre>
-          <p>Use a repo folder such as <code>./docs</code> as the vault; notes go under <code>notes/</code>. Open the same folder in the Obsidian app for graph view.</p>
-          <h3>Typical session</h3>
+# or set vim.g.obsidian_vault in init.lua</pre>
+          <h3>Workflow</h3>
           <ol>
-            <li><kbd class="leader">Space</kbd><kbd>f</kbd> open a file · <kbd class="leader">Space</kbd><kbd>u</kbd> show outline</li>
-            <li>Put cursor on a function · <kbd class="leader">Space</kbd><kbd>si</kbd> who calls it · <kbd class="leader">Space</kbd><kbd>so</kbd> what it calls</li>
-            <li><kbd>gd</kbd> / <kbd>gr</kbd> jump and see all usages</li>
-            <li><kbd class="leader">Space</kbd><kbd>sn</kbd> write an architecture note (Mermaid stub included)</li>
-            <li>In markdown, <kbd>gf</kbd> follows <code>[[wiki links]]</code> when Obsidian.nvim is active</li>
+            <li><kbd class="leader">Space</kbd><kbd>f</kbd> open a file · <kbd class="leader">Space</kbd><kbd>u</kbd> outline</li>
+            <li>On a function: <kbd class="leader">Space</kbd><kbd>si</kbd> callers · <kbd class="leader">Space</kbd><kbd>so</kbd> callees</li>
+            <li><kbd>gd</kbd> / <kbd>gr</kbd> jump · list usages</li>
+            <li><kbd class="leader">Space</kbd><kbd>sw</kbd> find symbol project-wide</li>
+            <li><kbd class="leader">Space</kbd><kbd>sn</kbd> architecture note (needs vault)</li>
+            <li>In markdown notes: <kbd>gf</kbd> on <code>[[links]]</code></li>
           </ol>
-          <p class="note">Neovim does not auto-generate UML from the whole repo; use call hierarchy + Mermaid in notes, or export from Obsidian. Python/TS call graphs also need LSP attached (<code>:LspInfo</code>).</p>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>u</kbd></div><div class="desc">Outline sidebar</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ss</kbd> <kbd>sw</kbd></div><div class="desc">Symbols in file · project</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>si</kbd> <kbd>so</kbd></div><div class="desc">Incoming · outgoing calls</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>sn</kbd></div><div class="desc">Note for symbol under cursor</div></div>
         </div>
       </section>
 
-      <!-- Languages -->
-      <section class="card acc-cpp wide" id="languages">
-        <div class="card-head"><div class="card-icon">{ }</div><h2>Languages &amp; Tooling</h2></div>
-        <div class="card-body prose">
-          <table>
-            <tr><th>Language</th><th>Treesitter</th><th>LSP (Mason)</th><th>Notes</th></tr>
-            <tr><td>C / C++</td><td><code>c</code> · <code>cpp</code></td><td><code>clangd</code></td><td>Needs <code>compile_commands.json</code> for full diagnostics</td></tr>
-            <tr><td>JavaScript / TS</td><td><code>javascript</code></td><td><code>ts_ls</code></td><td>typescript-language-server via Mason</td></tr>
-            <tr><td>Python</td><td><code>python</code></td><td><code>pyright</code></td><td>Basic type checking</td></tr>
-          </table>
-          <h3>C / C++ compile database</h3>
-          <pre>cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-ln -sf build/compile_commands.json .</pre>
-          <p>Restart LSP after changes: <code>:lsp restart clangd</code></p>
-        </div>
-      </section>
-
-      <!-- Treesitter -->
-      <section class="card acc-tree" id="treesitter">
-        <div class="card-head"><div class="card-icon">⌬</div><h2>Treesitter · Syntax</h2></div>
-        <div class="card-body prose">
-          <p>Configured in <code>lua/setup/treesitter.lua</code>. AST highlighting and smart indent; legacy regex syntax is off for C, C++, JS, and Python.</p>
-          <div class="chip-row">
-            <span class="chip">c</span><span class="chip">cpp</span><span class="chip">javascript</span>
-            <span class="chip">python</span><span class="chip">lua</span><span class="chip">vim</span>
-            <span class="chip">bash</span><span class="chip">json</span>
-          </div>
-          <div class="row"><div class="keys"><kbd>:TSInstall</kbd> <kbd>lang</kbd></div><div class="desc">Install a parser</div></div>
-          <div class="row"><div class="keys"><kbd>:TSUpdate</kbd></div><div class="desc">Update all parsers</div></div>
-          <div class="row"><div class="keys"><kbd>=</kbd></div><div class="desc">Auto-indent line (Treesitter indent)</div></div>
-        </div>
-      </section>
-
-      <!-- Font -->
-      <section class="card acc-font" id="font">
-        <div class="card-head"><div class="card-icon">A</div><h2>Font · JetBrains Mono</h2></div>
-        <div class="card-body prose">
-          <p>Configured in <code>lua/core/font.lua</code> — <strong>JetBrainsMono Nerd Font</strong> at 14pt for GUI Neovim (<code>guifont</code>).</p>
-          <pre>bash ./scripts/install_jetbrains_mono_nerd.sh</pre>
-          <p class="note">In a terminal (Ghostty, Kitty, etc.), set the same Nerd Font in your emulator config. <code>guifont</code> does not apply inside plain SSH/TTY.</p>
-        </div>
-      </section>
-
-      <!-- Commands -->
       <section class="card acc-cmd" id="commands">
         <div class="card-head"><div class="card-icon">:</div><h2>Commands</h2></div>
         <div class="card-body">
           <div class="row"><div class="keys"><kbd>:lua vim.pack.update()</kbd></div><div class="desc">Update plugins</div></div>
-          <div class="row"><div class="keys"><kbd>:checkhealth vim.pack</kbd></div><div class="desc">Plugin manager health</div></div>
-          <div class="row"><div class="keys"><kbd>:Mason</kbd></div><div class="desc">Language server installer UI</div></div>
-          <div class="row"><div class="keys"><kbd>:MasonInstallAll</kbd></div><div class="desc">Install servers from lsp config (NvUI)</div></div>
+          <div class="row"><div class="keys"><kbd>:MasonInstallAll</kbd></div><div class="desc">Install language servers</div></div>
+          <div class="row"><div class="keys"><kbd>:LspInfo</kbd></div><div class="desc">Show attached LSP</div></div>
+          <div class="row"><div class="keys"><kbd>:LspRestart</kbd></div><div class="desc">Restart LSP</div></div>
           <div class="row"><div class="keys"><kbd>:TSInstall</kbd> <kbd>lang</kbd></div><div class="desc">Install Treesitter parser</div></div>
-          <div class="row"><div class="keys"><kbd>:TSUpdate</kbd></div><div class="desc">Update Treesitter parsers</div></div>
-          <div class="row"><div class="keys"><kbd>:NvCheatsheet</kbd></div><div class="desc">NvUI keymap cheatsheet</div></div>
-          <div class="row"><div class="keys"><kbd>:h nvui</kbd></div><div class="desc">NvUI documentation</div></div>
-          <div class="row"><div class="keys"><kbd>:lsp restart</kbd></div><div class="desc">Restart LSP clients</div></div>
-          <div class="row"><div class="keys"><kbd>:LspInfo</kbd></div><div class="desc">Show attached language servers</div></div>
+          <div class="row"><div class="keys"><kbd>:TSUpdate</kbd></div><div class="desc">Update parsers</div></div>
         </div>
       </section>
 
-      <!-- Help -->
       <section class="card acc-help wide" id="help">
         <div class="card-head"><div class="card-icon">?</div><h2>Troubleshooting</h2></div>
         <div class="card-body prose">
-          <h3>Plugins not loading</h3>
+          <h3>Plugins</h3>
           <pre>:checkhealth vim.pack
 :lua vim.pack.update()</pre>
-          <h3>Theme looks wrong or missing</h3>
-          <pre>:lua require("base46").load_all_highlights()
-:lua for _,v in ipairs(vim.fn.readdir(vim.g.base46_cache)) do dofile(vim.g.base46_cache..v) end</pre>
-          <h3>Treesitter</h3>
-          <pre>:TSInstall c cpp javascript python
-:TSUpdate</pre>
-          <h3>clangd diagnostics missing</h3>
-          <p>Ensure <code>compile_commands.json</code> is in the project root.</p>
-          <h3>Completion not working</h3>
-          <p>Verify LSP is attached: <code>:LspInfo</code>. Install servers: <code>:MasonInstallAll</code>.</p>
+          <h3>clangd quit / no diagnostics</h3>
+          <pre>:LspInfo
+:LspRestart</pre>
+          <p>Add <code>compile_commands.json</code> at project root (see Explore section).</p>
+          <h3>Call hierarchy empty</h3>
+          <p>Cursor on a symbol · LSP attached · C++ needs compile database.</p>
           <h3>Live grep empty</h3>
-          <p>Install <code>ripgrep</code>: <code>sudo apt install ripgrep</code></p>
-        </div>
-      </section>
-
-      <!-- Repo layout -->
-      <section class="card acc-repo wide" id="repo">
-        <div class="card-head"><div class="card-icon">⌂</div><h2>Repository Layout</h2></div>
-        <div class="card-body">
-          <pre>~/.config/nvim/
-├── index.html              → GitHub Pages redirect
-├── workbench.html          ← this guide
-├── README.md
-├── init.lua
-├── nvim-pack-lock.json
-├── assets/workbench/
-│   ├── css/workbench.css
-│   └── js/workbench.js
-├── lua/
-│   ├── chadrc.lua
-│   ├── core/
-│   │   ├── options.lua
-│   │   ├── keymaps.lua
-│   │   ├── maputil.lua
-│   │   └── font.lua
-│   └── setup/
-│       ├── nvui.lua
-│       ├── clock.lua
-│       ├── gitsigns.lua
-│       ├── treesitter.lua
-│       ├── tree.lua
-│       ├── telescope.lua
-│       ├── autopairs.lua
-│       ├── lsp.lua
-│       ├── explore.lua
-│       └── cmp.lua
-└── scripts/
-    ├── bootstrap.sh
-    └── install_jetbrains_mono_nerd.sh</pre>
+          <pre>sudo apt install ripgrep</pre>
         </div>
       </section>
 
@@ -467,10 +243,6 @@ ln -sf build/compile_commands.json .</pre>
 
     <footer>
       <p class="sig-line">⌁ ThiwankaS · Personal Workbench</p>
-      <p>vim.pack · NvUI · Base46 · Treesitter · tabufline · gitsigns · Telescope · clangd</p>
-      <p class="footer-links">
-        <a href="https://github.com/ThiwankaS/workbench" target="_blank" rel="noopener">github.com/ThiwankaS/workbench</a>
-      </p>
       <p class="footer-open">
         <a href="https://thiwankas.github.io/workbench/" target="_blank" rel="noopener">thiwankas.github.io/workbench</a>
         · <code>xdg-open ~/.config/nvim/workbench.html</code>
