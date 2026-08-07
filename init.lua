@@ -7,7 +7,7 @@ vim.g.maplocalleader = " "
 vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
 
 -- Optional Obsidian vault for architecture notes (export OBSIDIAN_VAULT=... or set path here):
--- vim.g.obsidian_vault = vim.fn.expand("~/Documents/Obsidian/Main")
+vim.g.obsidian_vault = vim.fn.expand("~/Documents/Obsidian/Main")
 
 require("core.options")
 require("core.font")

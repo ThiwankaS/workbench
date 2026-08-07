@@ -48,7 +48,7 @@ function M.setup()
       "--background-index",
       "--clang-tidy",
       "--header-insertion=iwyu",
-      "--function-arg-placeholders",
+      "--function-arg-placeholders=true",
     },
   })
   enable("ts_ls")
