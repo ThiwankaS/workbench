@@ -106,6 +106,10 @@ map("n", "<leader>sn", guard(function()
   require("setup.explore").note_for_cursor()
 end), extend("Architecture note for symbol"))
 
+map("n", "<leader>mp", guard(function()
+  vim.cmd("MarkdownPreviewToggle")
+end), extend("Markdown preview (Mermaid)"))
+
 -- Buffers
 map("n", "gb", guard(toggle_buffer), extend("Toggle last two buffers"))
 map("n", "<leader>h", guard(prev_buffer), extend("Previous buffer"))

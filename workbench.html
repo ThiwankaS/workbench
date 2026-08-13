@@ -78,6 +78,7 @@
             <tr><td><kbd class="leader">Space</kbd><kbd>ss</kbd> / <kbd>sw</kbd></td><td>Normal</td><td>Symbols in file / project</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>si</kbd> / <kbd>so</kbd></td><td>Normal</td><td>Incoming / outgoing calls</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>sn</kbd></td><td>Normal</td><td>Architecture note for symbol (vault)</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>mp</kbd></td><td>Normal</td><td>Markdown preview in browser (Mermaid)</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>k</kbd></td><td>Normal</td><td>Hover</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>n</kbd></td><td>Normal</td><td>Rename symbol</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>a</kbd></td><td>Normal · Visual</td><td>Code action</td></tr>
@@ -194,6 +195,15 @@ ln -sf build/compile_commands.json .
           <h3>Obsidian notes (optional)</h3>
           <pre>export OBSIDIAN_VAULT="$HOME/path/to/vault"
 # or set vim.g.obsidian_vault in init.lua</pre>
+          <h3>Markdown + Mermaid preview</h3>
+          <p>Store docs as <code>.md</code> in the repo (e.g. <code>docs/architecture.md</code>). Use fenced blocks:</p>
+          <pre>```mermaid
+classDiagram
+    class Car
+    Car --> Engine
+```</pre>
+          <p>In a markdown buffer: <kbd class="leader">Space</kbd><kbd>mp</kbd> toggles live preview in your browser. First run installs preview assets (<code>:lua require('setup.markdown_preview').install()</code> if needed).</p>
+          <p>Commands: <code>:MarkdownPreview</code> · <code>:MarkdownPreviewToggle</code> · <code>:MarkdownPreviewStop</code></p>
           <h3>Workflow</h3>
           <ol>
             <li><kbd class="leader">Space</kbd><kbd>f</kbd> open a file · <kbd class="leader">Space</kbd><kbd>u</kbd> outline</li>
@@ -201,12 +211,14 @@ ln -sf build/compile_commands.json .
             <li><kbd>gd</kbd> / <kbd>gr</kbd> jump · list usages</li>
             <li><kbd class="leader">Space</kbd><kbd>sw</kbd> find symbol project-wide</li>
             <li><kbd class="leader">Space</kbd><kbd>sn</kbd> architecture note (needs vault)</li>
+            <li><kbd class="leader">Space</kbd><kbd>mp</kbd> preview markdown + Mermaid in browser</li>
             <li>In markdown notes: <kbd>gf</kbd> on <code>[[links]]</code></li>
           </ol>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>u</kbd></div><div class="desc">Outline sidebar</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ss</kbd> <kbd>sw</kbd></div><div class="desc">Symbols in file · project</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>si</kbd> <kbd>so</kbd></div><div class="desc">Incoming · outgoing calls</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>sn</kbd></div><div class="desc">Note for symbol under cursor</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>mp</kbd></div><div class="desc">Markdown / Mermaid preview in browser</div></div>
         </div>
       </section>
 
@@ -217,6 +229,8 @@ ln -sf build/compile_commands.json .
           <div class="row"><div class="keys"><kbd>:MasonInstallAll</kbd></div><div class="desc">Install language servers</div></div>
           <div class="row"><div class="keys"><kbd>:LspInfo</kbd></div><div class="desc">Show attached LSP</div></div>
           <div class="row"><div class="keys"><kbd>:LspRestart</kbd></div><div class="desc">Restart LSP</div></div>
+          <div class="row"><div class="keys"><kbd>:MarkdownPreviewToggle</kbd></div><div class="desc">Toggle markdown preview (same as Space mp)</div></div>
+          <div class="row"><div class="keys"><kbd>:lua require('setup.markdown_preview').install()</kbd></div><div class="desc">Install preview browser assets</div></div>
           <div class="row"><div class="keys"><kbd>:TSInstall</kbd> <kbd>lang</kbd></div><div class="desc">Install Treesitter parser</div></div>
           <div class="row"><div class="keys"><kbd>:TSUpdate</kbd></div><div class="desc">Update parsers</div></div>
         </div>

@@ -59,6 +59,7 @@ Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons).
 │       ├── autopairs.lua
 │       ├── lsp.lua          clangd, ts_ls, pyright
 │       ├── explore.lua      outline, call graph pickers, Obsidian notes
+│       ├── markdown_preview.lua  browser preview (Mermaid in .md)
 │       └── cmp.lua
 └── scripts/
     ├── bootstrap.sh
@@ -99,6 +100,7 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | `Space ss` / `Space sw` | Symbols in file / project |
 | `Space si` / `Space so` | Incoming / outgoing calls |
 | `Space sn` | Architecture note for word under cursor (needs vault) |
+| `Space mp` | Markdown / Mermaid preview in browser |
 | `Enter` or `Ctrl+y` | Confirm completion |
 | `Ctrl+n` / `Ctrl+p` | Next / prev completion item (or open menu) |
 | `Ctrl+u` / `Ctrl+l` | Uppercase / lowercase word (insert) |
@@ -137,10 +139,13 @@ Diagnostic text also appears inline at the end of each problem line.
 | Implementation | `gi` | Override / concrete impl |
 | Type | `gt` | Type definition |
 | Architecture note | `Space sn` | Create/open `notes/Symbol.md` in vault (Mermaid stub) |
+| Preview diagrams | `Space mp` | Live markdown + Mermaid in browser |
 
-Use **`Space si`** / **`Space so`** on a function name, then fill **`Space sn`** notes with what you learned. Open the same vault in **Obsidian** for graph view and class diagrams in Mermaid blocks.
+Use **`Space si`** / **`Space so`** on a function name, then fill **`Space sn`** notes with what you learned. Put class diagrams in `docs/*.md` as ` ```mermaid ` fences and press **`Space mp`** to preview (GitHub-native format).
 
-Markdown notes render in Neovim (headings, fenced code). Follow `[[wiki links]]` with **`gf`** when Obsidian.nvim is enabled.
+Markdown renders in Neovim (render-markdown). Browser preview: **`Space mp`** or `:MarkdownPreviewToggle`. Follow `[[wiki links]]` with **`gf`** when Obsidian.nvim is enabled.
+
+First preview run installs browser assets: `:lua require('setup.markdown_preview').install()`
 
 ## Plugin management
 
