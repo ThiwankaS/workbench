@@ -2,6 +2,12 @@
 --- Run :MarkdownPreviewInstall once to download the preview server binary.
 local M = {}
 
+local preview_filetypes = { markdown = true, plantuml = true }
+
+local function is_previewable()
+  return preview_filetypes[vim.bo.filetype] == true
+end
+
 local function ensure_loaded()
   vim.cmd.packadd("markdown-preview.nvim")
   return type(vim.fn["mkdp#util#toggle_preview"]) == "function"
@@ -18,8 +24,8 @@ function M.install()
 end
 
 function M.toggle()
-  if vim.bo.filetype ~= "markdown" then
-    vim.notify("Open a .md file first, then Space mp", vim.log.levels.WARN)
+  if not is_previewable() then
+    vim.notify("Open a .md or .puml file first, then Space mp", vim.log.levels.WARN)
     return
   end
   if not ensure_loaded() then
@@ -32,8 +38,14 @@ end
 function M.setup()
   vim.g.mkdp_auto_start = 0
   vim.g.mkdp_auto_close = 1
-  vim.g.mkdp_filetypes = { "markdown" }
+  vim.g.mkdp_filetypes = { "markdown", "plantuml" }
   vim.g.mkdp_echo_preview_url = 1
+  vim.g.mkdp_preview_options = {
+    uml = {
+      server = "https://www.plantuml.com/plantuml",
+      imageFormat = "svg",
+    },
+  }
 
   vim.api.nvim_create_user_command("MarkdownPreviewInstall", function()
     M.install()
