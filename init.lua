@@ -6,6 +6,9 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
 
+-- markdown-preview.nvim reads these when plugin/mkdp.vim loads (before pack.add below)
+require("setup.markdown_preview").setup()
+
 -- Optional Obsidian vault for architecture notes (export OBSIDIAN_VAULT=... or set path here):
 vim.g.obsidian_vault = vim.fn.expand("~/Documents/Obsidian/Main")
 
@@ -31,9 +34,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
     end
 
     if name == "markdown-preview.nvim" and (kind == "add" or kind == "update") then
-      if not ev.data.active then
-        vim.cmd.packadd("markdown-preview.nvim")
-      end
       require("setup.markdown_preview").install()
     end
   end,
@@ -67,7 +67,6 @@ require("setup.treesitter")
 require("setup.tree")
 require("setup.telescope")
 require("setup.explore").setup()
-require("setup.markdown_preview").setup()
 require("setup.lsp")
 require("setup.autopairs")
 require("setup.cmp")

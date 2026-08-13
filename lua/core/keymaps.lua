@@ -107,7 +107,7 @@ map("n", "<leader>sn", guard(function()
 end), extend("Architecture note for symbol"))
 
 map("n", "<leader>mp", guard(function()
-  vim.cmd("MarkdownPreviewToggle")
+  require("setup.markdown_preview").toggle()
 end), extend("Markdown preview (Mermaid)"))
 
 -- Buffers

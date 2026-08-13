@@ -202,8 +202,9 @@ classDiagram
     class Car
     Car --> Engine
 ```</pre>
-          <p>In a markdown buffer: <kbd class="leader">Space</kbd><kbd>mp</kbd> toggles live preview in your browser. First run installs preview assets (<code>:lua require('setup.markdown_preview').install()</code> if needed).</p>
-          <p>Commands: <code>:MarkdownPreview</code> · <code>:MarkdownPreviewToggle</code> · <code>:MarkdownPreviewStop</code></p>
+          <p>In a markdown buffer: <kbd class="leader">Space</kbd><kbd>mp</kbd> toggles live preview in your browser.</p>
+          <p>First time only: <code>:MarkdownPreviewInstall</code> (downloads the preview server).</p>
+          <p>Commands (in a <code>.md</code> buffer): <code>:MarkdownPreview</code> · <code>:MarkdownPreviewToggle</code> · <code>:MarkdownPreviewStop</code></p>
           <h3>Workflow</h3>
           <ol>
             <li><kbd class="leader">Space</kbd><kbd>f</kbd> open a file · <kbd class="leader">Space</kbd><kbd>u</kbd> outline</li>
@@ -229,8 +230,8 @@ classDiagram
           <div class="row"><div class="keys"><kbd>:MasonInstallAll</kbd></div><div class="desc">Install language servers</div></div>
           <div class="row"><div class="keys"><kbd>:LspInfo</kbd></div><div class="desc">Show attached LSP</div></div>
           <div class="row"><div class="keys"><kbd>:LspRestart</kbd></div><div class="desc">Restart LSP</div></div>
-          <div class="row"><div class="keys"><kbd>:MarkdownPreviewToggle</kbd></div><div class="desc">Toggle markdown preview (same as Space mp)</div></div>
-          <div class="row"><div class="keys"><kbd>:lua require('setup.markdown_preview').install()</kbd></div><div class="desc">Install preview browser assets</div></div>
+          <div class="row"><div class="keys"><kbd>:MarkdownPreviewInstall</kbd></div><div class="desc">Download preview server (once)</div></div>
+          <div class="row"><div class="keys"><kbd>:MarkdownPreviewToggle</kbd></div><div class="desc">Toggle preview (.md buffer)</div></div>
           <div class="row"><div class="keys"><kbd>:TSInstall</kbd> <kbd>lang</kbd></div><div class="desc">Install Treesitter parser</div></div>
           <div class="row"><div class="keys"><kbd>:TSUpdate</kbd></div><div class="desc">Update parsers</div></div>
         </div>
@@ -250,6 +251,12 @@ classDiagram
           <p>Cursor on a symbol · LSP attached · C++ needs compile database.</p>
           <h3>Live grep empty</h3>
           <pre>sudo apt install ripgrep</pre>
+          <h3>Markdown preview (Space mp) not working</h3>
+          <ol>
+            <li>Open a <code>.md</code> file first (preview only works on markdown buffers).</li>
+            <li>Run once: <code>:MarkdownPreviewInstall</code></li>
+            <li>Then <kbd class="leader">Space</kbd><kbd>mp</kbd> — browser should open via <code>xdg-open</code>.</li>
+          </ol>
         </div>
       </section>
 

@@ -145,7 +145,7 @@ Use **`Space si`** / **`Space so`** on a function name, then fill **`Space sn`**
 
 Markdown renders in Neovim (render-markdown). Browser preview: **`Space mp`** or `:MarkdownPreviewToggle`. Follow `[[wiki links]]` with **`gf`** when Obsidian.nvim is enabled.
 
-First preview run installs browser assets: `:lua require('setup.markdown_preview').install()`
+First preview run: `:MarkdownPreviewInstall` (once). Open a `.md` file, then **`Space mp`**.
 
 ## Plugin management
 
