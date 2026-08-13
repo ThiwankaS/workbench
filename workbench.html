@@ -196,15 +196,21 @@ ln -sf build/compile_commands.json .
           <pre>export OBSIDIAN_VAULT="$HOME/path/to/vault"
 # or set vim.g.obsidian_vault in init.lua</pre>
           <h3>Markdown + Mermaid preview</h3>
-          <p>Store docs as <code>.md</code> in the repo (e.g. <code>docs/architecture.md</code>). Use fenced blocks:</p>
+          <p>Store docs as <code>.md</code> or standalone <code>.puml</code> files. Mermaid uses fenced blocks:</p>
           <pre>```mermaid
-classDiagram
-    class Car
-    Car --> Engine
+graph LR
+  A --> B
 ```</pre>
-          <p>In a markdown buffer: <kbd class="leader">Space</kbd><kbd>mp</kbd> toggles live preview in your browser.</p>
-          <p>First time only: <code>:MarkdownPreviewInstall</code> (downloads the preview server).</p>
-          <p>Commands (in a <code>.md</code> buffer): <code>:MarkdownPreview</code> · <code>:MarkdownPreviewToggle</code> · <code>:MarkdownPreviewStop</code></p>
+          <p>PlantUML — use a <code>.puml</code> file or a fenced block in markdown. Must close with <code>@enduml</code> (not <code>@startuml</code> again):</p>
+          <pre>```plantuml
+@startuml
+title Example
+start
+:Step;
+stop
+@enduml
+```</pre>
+          <p>PlantUML diagrams render via <strong>plantuml.com</strong> — you need internet. Then <kbd class="leader">Space</kbd><kbd>mp</kbd> in the buffer.</p>
           <h3>Workflow</h3>
           <ol>
             <li><kbd class="leader">Space</kbd><kbd>f</kbd> open a file · <kbd class="leader">Space</kbd><kbd>u</kbd> outline</li>
@@ -253,7 +259,7 @@ classDiagram
           <pre>sudo apt install ripgrep</pre>
           <h3>Markdown preview (Space mp) not working</h3>
           <ol>
-            <li>Open a <code>.md</code> file first (preview only works on markdown buffers).</li>
+            <li>Open a <code>.md</code> or <code>.puml</code> file first.</li>
             <li>Run once: <code>:MarkdownPreviewInstall</code></li>
             <li>Then <kbd class="leader">Space</kbd><kbd>mp</kbd> — browser should open via <code>xdg-open</code>.</li>
           </ol>
