@@ -281,7 +281,7 @@ lsp_servers = { "clangd", "typescript-language-server", "pyright" }</pre>
           <h3>Shared lists — <code>lua/core/filetypes.lua</code></h3>
           <p>Single source of truth for which buffers skip global leader maps (<code>ui_plugin</code>) and LSP maps (<code>lsp_skip</code>).</p>
           <h3>Theme — <code>lua/chadrc.lua</code></h3>
-          <p>Default theme <code>gruvbox</code>. <kbd class="leader">Space</kbd><kbd>tt</kbd> toggles <code>gruvbox</code> ↔ <code>oned_dark</code>. Statusline includes a live clock (<code>setup/clock.lua</code>).</p>
+          <p>Default theme <code>gruvbox</code>. <kbd class="leader">Space</kbd><kbd>tt</kbd> toggles <code>gruvbox</code> ↔ <code>onedark</code>. Statusline includes a live clock (<code>setup/clock.lua</code>).</p>
           <h3>Where things live</h3>
           <table>
             <tr><th>Feature</th><th>Module</th></tr>
@@ -326,7 +326,7 @@ lsp_servers = { "clangd", "typescript-language-server", "pyright" }</pre>
           <h3>Alt+j/k not working</h3>
           <p>Terminal must send Meta/Alt keys. In Ghostty: enable <strong>option-as-meta</strong>.</p>
           <h3>Theme toggle does nothing</h3>
-          <p>Edit <code>theme_toggle</code> in <code>lua/chadrc.lua</code> — both names must be valid Base46 themes.</p>
+          <p>Edit <code>theme_toggle</code> in <code>lua/chadrc.lua</code> — both names must be valid Base46 themes (e.g. <code>gruvbox</code>, <code>onedark</code>, not <code>oned_dark</code>).</p>
           <h3>Markdown preview (Space mp) not working</h3>
           <ol>
             <li>Open a <code>.md</code> or <code>.puml</code> file first.</li>
