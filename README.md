@@ -2,7 +2,7 @@
 
 Minimal **Neovim 0.12** config using **[vim.pack](https://neovim.io/doc/user/pack.html)** and **[NvUI](https://nvchad.com/news/nvui/)** (NvChad UI + Base46).
 
-Focus: **C**, **C++**, **JavaScript**, **Python** — Treesitter, Telescope, nvim-tree, Mason LSP, NvChad statusline + tabufline.
+Focus: **C**, **C++**, **JavaScript**, **Python** — Treesitter, Telescope, nvim-tree, Mason LSP, code exploration, markdown preview.
 
 ## Documentation
 
@@ -39,32 +39,53 @@ Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons).
 
 ```
 ~/.config/nvim/
-├── init.lua                 vim.pack.add + NvUI bootstrap
-├── nvim-pack-lock.json      plugin lockfile (commit this)
-├── workbench.html           full reference guide
+├── init.lua                 Load order: options → plugins → setup → keymaps
 ├── lua/
-│   ├── chadrc.lua           NvUI / Base46 options (theme, statusline, tabufline)
+│   ├── config.lua           ★ User settings (vault, preview types, LSP list)
+│   ├── chadrc.lua           NvUI theme, statusline, tabufline
 │   ├── core/
-│   │   ├── options.lua      editor defaults + diagnostics
-│   │   ├── keymaps.lua      leader maps + LSP
-│   │   ├── maputil.lua      guard helpers for plugin buffers
+│   │   ├── options.lua      Editor defaults + diagnostics (single source)
+│   │   ├── keymaps.lua      Global leader maps (one binding per feature)
+│   │   ├── maputil.lua      Skip maps in tree / Telescope / Mason buffers
+│   │   ├── filetypes.lua    Shared filetype lists (ui_plugin, lsp_skip)
 │   │   └── font.lua         GUI font
 │   └── setup/
-│       ├── nvui.lua         Base46 cache + require("nvchad")
-│       ├── clock.lua        digital clock + date (statusline)
-│       ├── gitsigns.lua
+│       ├── nvui.lua         Base46 cache + NvChad
+│       ├── clock.lua        Statusline clock
 │       ├── treesitter.lua
 │       ├── tree.lua         nvim-tree
 │       ├── telescope.lua
+│       ├── explore.lua      Aerial, render-markdown, Obsidian
+│       ├── markdown_preview.lua  Browser preview (Mermaid, PlantUML)
+│       ├── lsp.lua          Mason, servers, buffer LSP maps
+│       ├── cmp.lua          Completion keys
 │       ├── autopairs.lua
-│       ├── lsp.lua          clangd, ts_ls, pyright
-│       ├── explore.lua      outline, call graph pickers, Obsidian notes
-│       ├── markdown_preview.lua  browser preview (Mermaid in .md)
-│       └── cmp.lua
+│       └── gitsigns.lua
+├── workbench.html           Full reference guide
+├── nvim-pack-lock.json      Plugin lockfile (commit this)
 └── scripts/
     ├── bootstrap.sh
     └── install_jetbrains_mono_nerd.sh
 ```
+
+### Load order (`init.lua`)
+
+1. `config.lua` → paths (`obsidian_vault`, etc.)
+2. `core/options.lua` — editor + diagnostics
+3. `setup/markdown_preview.configure()` — `vim.g.mkdp_*` before plugin loads
+4. `vim.pack.add` — plugins
+5. `setup/*.setup()` — plugin configuration
+6. `core/keymaps.lua` — global maps last (won't be overridden)
+
+### User settings (`lua/config.lua`)
+
+Edit this file for paths and toggles. Restart Neovim after changes.
+
+| Setting | Purpose |
+|---------|---------|
+| `obsidian_vault` | Folder for `Space sn` architecture notes (`nil` disables Obsidian) |
+| `preview_filetypes` | Filetypes for `Space mp` browser preview |
+| `lsp_servers` | Mason packages auto-installed on first run |
 
 ## Keymaps
 
@@ -73,7 +94,7 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | Keys | Action |
 |------|--------|
 | `Space th` | Theme picker (68 Base46 themes) |
-| `Space tt` | Toggle theme pair (`chadrc.lua`) |
+| `Space tt` | Toggle theme pair (`gruvbox` ↔ `oned_dark`) |
 | `Space e` | Toggle file tree |
 | `Space j` | Reveal file in tree |
 | `Space f` | Find files |
@@ -88,7 +109,7 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | `Space x` | Close buffer |
 | `Ctrl+h/j/k/l` | Move between windows |
 | `Alt+j` / `Alt+k` | Move line down / up (normal + visual) |
-| `Alt+e` | Jump past closing bracket/quote |
+| `Alt+e` | Jump past closing bracket/quote (insert) |
 | `Space k` | Hover (LSP) |
 | `Space n` | Rename (LSP) |
 | `Space a` | Code action (LSP) |
@@ -100,52 +121,56 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | `Space ss` / `Space sw` | Symbols in file / project |
 | `Space si` / `Space so` | Incoming / outgoing calls |
 | `Space sn` | Architecture note for word under cursor (needs vault) |
-| `Space mp` | Markdown / Mermaid preview in browser |
+| `Space mp` | Browser preview (.md / .puml) |
 | `Enter` or `Ctrl+y` | Confirm completion |
 | `Ctrl+n` / `Ctrl+p` | Next / prev completion item (or open menu) |
 | `Ctrl+u` / `Ctrl+l` | Uppercase / lowercase word (insert) |
 
-Diagnostic text also appears inline at the end of each problem line.
+Diagnostic text appears inline at the end of each problem line and in a float (`Space dd`).
+
+LSP buffer maps live in `lua/setup/lsp.lua`. Global maps live in `lua/core/keymaps.lua`. Completion keys live only in `lua/setup/cmp.lua`.
 
 ## Exploring a codebase (~2.5k LOC)
 
 **One-time setup**
 
-1. Restart Neovim so new plugins load (first launch may run `:lua vim.pack.update()` automatically).
-2. Open your project root (`nvim .` or `cd` into the repo first).
-3. For **C/C++**, generate `compile_commands.json` so clangd knows includes and call hierarchy works:
+1. Open your project root (`nvim .`).
+2. For **C/C++**, generate `compile_commands.json`:
    ```bash
    cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
    cmake --build build
    ln -sf build/compile_commands.json .
    ```
-4. **Optional — Obsidian / markdown notes:** point at a vault folder (can be `your-repo/docs`):
+3. **Optional — Obsidian notes:** edit `obsidian_vault` in `lua/config.lua`, or:
    ```bash
    export OBSIDIAN_VAULT="$HOME/path/to/vault"
    ```
-   Or uncomment and set `vim.g.obsidian_vault` in `init.lua`.
 
 **Daily workflow**
 
 | Step | Keys | What you get |
 |------|------|----------------|
-| File map | `Space u` | Symbol outline sidebar (classes, functions) |
-| Jump in file | `Space ss` | Pick class/function in current file |
-| Jump in project | `Space sw` | Search symbols across the repo |
-| Who calls this? | `Space si` | Incoming call hierarchy (needs LSP) |
+| File map | `Space u` | Symbol outline sidebar |
+| Jump in file | `Space ss` | Pick symbol in current file |
+| Jump in project | `Space sw` | Search symbols across repo |
+| Who calls this? | `Space si` | Incoming call hierarchy |
 | What does this call? | `Space so` | Outgoing call hierarchy |
 | Go to definition | `gd` | Jump to implementation |
 | All references | `gr` | Every use of symbol |
-| Implementation | `gi` | Override / concrete impl |
-| Type | `gt` | Type definition |
-| Architecture note | `Space sn` | Create/open `notes/Symbol.md` in vault (Mermaid stub) |
+| Architecture note | `Space sn` | Create/open `notes/Symbol.md` in vault |
 | Preview diagrams | `Space mp` | Live markdown + Mermaid in browser |
 
-Use **`Space si`** / **`Space so`** on a function name, then fill **`Space sn`** notes with what you learned. Put class diagrams in `docs/*.md` as ` ```mermaid ` fences and press **`Space mp`** to preview (GitHub-native format).
+Markdown renders in-editor (render-markdown). Follow `[[wiki links]]` with **`gf`** when Obsidian is enabled.
 
-Markdown renders in Neovim (render-markdown). Browser preview: **`Space mp`** or `:MarkdownPreviewToggle`. Follow `[[wiki links]]` with **`gf`** when Obsidian.nvim is enabled.
+## Browser preview
 
-First preview run: `:MarkdownPreviewInstall` (once). Open a `.md` file, then **`Space mp`**.
+Works on `.md` and `.puml` files configured in `lua/config.lua`.
+
+1. First time: `:MarkdownPreviewInstall`
+2. Open a markdown or PlantUML buffer
+3. Press **`Space mp`** to toggle browser preview
+
+**Mermaid** — fenced blocks in `.md`. **PlantUML** — `.puml` file or fenced block; must end with `@enduml`. PlantUML uses plantuml.com (needs internet).
 
 ## Plugin management
 
@@ -163,20 +188,26 @@ First preview run: `:MarkdownPreviewInstall` (once). Open a `.md` file, then **`
 | JavaScript / TypeScript | typescript-language-server (`ts_ls`) |
 | Python | pyright |
 
-C/C++ needs `compile_commands.json` in the project root for full clangd support.
-
-Run `:MasonInstallAll` to install servers declared in `lua/setup/lsp.lua`.
+Server list is in `lua/config.lua` (`lsp_servers`). C/C++ needs `compile_commands.json` for full clangd support.
 
 ## Theme & UI
 
-[NvUI](https://github.com/NvChad/ui) + [Base46](https://github.com/NvChad/base46) replace the old custom bufferline / lualine / theme stack:
+- **68 themes** — `Space th` (Volt theme picker)
+- **Quick toggle** — `Space tt` switches `gruvbox` ↔ `oned_dark` (`lua/chadrc.lua`)
+- **Statusline + tabufline** — `lua/chadrc.lua`
+- **Digital clock** — live time + date on statusline
+- **Git signs** — change markers in gutter (gitsigns.nvim)
 
-- **68 themes** — `Space th` opens the Volt theme picker (`:h nvui.theme-picker`)
-- **Quick toggle** — `Space tt` switches between themes in `theme_toggle` inside `lua/chadrc.lua`
-- **Statusline + tabufline** — configured in `chadrc.lua` under `ui.statusline` and `ui.tabufline`
-- **Digital clock** — `lua/setup/clock.lua` shows live `HH:MM:SS` + date on the statusline (right side)
-- **Transparency** — `base46.transparency = true` in `chadrc.lua` (works with Ghostty `background-opacity`)
+Persistent undo: `~/.config/nvim/undodir/` (gitignored).
 
-Edit `lua/chadrc.lua` to change the default theme, statusline style, or transparency.
+## Troubleshooting
 
-Persistent undo is stored in `~/.config/nvim/undodir/` (gitignored).
+| Issue | Fix |
+|-------|-----|
+| Plugins missing | `:lua vim.pack.update()` · `:checkhealth vim.pack` |
+| clangd crash / no diagnostics | `:LspRestart` · add `compile_commands.json` |
+| Live grep empty | `sudo apt install ripgrep` |
+| Alt+j/k dead | Enable option-as-meta in terminal |
+| Preview fails | Open `.md`/`.puml` first · `:MarkdownPreviewInstall` · `Space mp` |
+
+See `workbench.html` for the full guide.

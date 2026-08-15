@@ -1,14 +1,21 @@
-local cache = vim.g.base46_cache
-vim.fn.mkdir(cache, "p")
+--- NvUI / Base46 bootstrap: compile theme cache, load highlights, require nvchad.
+local M = {}
 
-if vim.fn.empty(vim.fn.glob(cache .. "/*")) == 1 then
-  require("base46").load_all_highlights()
+function M.setup()
+  local cache = vim.g.base46_cache
+  vim.fn.mkdir(cache, "p")
+
+  if vim.fn.empty(vim.fn.glob(cache .. "/*")) == 1 then
+    require("base46").load_all_highlights()
+  end
+
+  for _, file in ipairs(vim.fn.readdir(cache)) do
+    dofile(cache .. file)
+  end
+
+  -- Skip NvChad one-time upstream notification popup
+  vim.fn.mkdir(vim.fn.stdpath("data") .. "/nvnotify1", "p")
+  require("nvchad")
 end
 
-for _, file in ipairs(vim.fn.readdir(cache)) do
-  dofile(cache .. file)
-end
-
--- Skip NvChad one-time upstream notification popup
-vim.fn.mkdir(vim.fn.stdpath("data") .. "/nvnotify1", "p")
-require("nvchad")
+return M

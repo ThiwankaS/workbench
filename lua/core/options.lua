@@ -1,3 +1,4 @@
+--- Editor defaults and diagnostic display (inline virtual text + float).
 local opt = vim.opt
 
 opt.number = true
@@ -29,7 +30,6 @@ opt.showmode = false
 opt.laststatus = 3
 opt.switchbuf = "usetab,uselast" -- gb jumps to the alternate buffer
 
--- Diagnostic message text (not just E/W signs in the gutter).
 vim.diagnostic.config({
   virtual_text = {
     prefix = "●",

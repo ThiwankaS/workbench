@@ -1,3 +1,7 @@
+--- Treesitter parsers, highlight, and legacy syntax disable for LSP languages.
+local ft = require("core.filetypes")
+local M = {}
+
 local parsers = {
   "c",
   "cpp",
@@ -12,21 +16,26 @@ local parsers = {
   "markdown_inline",
 }
 
-require("nvim-treesitter").setup({
-  highlight = { enable = true },
-  indent = { enable = true },
-})
+function M.setup()
+  require("nvim-treesitter").setup({
+    highlight = { enable = true },
+    indent = { enable = true },
+  })
 
-vim.schedule(function()
-  pcall(function()
-    require("nvim-treesitter").install(parsers)
+  vim.schedule(function()
+    pcall(function()
+      require("nvim-treesitter").install(parsers)
+    end)
   end)
-end)
 
-vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("treesitter_syntax", { clear = true }),
-  pattern = { "c", "cpp", "javascript", "python" },
-  callback = function(args)
-    vim.bo[args.buf].syntax = ""
-  end,
-})
+  -- Disable legacy syntax for languages where TS + LSP share highlighting duty.
+  vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("treesitter_syntax", { clear = true }),
+    pattern = ft.treesitter_lang,
+    callback = function(args)
+      vim.bo[args.buf].syntax = ""
+    end,
+  })
+end
+
+return M

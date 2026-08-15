@@ -3,7 +3,7 @@ return {
   base46 = {
     theme = "gruvbox",
     transparency = true,
-    theme_toggle = { "gruvbox", "gruvbox" },
+    theme_toggle = { "gruvbox", "oned_dark" },
     integrations = {},
     hl_add = {},
     hl_override = {},

@@ -39,6 +39,8 @@
         <li><a href="#completion">Completion</a></li>
         <li><a href="#lsp">LSP</a></li>
         <li><a href="#explore">Explore code</a></li>
+        <li><a href="#preview">Preview</a></li>
+        <li><a href="#config">Configuration</a></li>
         <li><a href="#commands">Commands</a></li>
         <li><a href="#help">Troubleshooting</a></li>
       </ul>
@@ -78,7 +80,7 @@
             <tr><td><kbd class="leader">Space</kbd><kbd>ss</kbd> / <kbd>sw</kbd></td><td>Normal</td><td>Symbols in file / project</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>si</kbd> / <kbd>so</kbd></td><td>Normal</td><td>Incoming / outgoing calls</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>sn</kbd></td><td>Normal</td><td>Architecture note for symbol (vault)</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>mp</kbd></td><td>Normal</td><td>Markdown preview in browser (Mermaid)</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>mp</kbd></td><td>Normal</td><td>Browser preview (.md / .puml — Mermaid, PlantUML)</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>k</kbd></td><td>Normal</td><td>Hover</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>n</kbd></td><td>Normal</td><td>Rename symbol</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>a</kbd></td><td>Normal · Visual</td><td>Code action</td></tr>
@@ -193,8 +195,8 @@ cmake --build build
 ln -sf build/compile_commands.json .
 :LspRestart</pre>
           <h3>Obsidian notes (optional)</h3>
-          <pre>export OBSIDIAN_VAULT="$HOME/path/to/vault"
-# or set vim.g.obsidian_vault in init.lua</pre>
+          <p>Edit <code>lua/config.lua</code> → <code>obsidian_vault</code>, or export an env var:</p>
+          <pre>export OBSIDIAN_VAULT="$HOME/path/to/vault"</pre>
           <h3>Markdown + Mermaid preview</h3>
           <p>Store docs as <code>.md</code> or standalone <code>.puml</code> files. Mermaid uses fenced blocks:</p>
           <pre>```mermaid
@@ -225,7 +227,71 @@ stop
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ss</kbd> <kbd>sw</kbd></div><div class="desc">Symbols in file · project</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>si</kbd> <kbd>so</kbd></div><div class="desc">Incoming · outgoing calls</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>sn</kbd></div><div class="desc">Note for symbol under cursor</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>mp</kbd></div><div class="desc">Markdown / Mermaid preview in browser</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>mp</kbd></div><div class="desc">Browser preview (.md / .puml)</div></div>
+        </div>
+      </section>
+
+      <section class="card acc-preview wide" id="preview">
+        <div class="card-head"><div class="card-icon">⎙</div><h2>Browser Preview</h2></div>
+        <div class="card-body prose">
+          <p>Live preview in your default browser via <strong>markdown-preview.nvim</strong>. Works on <code>.md</code> and standalone <code>.puml</code> files.</p>
+          <h3>How to use</h3>
+          <ol>
+            <li>Open a markdown or PlantUML buffer.</li>
+            <li>First time only: <code>:MarkdownPreviewInstall</code></li>
+            <li>Press <kbd class="leader">Space</kbd><kbd>mp</kbd> to toggle preview.</li>
+          </ol>
+          <h3>Mermaid (in .md)</h3>
+          <pre>```mermaid
+graph LR
+  A --> B
+```</pre>
+          <h3>PlantUML</h3>
+          <p>Use a <code>.puml</code> file or a fenced block. Close with <code>@enduml</code> — not a second <code>@startuml</code>:</p>
+          <pre>```plantuml
+@startuml
+title Example
+start
+:Step;
+stop
+@enduml
+```</pre>
+          <p>PlantUML renders through <strong>plantuml.com</strong> — internet required. Mermaid renders locally in the preview server.</p>
+          <p class="note">Prefer <kbd class="leader">Space</kbd><kbd>mp</kbd> over <code>:MarkdownPreviewToggle</code>; the keymap checks filetype and loads the plugin safely.</p>
+        </div>
+      </section>
+
+      <section class="card acc-config wide" id="config">
+        <div class="card-head"><div class="card-icon">⚙</div><h2>Configuration</h2></div>
+        <div class="card-body prose">
+          <p>User-editable settings live in one place. Plugin wiring lives in <code>lua/setup/</code>. Restart Neovim after edits.</p>
+          <h3>User settings — <code>lua/config.lua</code></h3>
+          <pre>obsidian_vault = "~/Documents/Obsidian/Main"  -- Space sn notes; nil to disable
+preview_filetypes = { "markdown", "plantuml" } -- Space mp filetypes
+lsp_servers = { "clangd", "typescript-language-server", "pyright" }</pre>
+          <h3>Load order — <code>init.lua</code></h3>
+          <ol>
+            <li>Leader + paths (<code>config.lua</code> → <code>vim.g.obsidian_vault</code>)</li>
+            <li>Editor options + diagnostics (<code>core/options.lua</code>)</li>
+            <li>Preview globals (<code>setup/markdown_preview.configure()</code>)</li>
+            <li>Plugins (<code>vim.pack.add</code>)</li>
+            <li>Plugin setup modules (<code>setup/*.setup()</code>)</li>
+            <li>Global keymaps last (<code>core/keymaps.lua</code>)</li>
+          </ol>
+          <h3>Shared lists — <code>lua/core/filetypes.lua</code></h3>
+          <p>Single source of truth for which buffers skip global leader maps (<code>ui_plugin</code>) and LSP maps (<code>lsp_skip</code>).</p>
+          <h3>Theme — <code>lua/chadrc.lua</code></h3>
+          <p>Default theme <code>gruvbox</code>. <kbd class="leader">Space</kbd><kbd>tt</kbd> toggles <code>gruvbox</code> ↔ <code>oned_dark</code>. Statusline includes a live clock (<code>setup/clock.lua</code>).</p>
+          <h3>Where things live</h3>
+          <table>
+            <tr><th>Feature</th><th>Module</th></tr>
+            <tr><td>Keymaps (global)</td><td><code>lua/core/keymaps.lua</code></td></tr>
+            <tr><td>LSP keymaps (buffer)</td><td><code>lua/setup/lsp.lua</code></td></tr>
+            <tr><td>Completion keys</td><td><code>lua/setup/cmp.lua</code></td></tr>
+            <tr><td>Diagnostics display</td><td><code>lua/core/options.lua</code></td></tr>
+            <tr><td>Outline / notes</td><td><code>lua/setup/explore.lua</code></td></tr>
+            <tr><td>Browser preview</td><td><code>lua/setup/markdown_preview.lua</code></td></tr>
+          </table>
         </div>
       </section>
 
@@ -237,7 +303,7 @@ stop
           <div class="row"><div class="keys"><kbd>:LspInfo</kbd></div><div class="desc">Show attached LSP</div></div>
           <div class="row"><div class="keys"><kbd>:LspRestart</kbd></div><div class="desc">Restart LSP</div></div>
           <div class="row"><div class="keys"><kbd>:MarkdownPreviewInstall</kbd></div><div class="desc">Download preview server (once)</div></div>
-          <div class="row"><div class="keys"><kbd>:MarkdownPreviewToggle</kbd></div><div class="desc">Toggle preview (.md buffer)</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>mp</kbd></div><div class="desc">Toggle preview (.md / .puml buffer)</div></div>
           <div class="row"><div class="keys"><kbd>:TSInstall</kbd> <kbd>lang</kbd></div><div class="desc">Install Treesitter parser</div></div>
           <div class="row"><div class="keys"><kbd>:TSUpdate</kbd></div><div class="desc">Update parsers</div></div>
         </div>
@@ -257,6 +323,10 @@ stop
           <p>Cursor on a symbol · LSP attached · C++ needs compile database.</p>
           <h3>Live grep empty</h3>
           <pre>sudo apt install ripgrep</pre>
+          <h3>Alt+j/k not working</h3>
+          <p>Terminal must send Meta/Alt keys. In Ghostty: enable <strong>option-as-meta</strong>.</p>
+          <h3>Theme toggle does nothing</h3>
+          <p>Edit <code>theme_toggle</code> in <code>lua/chadrc.lua</code> — both names must be valid Base46 themes.</p>
           <h3>Markdown preview (Space mp) not working</h3>
           <ol>
             <li>Open a <code>.md</code> or <code>.puml</code> file first.</li>

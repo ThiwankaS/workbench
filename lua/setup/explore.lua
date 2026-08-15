@@ -1,8 +1,5 @@
---- Codebase exploration: outline, LSP structure pickers, markdown/Obsidian notes.
---- Set vault path once (pick one):
----   export OBSIDIAN_VAULT="$HOME/path/to/vault"
----   vim.g.obsidian_vault = "/path/to/vault"   in init.lua before require("setup.explore")
---- Project notes folder also works: vim.g.obsidian_vault = vim.fn.getcwd() .. "/docs"
+--- Codebase exploration: Aerial outline, render-markdown, optional Obsidian vault.
+--- Vault path: edit lua/config.lua (obsidian_vault) or export OBSIDIAN_VAULT.
 
 local M = {}
 
