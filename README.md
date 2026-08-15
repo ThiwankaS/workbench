@@ -94,7 +94,7 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | Keys | Action |
 |------|--------|
 | `Space th` | Theme picker (68 Base46 themes) |
-| `Space tt` | Toggle theme pair (`gruvbox` ↔ `oned_dark`) |
+| `Space tt` | Toggle theme pair (`gruvbox` ↔ `onedark`) |
 | `Space e` | Toggle file tree |
 | `Space j` | Reveal file in tree |
 | `Space f` | Find files |
@@ -193,7 +193,7 @@ Server list is in `lua/config.lua` (`lsp_servers`). C/C++ needs `compile_command
 ## Theme & UI
 
 - **68 themes** — `Space th` (Volt theme picker)
-- **Quick toggle** — `Space tt` switches `gruvbox` ↔ `oned_dark` (`lua/chadrc.lua`)
+- **Quick toggle** — `Space tt` switches `gruvbox` ↔ `onedark` (`lua/chadrc.lua`)
 - **Statusline + tabufline** — `lua/chadrc.lua`
 - **Digital clock** — live time + date on statusline
 - **Git signs** — change markers in gutter (gitsigns.nvim)
