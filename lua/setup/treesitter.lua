@@ -14,6 +14,7 @@ local parsers = {
   "json",
   "markdown",
   "markdown_inline",
+  "dockerfile",
 }
 
 function M.setup()

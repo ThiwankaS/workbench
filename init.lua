@@ -12,6 +12,7 @@ vim.g.obsidian_vault = config.obsidian_vault
 
 -- ── 2. Options + diagnostics (before plugins) ────────────────────────────────
 require("core.options")
+require("core.ftdetect")
 require("core.font")
 
 -- markdown-preview.nvim reads vim.g.mkdp_* when plugin/mkdp.vim loads (step 4)

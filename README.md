@@ -187,6 +187,7 @@ Works on `.md` and `.puml` files configured in `lua/config.lua`.
 | C / C++ | clangd |
 | JavaScript / TypeScript | typescript-language-server (`ts_ls`) |
 | Python | pyright |
+| Dockerfile | dockerls (`dockerfile-language-server`) |
 
 Server list is in `lua/config.lua` (`lsp_servers`). C/C++ needs `compile_commands.json` for full clangd support.
 

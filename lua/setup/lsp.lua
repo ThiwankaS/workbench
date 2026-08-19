@@ -77,6 +77,12 @@ function M.setup()
   enable("pyright", {
     settings = { python = { analysis = { typeCheckingMode = "basic" } } },
   })
+  enable("dockerls", {
+    filetypes = { "dockerfile" },
+    -- Attach even when there is no Dockerfile at the repo root (e.g. *.docker in .devcontainer/).
+    root_markers = { "Dockerfile", ".dockerfile", ".git" },
+    single_file_support = true,
+  })
 
   vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("workbench_lsp", { clear = true }),

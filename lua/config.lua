@@ -9,5 +9,5 @@ return {
   preview_filetypes = { "markdown", "plantuml" },
 
   --- Mason packages to install on first run (see lua/setup/lsp.lua).
-  lsp_servers = { "clangd", "typescript-language-server", "pyright" },
+  lsp_servers = { "clangd", "typescript-language-server", "pyright", "dockerfile-language-server" },
 }
