@@ -16,6 +16,7 @@ function M.setup()
   -- Skip NvChad one-time upstream notification popup
   vim.fn.mkdir(vim.fn.stdpath("data") .. "/nvnotify1", "p")
   require("nvchad")
+  require("setup.desktop_theme").apply()
 end
 
 return M

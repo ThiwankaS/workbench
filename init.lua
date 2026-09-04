@@ -58,12 +58,17 @@ vim.pack.add({
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/hrsh7th/cmp-nvim-lsp",
   "https://github.com/hrsh7th/cmp-buffer",
+  "https://github.com/hrsh7th/cmp-path",
   "https://github.com/hrsh7th/nvim-cmp",
+  "https://github.com/L3MON4D3/LuaSnip",
+  "https://github.com/saadparwaiz1/cmp_luasnip",
+  "https://github.com/rafamadriz/friendly-snippets",
   "https://github.com/windwp/nvim-autopairs",
   "https://github.com/stevearc/aerial.nvim",
   "https://github.com/MeanderingProgrammer/markdown.nvim",
   "https://github.com/epwalsh/obsidian.nvim",
   "https://github.com/iamcco/markdown-preview.nvim",
+  "https://github.com/chomosuke/typst-preview.nvim",
 }, { confirm = false })
 
 -- ── 5. Plugin setup (UI first, keymaps last) ─────────────────────────────────
@@ -78,4 +83,5 @@ require("setup.autopairs").setup()
 require("setup.cmp").setup()
 require("setup.gitsigns").setup()
 require("setup.markdown_preview").register_commands()
+require("setup.typst_preview").setup()
 require("core.keymaps") -- after plugins so user maps are not overridden

@@ -22,6 +22,6 @@ M.lsp_skip = {
 }
 
 --- Treesitter: disable legacy syntax highlighting for these (use TS only).
-M.treesitter_lang = { "c", "cpp", "javascript", "python" }
+M.treesitter_lang = { "c", "cpp", "javascript", "python", "cmake", "qml", "typst" }
 
 return M

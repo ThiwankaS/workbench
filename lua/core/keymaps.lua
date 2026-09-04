@@ -102,8 +102,12 @@ map("n", "<leader>sn", guard(function()
   require("setup.explore").note_for_cursor()
 end), extend("Architecture note"))
 map("n", "<leader>mp", guard(function()
+  if vim.bo.filetype == "typst" then
+    require("setup.typst_preview").toggle()
+    return
+  end
   require("setup.markdown_preview").toggle()
-end), extend("Markdown preview"))
+end), extend("Preview"))
 
 -- ── Buffers & windows ─────────────────────────────────────────────────────────
 
@@ -156,3 +160,17 @@ end), extend("Next diagnostic"))
 
 map("i", "<C-u>", "<Esc>gUiwgi", extend("Uppercase word"))
 map("i", "<C-l>", "<Esc>guiwgi", extend("Lowercase word"))
+
+-- GUI font zoom (terminal Neovim: change terminal font instead)
+if vim.fn.has("gui_running") == 1 then
+  local font = require("core.font")
+  map({ "n", "i" }, "<C-=>", function()
+    font.zoom(1)
+  end, extend("Increase font size"))
+  map({ "n", "i" }, "<C-->", function()
+    font.zoom(-1)
+  end, extend("Decrease font size"))
+  map({ "n", "i" }, "<C-0>", function()
+    font.reset()
+  end, extend("Reset font size"))
+end

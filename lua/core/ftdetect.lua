@@ -2,5 +2,7 @@
 vim.filetype.add({
   extension = {
     docker = "dockerfile", -- e.g. ubuntu-noble.docker in .devcontainer/build/
+    qml = "qml",
+    qmltypes = "qml",
   },
 })

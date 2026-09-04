@@ -15,6 +15,10 @@ local parsers = {
   "markdown",
   "markdown_inline",
   "dockerfile",
+  "cmake",
+  "qmljs",
+  "typst",
+  "yaml",
 }
 
 function M.setup()

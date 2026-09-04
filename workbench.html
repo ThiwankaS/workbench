@@ -80,7 +80,7 @@
             <tr><td><kbd class="leader">Space</kbd><kbd>ss</kbd> / <kbd>sw</kbd></td><td>Normal</td><td>Symbols in file / project</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>si</kbd> / <kbd>so</kbd></td><td>Normal</td><td>Incoming / outgoing calls</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>sn</kbd></td><td>Normal</td><td>Architecture note for symbol (vault)</td></tr>
-            <tr><td><kbd class="leader">Space</kbd><kbd>mp</kbd></td><td>Normal</td><td>Browser preview (.md / .puml — Mermaid, PlantUML)</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>mp</kbd></td><td>Normal</td><td>Browser preview (.md / .puml / .typ)</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>k</kbd></td><td>Normal</td><td>Hover</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>n</kbd></td><td>Normal</td><td>Rename symbol</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>a</kbd></td><td>Normal · Visual</td><td>Code action</td></tr>
@@ -228,18 +228,18 @@ stop
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>ss</kbd> <kbd>sw</kbd></div><div class="desc">Symbols in file · project</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>si</kbd> <kbd>so</kbd></div><div class="desc">Incoming · outgoing calls</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>sn</kbd></div><div class="desc">Note for symbol under cursor</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>mp</kbd></div><div class="desc">Browser preview (.md / .puml)</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>mp</kbd></div><div class="desc">Browser preview (.md / .puml / .typ)</div></div>
         </div>
       </section>
 
       <section class="card acc-preview wide" id="preview">
         <div class="card-head"><div class="card-icon">⎙</div><h2>Browser Preview</h2></div>
         <div class="card-body prose">
-          <p>Live preview in your default browser via <strong>markdown-preview.nvim</strong>. Works on <code>.md</code> and standalone <code>.puml</code> files.</p>
+          <p>Live preview in your default browser. Markdown and PlantUML use <strong>markdown-preview.nvim</strong>. Typst (<code>.typ</code>) uses <strong>typst-preview.nvim</strong> + tinymist — same <kbd class="leader">Space</kbd><kbd>mp</kbd> key.</p>
           <h3>How to use</h3>
           <ol>
-            <li>Open a markdown or PlantUML buffer.</li>
-            <li>First time only: <code>:MarkdownPreviewInstall</code></li>
+            <li>Open a markdown, PlantUML, or Typst buffer.</li>
+            <li>Markdown first time only: <code>:MarkdownPreviewInstall</code></li>
             <li>Press <kbd class="leader">Space</kbd><kbd>mp</kbd> to toggle preview.</li>
           </ol>
           <h3>Mermaid (in .md)</h3>
@@ -291,7 +291,7 @@ lsp_servers = { "clangd", "typescript-language-server", "pyright" }</pre>
             <tr><td>Completion keys</td><td><code>lua/setup/cmp.lua</code></td></tr>
             <tr><td>Diagnostics display</td><td><code>lua/core/options.lua</code></td></tr>
             <tr><td>Outline / notes</td><td><code>lua/setup/explore.lua</code></td></tr>
-            <tr><td>Browser preview</td><td><code>lua/setup/markdown_preview.lua</code></td></tr>
+            <tr><td>Browser preview</td><td><code>lua/setup/markdown_preview.lua</code> · <code>lua/setup/typst_preview.lua</code></td></tr>
           </table>
         </div>
       </section>
@@ -304,7 +304,7 @@ lsp_servers = { "clangd", "typescript-language-server", "pyright" }</pre>
           <div class="row"><div class="keys"><kbd>:LspInfo</kbd></div><div class="desc">Show attached LSP</div></div>
           <div class="row"><div class="keys"><kbd>:LspRestart</kbd></div><div class="desc">Restart LSP</div></div>
           <div class="row"><div class="keys"><kbd>:MarkdownPreviewInstall</kbd></div><div class="desc">Download preview server (once)</div></div>
-          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>mp</kbd></div><div class="desc">Toggle preview (.md / .puml buffer)</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>mp</kbd></div><div class="desc">Toggle preview (.md / .puml / .typ)</div></div>
           <div class="row"><div class="keys"><kbd>:TSInstall</kbd> <kbd>lang</kbd></div><div class="desc">Install Treesitter parser</div></div>
           <div class="row"><div class="keys"><kbd>:TSUpdate</kbd></div><div class="desc">Update parsers</div></div>
         </div>
@@ -333,6 +333,12 @@ lsp_servers = { "clangd", "typescript-language-server", "pyright" }</pre>
             <li>Open a <code>.md</code> or <code>.puml</code> file first.</li>
             <li>Run once: <code>:MarkdownPreviewInstall</code></li>
             <li>Then <kbd class="leader">Space</kbd><kbd>mp</kbd> — browser should open via <code>xdg-open</code>.</li>
+          </ol>
+          <h3>Typst preview not working</h3>
+          <ol>
+            <li>Open a <code>.typ</code> file (for the CV: <code>nvim ~/Documents/cv/cv.typ</code>).</li>
+            <li>Confirm <code>tinymist</code> is on <code>PATH</code>: <code>tinymist --version</code>.</li>
+            <li>Then <kbd class="leader">Space</kbd><kbd>mp</kbd>.</li>
           </ol>
         </div>
       </section>

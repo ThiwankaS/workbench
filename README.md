@@ -2,7 +2,7 @@
 
 Minimal **Neovim 0.12** config using **[vim.pack](https://neovim.io/doc/user/pack.html)** and **[NvUI](https://nvchad.com/news/nvui/)** (NvChad UI + Base46).
 
-Focus: **C**, **C++**, **JavaScript**, **Python** — Treesitter, Telescope, nvim-tree, Mason LSP, code exploration, markdown preview.
+Focus: **C**, **C++**, **JavaScript**, **Python**, **Typst** — Treesitter, Telescope, nvim-tree, Mason LSP, code exploration, markdown / Typst preview.
 
 ## Documentation
 
@@ -57,6 +57,7 @@ Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons).
 │       ├── telescope.lua
 │       ├── explore.lua      Aerial, render-markdown, Obsidian
 │       ├── markdown_preview.lua  Browser preview (Mermaid, PlantUML)
+│       ├── typst_preview.lua     Live Typst preview (tinymist)
 │       ├── lsp.lua          Mason, servers, buffer LSP maps
 │       ├── cmp.lua          Completion keys
 │       ├── autopairs.lua
@@ -121,7 +122,7 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | `Space ss` / `Space sw` | Symbols in file / project |
 | `Space si` / `Space so` | Incoming / outgoing calls |
 | `Space sn` | Architecture note for word under cursor (needs vault) |
-| `Space mp` | Browser preview (.md / .puml) |
+| `Space mp` | Browser preview (.md / .puml / .typ) |
 | `Enter` or `Ctrl+y` | Confirm completion |
 | `Ctrl+n` / `Ctrl+p` | Next / prev completion item (or open menu) |
 | `Ctrl+u` / `Ctrl+l` | Uppercase / lowercase word (insert) |
@@ -158,19 +159,21 @@ LSP buffer maps live in `lua/setup/lsp.lua`. Global maps live in `lua/core/keyma
 | Go to definition | `gd` | Jump to implementation |
 | All references | `gr` | Every use of symbol |
 | Architecture note | `Space sn` | Create/open `notes/Symbol.md` in vault |
-| Preview diagrams | `Space mp` | Live markdown + Mermaid in browser |
+| Preview diagrams | `Space mp` | Live markdown + Mermaid, or Typst PDF, in browser |
 
 Markdown renders in-editor (render-markdown). Follow `[[wiki links]]` with **`gf`** when Obsidian is enabled.
 
 ## Browser preview
 
-Works on `.md` and `.puml` files configured in `lua/config.lua`.
+**Markdown / PlantUML** — `.md` and `.puml` via markdown-preview.nvim (`lua/config.lua`).
 
 1. First time: `:MarkdownPreviewInstall`
 2. Open a markdown or PlantUML buffer
 3. Press **`Space mp`** to toggle browser preview
 
 **Mermaid** — fenced blocks in `.md`. **PlantUML** — `.puml` file or fenced block; must end with `@enduml`. PlantUML uses plantuml.com (needs internet).
+
+**Typst** — same key on a `.typ` buffer. Uses tinymist + typst-preview.nvim. `cv.typ` in the project root is pinned as the main file.
 
 ## Plugin management
 
@@ -188,8 +191,9 @@ Works on `.md` and `.puml` files configured in `lua/config.lua`.
 | JavaScript / TypeScript | typescript-language-server (`ts_ls`) |
 | Python | pyright |
 | Dockerfile | dockerls (`dockerfile-language-server`) |
+| Typst | tinymist |
 
-Server list is in `lua/config.lua` (`lsp_servers`). C/C++ needs `compile_commands.json` for full clangd support.
+Server list is in `lua/config.lua` (`lsp_servers`). C/C++ needs `compile_commands.json` for full clangd support. Typst prefers `tinymist` on `PATH` (`~/.local/bin`).
 
 ## Theme & UI
 
@@ -209,6 +213,6 @@ Persistent undo: `~/.config/nvim/undodir/` (gitignored).
 | clangd crash / no diagnostics | `:LspRestart` · add `compile_commands.json` |
 | Live grep empty | `sudo apt install ripgrep` |
 | Alt+j/k dead | Enable option-as-meta in terminal |
-| Preview fails | Open `.md`/`.puml` first · `:MarkdownPreviewInstall` · `Space mp` |
+| Preview fails | Open `.md`/`.puml`/`.typ` first · `:MarkdownPreviewInstall` for markdown · `Space mp` |
 
 See `workbench.html` for the full guide.
