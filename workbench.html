@@ -68,7 +68,7 @@
             <tr><td><kbd class="leader">Space</kbd><kbd>q</kbd></td><td>Normal</td><td>Quit</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>x</kbd></td><td>Normal</td><td>Close buffer</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></td><td>Normal</td><td>Move between windows</td></tr>
-            <tr><td><kbd>Shift</kbd><kbd>Alt</kbd><kbd>j</kbd> / <kbd>k</kbd></td><td>Normal · Visual</td><td>Move line / selection down / up</td></tr>
+            <tr><td><kbd class="mod">Ctrl</kbd><kbd>Alt</kbd><kbd>j</kbd> / <kbd>k</kbd></td><td>Normal · Visual</td><td>Move line / selection down / up</td></tr>
             <tr><td><kbd>Alt</kbd><kbd>e</kbd></td><td>Insert</td><td>Jump past closing bracket or quote</td></tr>
             <tr><td><kbd>Esc</kbd></td><td>Normal</td><td>Clear search highlight</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>u</kbd> / <kbd>l</kbd></td><td>Insert</td><td>Uppercase / lowercase word</td></tr>
@@ -158,7 +158,7 @@ nvim</pre>
       <section class="card acc-edit" id="edit">
         <div class="card-head"><div class="card-icon">✎</div><h2>Editing</h2></div>
         <div class="card-body">
-          <div class="row"><div class="keys"><kbd>Shift</kbd><kbd>Alt</kbd><kbd>j</kbd> <kbd>k</kbd></div><div class="desc">Move line / selection down · up</div></div>
+          <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>Alt</kbd><kbd>j</kbd> <kbd>k</kbd></div><div class="desc">Move line / selection down · up</div></div>
           <div class="row"><div class="keys"><kbd>Alt</kbd><kbd>e</kbd></div><div class="desc">Jump past closing bracket (insert)</div></div>
           <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>u</kbd> <kbd>l</kbd></div><div class="desc">Uppercase · lowercase word (insert)</div></div>
           <div class="row"><div class="keys"><kbd>u</kbd> <kbd>Ctrl</kbd><kbd>r</kbd></div><div class="desc">Undo · redo</div></div>
@@ -335,8 +335,8 @@ lsp_servers = { "clangd", "typescript-language-server", "pyright" }</pre>
           <p>Cursor on a symbol · LSP attached · C++ needs compile database.</p>
           <h3>Live grep empty</h3>
           <pre>sudo apt install ripgrep</pre>
-          <h3>Shift+Alt+j/k not working</h3>
-          <p>Terminal must send Meta/Alt keys. In Ghostty: enable <strong>option-as-meta</strong>. Tmux keeps <kbd>Alt</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd> for panes — use Shift+Alt in Neovim so they do not clash.</p>
+          <h3>Ctrl+Alt+j/k not working</h3>
+          <p>Not the same as <kbd class="mod">Ctrl</kbd><kbd>j</kbd>/<kbd>k</kbd> (Neovim windows) or <kbd>Alt</kbd><kbd>j</kbd>/<kbd>k</kbd> (tmux panes). Terminal must send Meta/Alt keys.</p>
           <h3>Theme toggle does nothing</h3>
           <p>Edit <code>theme_toggle</code> in <code>lua/chadrc.lua</code> — both names must be valid Base46 themes (e.g. <code>gruvbox</code>, <code>onedark</code>, not <code>oned_dark</code>).</p>
           <h3>Markdown preview (Space mp) not working</h3>
