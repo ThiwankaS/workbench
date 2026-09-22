@@ -160,8 +160,8 @@ map("n", "<leader>x", guard(function()
   tabufline().close_buffer()
 end), extend("Close buffer"))
 
--- Shift+Alt so tmux can keep Alt+hjkl for panes. <A-J>/<A-K> is how some
--- terminals encode Shift+Alt+j/k (CSI-u still sends <A-S-j>/<A-S-k>).
+-- Ctrl+Alt so tmux can keep Alt+hjkl for panes and Left Alt+Shift can
+-- keep toggling keyboard layout. <C-M-j> is the same chord as <C-A-j>.
 local function map_move(keys, delta, visual, desc)
   local mode = visual and "x" or "n"
   for _, lhs in ipairs(keys) do
@@ -170,10 +170,10 @@ local function map_move(keys, delta, visual, desc)
     end, extend(desc))
   end
 end
-map_move({ "<A-S-j>", "<A-J>" }, 1, false, "Move line down")
-map_move({ "<A-S-k>", "<A-K>" }, -1, false, "Move line up")
-map_move({ "<A-S-j>", "<A-J>" }, 1, true, "Move selection down")
-map_move({ "<A-S-k>", "<A-K>" }, -1, true, "Move selection up")
+map_move({ "<C-A-j>", "<C-M-j>" }, 1, false, "Move line down")
+map_move({ "<C-A-k>", "<C-M-k>" }, -1, false, "Move line up")
+map_move({ "<C-A-j>", "<C-M-j>" }, 1, true, "Move selection down")
+map_move({ "<C-A-k>", "<C-M-k>" }, -1, true, "Move selection up")
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", extend("Clear search highlight"))
 

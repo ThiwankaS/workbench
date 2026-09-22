@@ -1,4 +1,4 @@
---- Telescope defaults. Ctrl+j/k scroll pickers; Shift+Alt+j/k move lines (normal/visual).
+--- Telescope defaults. Ctrl+j/k scroll pickers; Ctrl+Alt+j/k move lines (normal/visual).
 local M = {}
 
 function M.setup()

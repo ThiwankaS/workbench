@@ -111,7 +111,7 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | `Space q` | Quit |
 | `Space x` | Close buffer |
 | `Ctrl+h/j/k/l` | Move between windows |
-| `Shift+Alt+j` / `Shift+Alt+k` | Move line down / up (normal + visual) |
+| `Ctrl+Alt+j` / `Ctrl+Alt+k` | Move line down / up (normal + visual) |
 | `Alt+e` | Jump past closing bracket/quote (insert) |
 | `Space k` | Hover (LSP) |
 | `Space n` | Rename (LSP) |
@@ -221,7 +221,7 @@ Persistent undo: `~/.config/nvim/undodir/` (gitignored).
 | Plugins missing | `:lua vim.pack.update()` · `:checkhealth vim.pack` |
 | clangd crash / no diagnostics | `:LspRestart` · add `compile_commands.json` |
 | Live grep empty | `sudo apt install ripgrep` |
-| Shift+Alt+j/k dead | Terminal must send Meta/Alt (Ghostty: option-as-meta). Reload tmux after config change. |
+| Ctrl+Alt+j/k dead | Distinct from Ctrl+j/k (windows) and Alt+j/k (tmux panes). Terminal must send Meta/Alt. |
 | Preview fails | Open `.md`/`.puml`/`.typ` first · `:MarkdownPreviewInstall` for markdown · `Space mp` |
 
 See `workbench.html` for the full guide.
