@@ -18,5 +18,6 @@ return {
     "neocmakelsp", -- CMake (LSP name: neocmake)
     "qmlls", -- QML (system Arch alternative: qt6-languageserver → qmlls6)
     "tinymist", -- Typst (PATH binary ~/.local/bin/tinymist preferred)
+    "harper-ls", -- English grammar in markdown / gitcommit / text / Typst
   },
 }

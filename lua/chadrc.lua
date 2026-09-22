@@ -3,8 +3,8 @@ return {
   base46 = {
     theme = "gruvbox",
     transparency = true,
-    -- Names must match Base46 themes exactly (see Space th picker). Not "oned_dark" — use "onedark".
-    theme_toggle = { "gruvbox", "onedark" },
+    -- Names must match Base46 themes exactly (see Space th picker). Not "oned_dark" — use "gruvbox".
+    theme_toggle = { "gruvbox", "gruvbox" },
     integrations = {},
     hl_add = {},
     hl_override = {},

@@ -43,23 +43,54 @@ local function toggle_buffer()
   next_buffer()
 end
 
-local function move_lines(delta)
-  if blocked() then
+--- Move current line (`visual = false`) or the visual selection (`visual = true`).
+--- Visual maps must pass `visual` explicitly: Lua callbacks can already have left
+--- Visual, so `nvim_get_mode()` is not trustworthy here.
+local function move_lines(delta, visual)
+  if blocked() or vim.bo.readonly or not vim.bo.modifiable then
     return
   end
-  local mode = api.nvim_get_mode().mode
-  if mode == "v" or mode == "V" or mode == "\22" then
-    vim.cmd("'<,'>move " .. (delta > 0 and "'>+1" or ".-2"))
-    vim.cmd("normal! gv=")
-    return
+
+  if visual then
+    -- Leave Visual so '< / '> match this selection (marks update on exit).
+    api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "nx", false)
   end
-  local row = api.nvim_win_get_cursor(0)[1]
+
+  local from, to
+  if visual then
+    from, to = vim.fn.line("'<"), vim.fn.line("'>")
+    if from > to then
+      from, to = to, from
+    end
+  else
+    from = api.nvim_win_get_cursor(0)[1]
+    to = from
+  end
+
+  local shift = delta * vim.v.count1
   local last = api.nvim_buf_line_count(0)
-  if (delta > 0 and row >= last) or (delta < 0 and row <= 1) then
+  if shift > 0 and to + shift > last then
     return
   end
-  vim.cmd("move " .. (delta > 0 and ".+1" or ".-2"))
-  vim.cmd("normal! ==")
+  if shift < 0 and from + shift < 1 then
+    return
+  end
+
+  -- :move {addr} puts the range just below {addr} (0 = top of buffer).
+  local dest = shift > 0 and (to + shift) or (from + shift - 1)
+  if not pcall(vim.cmd, ("silent %d,%dmove %d"):format(from, to, dest)) then
+    return
+  end
+
+  local new_from, new_to = from + shift, to + shift
+  pcall(vim.cmd, ("silent %d,%dnormal! =="):format(new_from, new_to))
+
+  if visual then
+    vim.cmd(("normal! %dGV%dG"):format(new_from, new_to))
+  else
+    local col = api.nvim_win_get_cursor(0)[2]
+    api.nvim_win_set_cursor(0, { new_from, col })
+  end
 end
 
 local telescope = function(name)
@@ -129,20 +160,48 @@ map("n", "<leader>x", guard(function()
   tabufline().close_buffer()
 end), extend("Close buffer"))
 
-map("n", "<A-j>", function()
-  move_lines(1)
-end, extend("Move line down"))
-map("n", "<A-k>", function()
-  move_lines(-1)
-end, extend("Move line up"))
-map("v", "<A-j>", function()
-  move_lines(1)
-end, extend("Move selection down"))
-map("v", "<A-k>", function()
-  move_lines(-1)
-end, extend("Move selection up"))
+-- Shift+Alt so tmux can keep Alt+hjkl for panes. <A-J>/<A-K> is how some
+-- terminals encode Shift+Alt+j/k (CSI-u still sends <A-S-j>/<A-S-k>).
+local function map_move(keys, delta, visual, desc)
+  local mode = visual and "x" or "n"
+  for _, lhs in ipairs(keys) do
+    map(mode, lhs, function()
+      move_lines(delta, visual)
+    end, extend(desc))
+  end
+end
+map_move({ "<A-S-j>", "<A-J>" }, 1, false, "Move line down")
+map_move({ "<A-S-k>", "<A-K>" }, -1, false, "Move line up")
+map_move({ "<A-S-j>", "<A-J>" }, 1, true, "Move selection down")
+map_move({ "<A-S-k>", "<A-K>" }, -1, true, "Move selection up")
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", extend("Clear search highlight"))
+
+-- ── Spell (English; built-in + Harper on prose — see lua/core/spell.lua) ───────
+
+local function jump_spell(forward)
+  local before = api.nvim_win_get_cursor(0)
+  vim.cmd("normal! " .. (forward and "]s" or "[s"))
+  local after = api.nvim_win_get_cursor(0)
+  if before[1] == after[1] and before[2] == after[2] then
+    vim.notify("No misspellings", vim.log.levels.INFO)
+  end
+end
+
+map("n", "<leader>zt", guard(function()
+  vim.opt_local.spell = not vim.opt_local.spell:get()
+  vim.notify("Spell " .. (vim.opt_local.spell:get() and "on" or "off"))
+end), extend("Toggle spell"))
+map("n", "<leader>zj", guard(function()
+  jump_spell(true)
+end), extend("Next misspelling"))
+map("n", "<leader>zk", guard(function()
+  jump_spell(false)
+end), extend("Prev misspelling"))
+map("n", "<leader>zs", telescope("spell_suggest"), extend("Spelling suggestions"))
+map("n", "<leader>za", guard(function()
+  vim.cmd("normal! zg")
+end), extend("Add word to dictionary"))
 
 -- ── Diagnostics (uses vim.diagnostic.config from core/options.lua) ────────────
 

@@ -68,7 +68,7 @@
             <tr><td><kbd class="leader">Space</kbd><kbd>q</kbd></td><td>Normal</td><td>Quit</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>x</kbd></td><td>Normal</td><td>Close buffer</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></td><td>Normal</td><td>Move between windows</td></tr>
-            <tr><td><kbd>Alt</kbd><kbd>j</kbd> / <kbd>k</kbd></td><td>Normal · Visual</td><td>Move line / selection down / up</td></tr>
+            <tr><td><kbd>Shift</kbd><kbd>Alt</kbd><kbd>j</kbd> / <kbd>k</kbd></td><td>Normal · Visual</td><td>Move line / selection down / up</td></tr>
             <tr><td><kbd>Alt</kbd><kbd>e</kbd></td><td>Insert</td><td>Jump past closing bracket or quote</td></tr>
             <tr><td><kbd>Esc</kbd></td><td>Normal</td><td>Clear search highlight</td></tr>
             <tr><td><kbd class="mod">Ctrl</kbd><kbd>u</kbd> / <kbd>l</kbd></td><td>Insert</td><td>Uppercase / lowercase word</td></tr>
@@ -87,6 +87,10 @@
             <tr><td><kbd class="leader">Space</kbd><kbd>m</kbd></td><td>Normal</td><td>Format buffer</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>dk</kbd> / <kbd>dj</kbd></td><td>Normal</td><td>Prev / next diagnostic</td></tr>
             <tr><td><kbd class="leader">Space</kbd><kbd>dd</kbd></td><td>Normal</td><td>Diagnostic message at cursor</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>zt</kbd></td><td>Normal</td><td>Toggle English spell</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>zj</kbd> / <kbd>zk</kbd></td><td>Normal</td><td>Next / prev misspelling</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>zs</kbd></td><td>Normal</td><td>Spelling suggestions</td></tr>
+            <tr><td><kbd class="leader">Space</kbd><kbd>za</kbd></td><td>Normal</td><td>Add word to dictionary</td></tr>
           </table>
         </div>
       </section>
@@ -154,7 +158,7 @@ nvim</pre>
       <section class="card acc-edit" id="edit">
         <div class="card-head"><div class="card-icon">✎</div><h2>Editing</h2></div>
         <div class="card-body">
-          <div class="row"><div class="keys"><kbd>Alt</kbd><kbd>j</kbd> <kbd>k</kbd></div><div class="desc">Move line / selection down · up</div></div>
+          <div class="row"><div class="keys"><kbd>Shift</kbd><kbd>Alt</kbd><kbd>j</kbd> <kbd>k</kbd></div><div class="desc">Move line / selection down · up</div></div>
           <div class="row"><div class="keys"><kbd>Alt</kbd><kbd>e</kbd></div><div class="desc">Jump past closing bracket (insert)</div></div>
           <div class="row"><div class="keys"><kbd class="mod">Ctrl</kbd><kbd>u</kbd> <kbd>l</kbd></div><div class="desc">Uppercase · lowercase word (insert)</div></div>
           <div class="row"><div class="keys"><kbd>u</kbd> <kbd>Ctrl</kbd><kbd>r</kbd></div><div class="desc">Undo · redo</div></div>
@@ -181,6 +185,11 @@ nvim</pre>
           <p class="note">Dockerfiles (including <code>*.docker</code> files) use <strong>dockerls</strong>. First run installs via Mason; use <code>:lsp info</code> to confirm attachment.</p>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dk</kbd> <kbd>dj</kbd></div><div class="desc">Prev · next diagnostic</div></div>
           <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>dd</kbd></div><div class="desc">Diagnostic message popup</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>zt</kbd></div><div class="desc">Toggle English spell</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>zj</kbd> <kbd>zk</kbd></div><div class="desc">Next · prev misspelling</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>zs</kbd></div><div class="desc">Spelling suggestions</div></div>
+          <div class="row"><div class="keys"><kbd class="leader">Space</kbd><kbd>za</kbd></div><div class="desc">Add word to dictionary</div></div>
+          <p class="note">Spell is on for code comments/strings and for markdown, git commits, text, and Typst. Harper adds grammar hints in those prose files — <kbd class="leader">Space</kbd><kbd>a</kbd> to apply a fix.</p>
         </div>
       </section>
 
@@ -274,6 +283,7 @@ lsp_servers = { "clangd", "typescript-language-server", "pyright" }</pre>
           <ol>
             <li>Leader + paths (<code>config.lua</code> → <code>vim.g.obsidian_vault</code>)</li>
             <li>Editor options + diagnostics (<code>core/options.lua</code>)</li>
+            <li>English spell (<code>core/spell.lua</code>)</li>
             <li>Preview globals (<code>setup/markdown_preview.configure()</code>)</li>
             <li>Plugins (<code>vim.pack.add</code>)</li>
             <li>Plugin setup modules (<code>setup/*.setup()</code>)</li>
@@ -290,6 +300,7 @@ lsp_servers = { "clangd", "typescript-language-server", "pyright" }</pre>
             <tr><td>LSP keymaps (buffer)</td><td><code>lua/setup/lsp.lua</code></td></tr>
             <tr><td>Completion keys</td><td><code>lua/setup/cmp.lua</code></td></tr>
             <tr><td>Diagnostics display</td><td><code>lua/core/options.lua</code></td></tr>
+            <tr><td>English spell</td><td><code>lua/core/spell.lua</code> · Harper in <code>lua/setup/lsp.lua</code></td></tr>
             <tr><td>Outline / notes</td><td><code>lua/setup/explore.lua</code></td></tr>
             <tr><td>Browser preview</td><td><code>lua/setup/markdown_preview.lua</code> · <code>lua/setup/typst_preview.lua</code></td></tr>
           </table>
@@ -324,8 +335,8 @@ lsp_servers = { "clangd", "typescript-language-server", "pyright" }</pre>
           <p>Cursor on a symbol · LSP attached · C++ needs compile database.</p>
           <h3>Live grep empty</h3>
           <pre>sudo apt install ripgrep</pre>
-          <h3>Alt+j/k not working</h3>
-          <p>Terminal must send Meta/Alt keys. In Ghostty: enable <strong>option-as-meta</strong>.</p>
+          <h3>Shift+Alt+j/k not working</h3>
+          <p>Terminal must send Meta/Alt keys. In Ghostty: enable <strong>option-as-meta</strong>. Tmux keeps <kbd>Alt</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd> for panes — use Shift+Alt in Neovim so they do not clash.</p>
           <h3>Theme toggle does nothing</h3>
           <p>Edit <code>theme_toggle</code> in <code>lua/chadrc.lua</code> — both names must be valid Base46 themes (e.g. <code>gruvbox</code>, <code>onedark</code>, not <code>oned_dark</code>).</p>
           <h3>Markdown preview (Space mp) not working</h3>

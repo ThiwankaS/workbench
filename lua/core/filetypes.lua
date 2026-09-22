@@ -21,6 +21,15 @@ M.lsp_skip = {
   mason = true,
 }
 
+--- Skip built-in spell (help/man/quickfix — not English prose).
+M.spell_skip = {
+  help = true,
+  man = true,
+  qf = true,
+  lazy = true,
+  checkhealth = true,
+}
+
 --- Treesitter: disable legacy syntax highlighting for these (use TS only).
 M.treesitter_lang = { "c", "cpp", "javascript", "python", "cmake", "qml", "typst" }
 

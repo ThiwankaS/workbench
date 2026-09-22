@@ -10,8 +10,9 @@ vim.g.maplocalleader = " "
 vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
 vim.g.obsidian_vault = config.obsidian_vault
 
--- ── 2. Options + diagnostics (before plugins) ────────────────────────────────
+-- ── 2. Options + diagnostics + spell (before plugins) ────────────────────────
 require("core.options")
+require("core.spell")
 require("core.ftdetect")
 require("core.font")
 

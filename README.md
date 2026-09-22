@@ -45,6 +45,7 @@ Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons).
 │   ├── chadrc.lua           NvUI theme, statusline, tabufline
 │   ├── core/
 │   │   ├── options.lua      Editor defaults + diagnostics (single source)
+│   │   ├── spell.lua        English spell (comments/strings + prose)
 │   │   ├── keymaps.lua      Global leader maps (one binding per feature)
 │   │   ├── maputil.lua      Skip maps in tree / Telescope / Mason buffers
 │   │   ├── filetypes.lua    Shared filetype lists (ui_plugin, lsp_skip)
@@ -73,10 +74,11 @@ Set your **terminal font** to `JetBrainsMono Nerd Font` (required for icons).
 
 1. `config.lua` → paths (`obsidian_vault`, etc.)
 2. `core/options.lua` — editor + diagnostics
-3. `setup/markdown_preview.configure()` — `vim.g.mkdp_*` before plugin loads
-4. `vim.pack.add` — plugins
-5. `setup/*.setup()` — plugin configuration
-6. `core/keymaps.lua` — global maps last (won't be overridden)
+3. `core/spell.lua` — English spell (Treesitter-aware)
+4. `setup/markdown_preview.configure()` — `vim.g.mkdp_*` before plugin loads
+5. `vim.pack.add` — plugins
+6. `setup/*.setup()` — plugin configuration
+7. `core/keymaps.lua` — global maps last (won't be overridden)
 
 ### User settings (`lua/config.lua`)
 
@@ -109,7 +111,7 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | `Space q` | Quit |
 | `Space x` | Close buffer |
 | `Ctrl+h/j/k/l` | Move between windows |
-| `Alt+j` / `Alt+k` | Move line down / up (normal + visual) |
+| `Shift+Alt+j` / `Shift+Alt+k` | Move line down / up (normal + visual) |
 | `Alt+e` | Jump past closing bracket/quote (insert) |
 | `Space k` | Hover (LSP) |
 | `Space n` | Rename (LSP) |
@@ -117,6 +119,10 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | `Space m` | Format (LSP) |
 | `Space dd` | Diagnostic message at cursor |
 | `Space dk` / `Space dj` | Prev / next diagnostic |
+| `Space zt` | Toggle spell (English) |
+| `Space zj` / `Space zk` | Next / prev misspelling |
+| `Space zs` | Spelling suggestions |
+| `Space za` | Add word to dictionary |
 | `gd` / `gr` / `gi` / `gt` | Definition / references / implementation / type |
 | `Space u` | Toggle symbol outline (Aerial) |
 | `Space ss` / `Space sw` | Symbols in file / project |
@@ -128,6 +134,8 @@ Tuned for a **65% keyboard** — home-row `Space` chords, no `[` `]` keys.
 | `Ctrl+u` / `Ctrl+l` | Uppercase / lowercase word (insert) |
 
 Diagnostic text appears inline at the end of each problem line and in a float (`Space dd`).
+
+English spell is on by default (comments/strings in code; full buffer in markdown, commits, text, Typst). Grammar hints in those prose files come from **harper-ls** (`Space a` to apply a fix).
 
 LSP buffer maps live in `lua/setup/lsp.lua`. Global maps live in `lua/core/keymaps.lua`. Completion keys live only in `lua/setup/cmp.lua`.
 
@@ -192,6 +200,7 @@ Markdown renders in-editor (render-markdown). Follow `[[wiki links]]` with **`gf
 | Python | pyright |
 | Dockerfile | dockerls (`dockerfile-language-server`) |
 | Typst | tinymist |
+| English (markdown, commits, text, Typst) | harper-ls |
 
 Server list is in `lua/config.lua` (`lsp_servers`). C/C++ needs `compile_commands.json` for full clangd support. Typst prefers `tinymist` on `PATH` (`~/.local/bin`).
 
@@ -212,7 +221,7 @@ Persistent undo: `~/.config/nvim/undodir/` (gitignored).
 | Plugins missing | `:lua vim.pack.update()` · `:checkhealth vim.pack` |
 | clangd crash / no diagnostics | `:LspRestart` · add `compile_commands.json` |
 | Live grep empty | `sudo apt install ripgrep` |
-| Alt+j/k dead | Enable option-as-meta in terminal |
+| Shift+Alt+j/k dead | Terminal must send Meta/Alt (Ghostty: option-as-meta). Reload tmux after config change. |
 | Preview fails | Open `.md`/`.puml`/`.typ` first · `:MarkdownPreviewInstall` for markdown · `Space mp` |
 
 See `workbench.html` for the full guide.

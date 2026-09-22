@@ -57,6 +57,11 @@ function M.setup()
     opts = vim.tbl_deep_extend("force", { capabilities = caps }, opts or {})
     if vim.lsp.config then
       vim.lsp.config(server, opts)
+      -- tbl_deep_extend merges list indices; replace filetypes so they are not padded
+      -- from lspconfig defaults (harper_ls would otherwise stay attached to C/JS/Python).
+      if opts.filetypes then
+        vim.lsp.config[server].filetypes = opts.filetypes
+      end
       vim.lsp.enable(server)
     else
       require("lspconfig")[server].setup(opts)
@@ -112,6 +117,30 @@ function M.setup()
       formatterMode = "typstyle",
       exportPdf = "onSave",
       outputPath = "$root/$name",
+    },
+  })
+
+  local harper_dir = vim.fn.stdpath("data") .. "/harper"
+  vim.fn.mkdir(harper_dir, "p")
+  enable("harper_ls", {
+    filetypes = { "markdown", "gitcommit", "text", "typst", "html" },
+    root_markers = { ".git" },
+    single_file_support = true,
+    settings = {
+      ["harper-ls"] = {
+        userDictPath = harper_dir .. "/dictionary.txt",
+        dialect = "American",
+        isolateEnglish = true,
+        diagnosticSeverity = "hint",
+        linters = {
+          SpellCheck = true,
+          AnA = true,
+          SentenceCapitalization = true,
+          RepeatedWords = true,
+          UnclosedQuotes = true,
+          Matcher = true,
+        },
+      },
     },
   })
 
